@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stamply - 디지털 스탬프 적립 플랫폼</title>
+  <meta name="description" content="팝업 스토어와 전시 행사를 위한 디지털 스탬프 적립 및 설문조사 플랫폼">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monomaniac+One&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --primary-100: #4A3AFF;
+      --primary-80: #6B5FFF;
+      --primary-60: #8C84FF;
+      --primary-40: #C5C0FF;
+      --primary-20: #E8E5FF;
+      --neutral-100: #1A1A1A;
+      --neutral-80: #404040;
+      --neutral-60: #666666;
+      --neutral-40: #CCCCCC;
+      --neutral-20: #F0F0F0;
+      --success: #4CAF50;
+      --warning: #FF9800;
+      --error: #F44336;
+    }
+
+    * {
+      font-family: 'Noto Sans KR', 'Nanum Gothic', system-ui, sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6, .logo {
+      font-family: 'Monomaniac One', 'Noto Sans KR', system-ui, sans-serif;
+      word-break: keep-all;
+    }
+
+    .text-primary {
+      color: var(--primary-100);
+    }
+
+    .bg-primary {
+      background-color: var(--primary-100);
+    }
+
+    .hover-primary:hover {
+      background-color: var(--primary-80);
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(2rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .glass-effect {
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(74, 58, 255, 0.1);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #E8E5FF 0%, #F0F0F0 100%);
+    }
+
+    .text-break-keep {
+      word-break: keep-all;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    section {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-white text-neutral-100" style="color: var(--neutral-100); background-color: #FFFFFF;">
+
+  <!-- Navigation -->
+  <nav class="glass-effect mx-4 mt-4 md:mx-auto md:max-w-7xl rounded-full px-6 py-3 md:px-8 md:py-4" style="border-color: var(--primary-20); background-color: rgba(255, 255, 255, 0.8);">
+    <div class="flex items-center justify-between">
+      <div class="logo text-xl md:text-2xl font-bold" style="color: var(--primary-100);">
+        Stamply
+      </div>
+      <div class="hidden md:flex gap-8 items-center">
+        <a href="#features" class="text-sm md:text-base hover:text-primary transition">기능</a>
+        <a href="#flow" class="text-sm md:text-base hover:text-primary transition">사용방법</a>
+        <a href="#cta" class="text-sm md:text-base hover:text-primary transition">시작하기</a>
+      </div>
+      <button class="bg-primary text-white px-6 py-2 rounded-full text-sm md:text-base hover-primary transition-all duration-300" style="background-color: var(--primary-100);">
+        무료 체험
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="min-h-[100dvh] px-4 md:px-0 py-16 md:py-24 flex items-center">
+    <div class="max-w-7xl mx-auto w-full">
+      <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <!-- Left: Text -->
+        <div class="animate-fade-in-up">
+          <div class="inline-block mb-4 px-4 py-2 rounded-full" style="background-color: var(--primary-20);">
+            <span class="text-sm font-semibold" style="color: var(--primary-100);">✨ 행사 운영을 디지털로</span>
+          </div>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6" style="color: var(--neutral-100); word-break: keep-all;">
+            종이 스탬프카드는<br/>이제 안녕
+          </h1>
+          <p class="text-base md:text-lg leading-relaxed mb-8 max-w-xl" style="color: var(--neutral-80);">
+            팝업 스토어와 전시 행사 방문객을 위한 디지털 스탬프 플랫폼.<br/>
+            QR 스캔 하나로 미션을 완료하고, 간단한 설문으로 상품을 수령하세요.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button class="bg-primary text-white px-8 py-4 rounded-lg text-base md:text-lg font-semibold hover-primary transition-all duration-300" style="background-color: var(--primary-100);">
+              운영사로 시작하기
+            </button>
+            <button class="border-2 px-8 py-4 rounded-lg text-base md:text-lg font-semibold transition-all duration-300 hover:scale-105" style="border-color: var(--primary-100); color: var(--primary-100);">
+              방문객 체험하기
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Visual -->
+        <div class="relative h-96 md:h-full animate-float">
+          <div class="absolute inset-0 gradient-bg rounded-2xl shadow-xl overflow-hidden">
+            <img src="https://picsum.photos/seed/stamply_hero/500/600" alt="Stamply 대시보드" class="w-full h-full object-cover">
+          </div>
+          <div class="absolute -bottom-6 -right-6 w-32 h-32 md:w-40 md:h-40 rounded-full" style="background-color: var(--primary-20); opacity: 0.5; filter: blur(30px);"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof / Metrics -->
+  <section class="py-14 md:py-20 px-4 md:px-0" style="background: linear-gradient(135deg, var(--primary-100) 0%, var(--primary-80) 100%);">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
+        <div>
+          <div class="text-3xl md:text-4xl font-bold mb-2" style="color: #FFFFFF;">1,234+</div>
+          <p class="text-sm md:text-base" style="color: rgba(255,255,255,0.75);">행사 운영사</p>
+        </div>
+        <div>
+          <div class="text-3xl md:text-4xl font-bold mb-2" style="color: #FFFFFF;">47,200+</div>
+          <p class="text-sm md:text-base" style="color: rgba(255,255,255,0.75);">방문객</p>
+        </div>
+        <div>
+          <div class="text-3xl md:text-4xl font-bold mb-2" style="color: #FFFFFF;">4.87</div>
+          <p class="text-sm md:text-base" style="color: rgba(255,255,255,0.75);">평균 만족도</p>
+        </div>
+        <div>
+          <div class="text-3xl md:text-4xl font-bold mb-2" style="color: #FFFFFF;">99.9%</div>
+          <p class="text-sm md:text-base" style="color: rgba(255,255,255,0.75);">가용성</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Operator Features Section -->
+  <section id="features" class="py-20 md:py-28 px-4 md:px-0" style="background-color: #FFFFFF;">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" style="color: var(--neutral-100); word-break: keep-all;">
+          운영사를 위한 기능
+        </h2>
+        <p class="text-base md:text-lg max-w-2xl mx-auto" style="color: var(--neutral-60);">
+          방문객 데이터 수집부터 실시간 분석까지, 모든 것을 한 곳에서 관리하세요.
+        </p>
+      </div>
+
+      <!-- Bento Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Large Card 1 -->
+        <div class="md:col-span-2 p-8 rounded-2xl border transition-all hover:shadow-md" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="flex items-start gap-4 mb-4">
+            <div class="p-3 rounded-lg" style="background-color: var(--primary-20);">
+              <iconify-icon icon="solar:smartphone-linear" style="color: var(--primary-100); font-size: 24px;"></iconify-icon>
+            </div>
+            <div>
+              <h3 class="text-lg md:text-xl font-bold" style="color: var(--neutral-100); word-break: keep-all;">실시간 대시보드</h3>
+              <p class="text-sm" style="color: var(--neutral-60);">전체 참여자, 미션 진행률, 상품 수령 현황을 한눈에 확인하세요.</p>
+            </div>
+          </div>
+          <img src="https://picsum.photos/seed/stamply_dashboard/600/300" alt="대시보드" class="w-full rounded-lg mt-6 object-cover h-48" loading="lazy" decoding="async">
+        </div>
+
+        <!-- Small Cards Right -->
+        <div class="flex flex-col gap-6">
+          <div class="p-6 rounded-xl border transition-all hover:shadow-md" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+            <div class="p-2 rounded-lg mb-3 inline-block" style="background-color: var(--primary-20);">
+              <iconify-icon icon="solar:qr-code-linear" style="color: var(--primary-100); font-size: 20px;"></iconify-icon>
+            </div>
+            <h4 class="font-bold mb-1" style="color: var(--neutral-100); word-break: keep-all;">QR 코드 자동 생성</h4>
+            <p class="text-sm" style="color: var(--neutral-60);">미션별 고유 QR 코드를 자동으로 생성하고 관리하세요.</p>
+          </div>
+
+          <div class="p-6 rounded-xl border transition-all hover:shadow-md" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+            <div class="p-2 rounded-lg mb-3 inline-block" style="background-color: var(--primary-20);">
+              <iconify-icon icon="solar:chart-linear" style="color: var(--primary-100); font-size: 20px;"></iconify-icon>
+            </div>
+            <h4 class="font-bold mb-1" style="color: var(--neutral-100); word-break: keep-all;">상세 분석</h4>
+            <p class="text-sm" style="color: var(--neutral-60);">성별, 연령대, 만족도 분포를 차트로 시각화하세요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visitor Features Section (light) -->
+  <section class="py-20 md:py-28 px-4 md:px-0">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" style="color: var(--neutral-100); word-break: keep-all;">
+          방문객을 위한 기능
+        </h2>
+        <p class="text-base md:text-lg max-w-2xl mx-auto" style="color: var(--neutral-80);">
+          앱 설치 없이, 브라우저에서 간편하게 미션을 완료하고 상품을 수령하세요.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-8 rounded-2xl border transition-all hover:shadow-md text-center" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="p-4 rounded-full mb-6 inline-block" style="background-color: var(--primary-20);">
+            <iconify-icon icon="solar:qr-code-bold" style="color: var(--primary-100); font-size: 32px;"></iconify-icon>
+          </div>
+          <h4 class="text-lg font-bold mb-3" style="color: var(--neutral-100); word-break: keep-all;">QR 스캔</h4>
+          <p style="color: var(--neutral-60);">입장부터 미션까지, QR 코드로 쉽게 진행하세요.</p>
+        </div>
+
+        <div class="p-8 rounded-2xl border transition-all hover:shadow-md text-center" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="p-4 rounded-full mb-6 inline-block" style="background-color: var(--primary-20);">
+            <iconify-icon icon="solar:clipboard-check-linear" style="color: var(--primary-100); font-size: 32px;"></iconify-icon>
+          </div>
+          <h4 class="text-lg font-bold mb-3" style="color: var(--neutral-100); word-break: keep-all;">간편한 설문</h4>
+          <p style="color: var(--neutral-60);">미션 완료 후 간단한 설문으로 의견을 공유하세요.</p>
+        </div>
+
+        <div class="p-8 rounded-2xl border transition-all hover:shadow-md text-center" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="p-4 rounded-full mb-6 inline-block" style="background-color: var(--primary-20);">
+            <iconify-icon icon="solar:gift-linear" style="color: var(--primary-100); font-size: 32px;"></iconify-icon>
+          </div>
+          <h4 class="text-lg font-bold mb-3" style="color: var(--neutral-100); word-break: keep-all;">즉시 수령</h4>
+          <p style="color: var(--neutral-60);">설문 완료 후 현장에서 바로 상품을 수령하세요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="flow" class="py-20 md:py-28 px-4 md:px-0" style="background-color: var(--neutral-20);">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" style="color: var(--neutral-100); word-break: keep-all;">
+          사용 흐름
+        </h2>
+        <p class="text-base md:text-lg max-w-2xl mx-auto" style="color: var(--neutral-80);">
+          운영사와 방문객 모두 직관적이고 간편한 플로우를 경험하세요.
+        </p>
+      </div>
+
+      <!-- Operator Flow -->
+      <div class="mb-20">
+        <h3 class="text-2xl font-bold mb-8 text-center" style="color: var(--neutral-100); word-break: keep-all;">운영사 플로우</h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="space-y-6">
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: var(--primary-100);">1</div>
+              <div>
+                <h4 class="font-bold mb-2" style="color: var(--neutral-100); word-break: keep-all;">행사 등록</h4>
+                <p style="color: var(--neutral-80);">행사명, 기간, 장소, 설명을 입력하고 브로슈어를 업로드하세요.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: var(--primary-100);">2</div>
+              <div>
+                <h4 class="font-bold mb-2" style="color: var(--neutral-100); word-break: keep-all;">미션 설정</h4>
+                <p style="color: var(--neutral-80);">최대 10개의 미션을 생성하면, QR 코드가 자동으로 생성됩니다.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: var(--primary-100);">3</div>
+              <div>
+                <h4 class="font-bold mb-2" style="color: var(--neutral-100); word-break: keep-all;">설문조사 설정</h4>
+                <p style="color: var(--neutral-80);">필수항목(성별, 연령대)과 커스텀 항목을 설정하세요.</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-8 rounded-2xl" style="background-color: #FFFFFF; border: 2px solid var(--primary-100);">
+            <img src="https://picsum.photos/seed/stamply_operator/400/300" alt="운영사 대시보드" class="w-full rounded-lg object-cover h-80">
+          </div>
+        </div>
+      </div>
+
+      <!-- Visitor Flow -->
+      <div>
+        <h3 class="text-2xl font-bold mb-8 text-center" style="color: var(--neutral-100); word-break: keep-all;">방문객 플로우</h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="p-8 rounded-2xl" style="background-color: #FFFFFF; border: 2px solid var(--primary-100);">
+            <img src="https://picsum.photos/seed/stamply_visitor/400/300" alt="방문객 모바일" class="w-full rounded-lg object-cover h-80">
+          </div>
+          <div class="space-y-6">
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: var(--primary-100);">1</div>
+              <div>
+                <h4 class="font-bold mb-2" style="color: var(--neutral-100); word-break: keep-all;">입장 QR 스캔</h4>
+                <p style="color: var(--neutral-80);">행사장 입구의 QR을 스캔하면 임시 회원번호가 발급됩니다.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: var(--primary-100);">2</div>
+              <div>
+                <h4 class="font-bold mb-2" style="color: var(--neutral-100); word-break: keep-all;">미션 완료</h4>
+                <p style="color: var(--neutral-80);">각 부스에서 미션 QR을 스캔하여 미션을 완료하세요.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: var(--primary-100);">3</div>
+              <div>
+                <h4 class="font-bold mb-2" style="color: var(--neutral-100); word-break: keep-all;">설문 및 수령</h4>
+                <p style="color: var(--neutral-80);">간단한 설문 후 현장에서 바로 상품을 수령합니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-20 md:py-28 px-4 md:px-0">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" style="color: var(--neutral-100); word-break: keep-all;">
+          사용자 후기
+        </h2>
+        <p class="text-base md:text-lg max-w-2xl mx-auto" style="color: var(--neutral-80);">
+          Stamply를 통해 행사를 성공한 운영사와 만족한 방문객들의 이야기입니다.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="p-8 rounded-2xl border" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="flex gap-1 mb-4">
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+          </div>
+          <p class="mb-6" style="color: var(--neutral-80); word-break: keep-all;">
+            "Stamply를 도입한 후 방문객 데이터를 체계적으로 수집할 수 있게 되었어요. 실시간 대시보드 덕분에 행사 운영이 훨씬 수월해졌습니다."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://i.pravatar.cc/150?u=lee-sujin" alt="이수진" class="w-12 h-12 rounded-full" loading="lazy" decoding="async">
+            <div>
+              <p class="font-bold" style="color: var(--neutral-100);">이수진</p>
+              <p class="text-sm" style="color: var(--neutral-60);">팝업 스토어 운영자</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="p-8 rounded-2xl border" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="flex gap-1 mb-4">
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+          </div>
+          <p class="mb-6" style="color: var(--neutral-80); word-break: keep-all;">
+            "앱을 설치할 필요 없이 카메라로 QR만 스캔하면 되어서 정말 편해요. 미션 완료하고 바로 상품 받는 과정이 매끄러워서 좋습니다."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://i.pravatar.cc/150?u=park-dokyung" alt="박도경" class="w-12 h-12 rounded-full" loading="lazy" decoding="async">
+            <div>
+              <p class="font-bold" style="color: var(--neutral-100);">박도경</p>
+              <p class="text-sm" style="color: var(--neutral-60);">전시 방문객</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="p-8 rounded-2xl border" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="flex gap-1 mb-4">
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+          </div>
+          <p class="mb-6" style="color: var(--neutral-80); word-break: keep-all;">
+            "설정이 정말 간단해요. 미션과 설문을 만드는 데 5분도 안 걸렸어요. 운영 중에도 실시간으로 현황을 확인할 수 있어서 데이터 분석에 집중할 수 있었어요."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://i.pravatar.cc/150?u=choi-hyejin" alt="최혜진" class="w-12 h-12 rounded-full" loading="lazy" decoding="async">
+            <div>
+              <p class="font-bold" style="color: var(--neutral-100);">최혜진</p>
+              <p class="text-sm" style="color: var(--neutral-60);">마케팅 담당자</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 4 -->
+        <div class="p-8 rounded-2xl border" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <div class="flex gap-1 mb-4">
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+            <iconify-icon icon="solar:star-bold" style="color: var(--warning); font-size: 20px;"></iconify-icon>
+          </div>
+          <p class="mb-6" style="color: var(--neutral-80); word-break: keep-all;">
+            "종이 스탬프는 분실되기 쉬웠는데, 이제 휴대폰에 저장되니까 분실 걱정이 없어요. 중복 수령도 방지되고 정말 안심이 됩니다."
+          </p>
+          <div class="flex items-center gap-3">
+            <img src="https://i.pravatar.cc/150?u=han-minwoo" alt="한민우" class="w-12 h-12 rounded-full" loading="lazy" decoding="async">
+            <div>
+              <p class="font-bold" style="color: var(--neutral-100);">한민우</p>
+              <p class="text-sm" style="color: var(--neutral-60);">브랜드 전시회 참가자</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing / Plans -->
+  <section class="py-20 md:py-28 px-4 md:px-0" style="background-color: var(--neutral-20);">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4" style="color: var(--neutral-100); word-break: keep-all;">
+          가격 계획
+        </h2>
+        <p class="text-base md:text-lg max-w-2xl mx-auto" style="color: var(--neutral-80);">
+          모든 규모의 행사에 맞는 유연한 요금제를 준비했습니다.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Basic -->
+        <div class="p-8 rounded-2xl border transition-all hover:shadow-md" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <h3 class="text-xl font-bold mb-2" style="color: var(--neutral-100);">스타트업</h3>
+          <p class="text-sm mb-6" style="color: var(--neutral-60);">소규모 행사용</p>
+          <div class="mb-6">
+            <span class="text-3xl font-bold" style="color: var(--primary-100);">무료</span>
+            <p class="text-sm mt-2" style="color: var(--neutral-60);">영구 무료</p>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">최대 3개 행사</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">미션 최대 5개</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">기본 대시보드</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 rounded-lg border transition-all hover:scale-[1.02]" style="border-color: var(--primary-100); color: var(--primary-100);">
+            무료 시작
+          </button>
+        </div>
+
+        <!-- Pro -->
+        <div class="p-8 rounded-2xl border-2 transition-all hover:shadow-xl relative" style="border-color: var(--primary-100); background-color: #FFFFFF;">
+          <div class="absolute -top-3 left-6 px-3 py-1 rounded-full text-xs font-bold text-white" style="background-color: var(--primary-100);">인기</div>
+          <h3 class="text-xl font-bold mb-2" style="color: var(--neutral-100);">프로</h3>
+          <p class="text-sm mb-6" style="color: var(--neutral-60);">중규모 행사용</p>
+          <div class="mb-6">
+            <span class="text-3xl font-bold" style="color: var(--primary-100);">월 29,900</span>
+            <p class="text-sm mt-2" style="color: var(--neutral-60);">한 달 무료 체험</p>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">무제한 행사</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">미션 최대 10개</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">커스텀 설문</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">상세 분석</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 rounded-lg text-white transition-all hover-primary hover:scale-[1.02]" style="background-color: var(--primary-100);">
+            지금 시작하기
+          </button>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="p-8 rounded-2xl border transition-all hover:shadow-md" style="border-color: rgba(112,115,124,0.22); background-color: #FFFFFF;">
+          <h3 class="text-xl font-bold mb-2" style="color: var(--neutral-100);">엔터프라이즈</h3>
+          <p class="text-sm mb-6" style="color: var(--neutral-60);">대규모 행사용</p>
+          <div class="mb-6">
+            <span class="text-3xl font-bold" style="color: var(--primary-100);">맞춤</span>
+            <p class="text-sm mt-2" style="color: var(--neutral-60);">문의하기</p>
+          </div>
+          <ul class="space-y-3 mb-8">
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">모든 기능 포함</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">API 연동</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">24/7 지원</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <iconify-icon icon="solar:check-circle-bold" style="color: var(--success);"></iconify-icon>
+              <span class="text-sm" style="color: var(--neutral-60);">백업 지원</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 rounded-lg border transition-all hover:scale-[1.02]" style="border-color: var(--primary-100); color: var(--primary-100);">
+            문의하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section id="cta" class="py-20 md:py-28 px-4 md:px-0" style="background: linear-gradient(135deg, var(--primary-100) 0%, var(--primary-80) 100%);">
+    <div class="max-w-4xl mx-auto text-center text-white">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight word-break-keep">
+        지금 바로 시작하세요
+      </h2>
+      <p class="text-base md:text-lg mb-10 opacity-90 max-w-2xl mx-auto word-break-keep">
+        무료로 가입하고 첫 행사를 Stamply와 함께 성공적으로 진행해보세요.<br/>
+        별도의 신용카드 정보는 필요하지 않습니다.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button class="px-10 py-4 rounded-lg font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl" style="background-color: #FFFFFF; color: var(--primary-100);">
+          운영사로 가입
+        </button>
+        <button class="px-10 py-4 rounded-lg font-semibold text-base md:text-lg border-2 border-white text-white transition-all duration-300 hover:bg-white hover:text-primary-100">
+          데모 보기
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 md:py-16 px-4 md:px-0 border-t" style="border-color: var(--neutral-20); background-color: #FFFFFF;">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="logo text-xl font-bold mb-4" style="color: var(--primary-100);">Stamply</div>
+          <p class="text-sm" style="color: var(--neutral-60);">팝업 스토어와 전시 행사를 위한 디지털 스탬프 플랫폼</p>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4" style="color: var(--neutral-100);">제품</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">기능</a></li>
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">가격</a></li>
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">보안</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4" style="color: var(--neutral-100);">회사</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">블로그</a></li>
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">문의</a></li>
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">채용</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4" style="color: var(--neutral-100);">법률</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">개인정보</a></li>
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">약관</a></li>
+            <li><a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">쿠키</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4" style="border-color: var(--neutral-20);">
+        <p class="text-sm" style="color: var(--neutral-60);">© 2026 Stamply. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">
+            <iconify-icon icon="solar:instagram-linear" style="font-size: 20px;"></iconify-icon>
+          </a>
+          <a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">
+            <iconify-icon icon="solar:twitter-linear" style="font-size: 20px;"></iconify-icon>
+          </a>
+          <a href="#" style="color: var(--neutral-60);" class="hover:text-primary transition">
+            <iconify-icon icon="solar:facebook-linear" style="font-size: 20px;"></iconify-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Intersection Observer for fade-in-up animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

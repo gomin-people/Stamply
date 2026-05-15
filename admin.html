@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stamply 관리자</title>
+
+  <!-- Monomaniac One (로고) + Nanum Gothic (기본) + Noto Sans (보조) -->
+  <link href="https://fonts.googleapis.com/css2?family=Monomaniac+One&family=Nanum+Gothic:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Lucide icons (Wanted icon substitute) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* ─── Gomon Design System Tokens ─── */
+    :root {
+      /* Primary (Gomon 파란색) */
+      --blue-50: #4A3AFF;   /* Primary 100 — 주요 액션 */
+      --blue-45: #6B5FFF;   /* Primary 80  — 호버 */
+      --blue-40: #8C84FF;   /* Primary 60  — 비활성 */
+      --blue-10: #E8E5FF;   /* Primary 20  — 라이트 배경 */
+
+      /* Neutral (Gomon 회색) */
+      --neutral-10: #1A1A1A;   /* Neutral 100 — 텍스트/강조 */
+      --neutral-20: #404040;   /* Neutral 80  — 보조 텍스트 */
+      --neutral-30: #555555;   /* 중간 */
+      --neutral-40: #666666;   /* Neutral 60  — 비활성 텍스트 */
+      --neutral-50: #999999;   /* 플레이스홀더 */
+      --neutral-90: #CCCCCC;   /* Neutral 40  — 경계선/구분자 */
+      --neutral-95: #E8E8E8;   /* 연한 경계 */
+      --neutral-99: #F0F0F0;   /* Neutral 20  — 배경색 */
+      --neutral-100: #FFFFFF;
+
+      /* Status (Gomon Accent) */
+      --red:    #F44336;   /* Error */
+      --green:  #4CAF50;   /* Success */
+      --orange: #FF9800;   /* Warning */
+
+      /* Typography */
+      --font-base: 'Nanum Gothic', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-logo: 'Monomaniac One', serif;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 4px rgba(26,26,26,0.08);
+      --shadow-md: 0 4px 12px rgba(26,26,26,0.10);
+      --shadow-lg: 0 8px 24px rgba(26,26,26,0.12);
+      --shadow-xl: 0 12px 40px rgba(26,26,26,0.12);
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.42, 0.64, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-base);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0.0057em;
+      color: var(--neutral-10);
+      background: var(--neutral-99);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Utilities ─── */
+    .hidden { display: none !important; }
+
+    /* Hairline */
+    .hairline { border: 1px solid rgba(204,204,204,.5); }
+    .hairline-b { border-bottom: 1px solid rgba(204,204,204,.5); }
+    .hairline-r { border-right: 1px solid rgba(204,204,204,.5); }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 14px 22px; height: auto; border-radius: 10px;
+      font-family: var(--font-base); font-size: 16px; font-weight: 700;
+      line-height: 1.4;
+      cursor: pointer; border: none; white-space: nowrap;
+      transition: background 160ms var(--ease-out), transform 120ms var(--ease-out);
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--blue-50); color: #fff;
+    }
+    .btn-primary:hover { background: var(--blue-45); }
+    .btn-primary:active { background: var(--blue-40); }
+
+    .btn-secondary {
+      background: var(--neutral-100); color: var(--neutral-20);
+      border: 1.5px solid var(--neutral-90);
+    }
+    .btn-secondary:hover { border-color: var(--neutral-50); }
+
+    .btn-ghost {
+      background: transparent; color: var(--neutral-30);
+    }
+    .btn-ghost:hover { background: rgba(0,0,0,0.04); }
+
+    .btn-sm { padding: 8px 14px; height: auto; font-size: 14px; font-weight: 600; border-radius: 8px; line-height: 1.4; }
+    .btn-danger {
+      background: transparent; color: var(--red); border: 1.5px solid var(--red);
+    }
+    .btn-danger:hover { background: rgba(255,66,66,0.06); }
+
+    /* ─── Inputs ─── */
+    .input {
+      width: 100%; height: 44px; padding: 0 14px;
+      border: 1px solid var(--neutral-90); border-radius: 8px;
+      font-family: var(--font-base); font-size: 15px; font-weight: 400;
+      color: var(--neutral-10); background: var(--neutral-99);
+      outline: none;
+      transition: border-color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+    }
+    .input::placeholder { color: var(--neutral-50); }
+    .input:focus {
+      border-color: var(--blue-50);
+      box-shadow: 0 0 0 3px rgba(74,58,255,0.16);
+    }
+
+    textarea.input { height: auto; padding: 12px 14px; resize: vertical; line-height: 1.6; }
+    select.input { cursor: pointer; }
+
+    .input-label {
+      display: block; margin-bottom: 6px;
+      font-size: 14px; font-weight: 600; color: var(--neutral-20);
+    }
+
+    /* ─── Cards ─── */
+    .card {
+      background: var(--neutral-100);
+      border: 1px solid rgba(204,204,204,.5);
+      border-radius: 16px;
+      transition: box-shadow 200ms var(--ease-out);
+    }
+    .card:hover { box-shadow: var(--shadow-md); }
+    .card-p { padding: 24px; }
+
+    /* ─── Badge ─── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+    }
+    .badge-blue   { background: var(--blue-10); color: var(--blue-50); }
+    .badge-green  { background: rgba(76,175,80,.12); color: #2E7D32; }
+    .badge-orange { background: rgba(255,152,0,.12); color: #E65100; }
+    .badge-red    { background: rgba(244,67,54,.12); color: var(--red); }
+    .badge-gray   { background: var(--neutral-95); color: var(--neutral-40); }
+
+    /* ─── Progress bar ─── */
+    .progress-track {
+      width: 100%; height: 6px; border-radius: 3px;
+      background: var(--neutral-90); overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 3px;
+      background: var(--blue-50);
+      transition: width 0.6s var(--ease-out);
+    }
+
+    /* ─── Table ─── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 1px solid rgba(204,204,204,.5); }
+    th {
+      padding: 10px 16px; text-align: left;
+      font-size: 13px; font-weight: 600; color: var(--neutral-40);
+      letter-spacing: 0.02em; white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px; font-size: 14px; color: var(--neutral-20);
+      border-bottom: 1px solid rgba(204,204,204,.4);
+    }
+    tbody tr:hover { background: var(--neutral-99); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* ─── Form group ─── */
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ─── Stat card ─── */
+    .stat-value {
+      font-size: 32px; font-weight: 700; color: var(--neutral-10);
+      line-height: 1.2; letter-spacing: -0.02em;
+    }
+    .stat-label { font-size: 13px; font-weight: 600; color: var(--neutral-40); margin-bottom: 8px; }
+    .stat-delta { font-size: 13px; font-weight: 600; margin-top: 6px; }
+    .stat-delta.up   { color: var(--green); }
+    .stat-delta.down { color: var(--red); }
+
+    /* ─── Chart placeholder ─── */
+    .chart-placeholder {
+      width: 100%; height: 220px; border-radius: 12px;
+      background: var(--neutral-99); display: flex;
+      align-items: center; justify-content: center;
+      color: var(--neutral-50); font-size: 13px; border: 1px dashed var(--neutral-90);
+    }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(12px);
+      background: rgba(26,26,26,.88); backdrop-filter: blur(64px);
+      color: rgba(255,255,255,.88); padding: 14px 20px; border-radius: 12px;
+      font-size: 14px; font-weight: 500; box-shadow: var(--shadow-lg);
+      opacity: 0; pointer-events: none;
+      transition: opacity 200ms var(--ease-out), transform 280ms var(--ease-spring);
+      z-index: 9999; white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── Page shell ─── */
+    #login-shell {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; background: var(--neutral-99);
+    }
+
+    #app-shell { display: flex; flex-direction: row; min-height: 100vh; }
+
+    /* ─── Sidebar (dark) ─── */
+    .app-body { display: flex; flex: 1; }
+
+    .sidebar {
+      width: 240px;
+      background: var(--neutral-100);
+      border-right: 1px solid rgba(204,204,204,.5);
+      display: flex; flex-direction: column;
+      flex-shrink: 0;
+      position: sticky; top: 0;
+      height: 100vh; overflow-y: auto;
+    }
+
+    /* 로고 영역 */
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(204,204,204,.5);
+    }
+    .sidebar-logo-text {
+      font-family: var(--font-logo);
+      font-size: 26px; color: var(--blue-50);
+      letter-spacing: -0.5px; display: block; margin-bottom: 2px;
+    }
+    .sidebar-logo-sub {
+      font-size: 11px; color: var(--neutral-40);
+      letter-spacing: 0.04em;
+    }
+
+    /* 행사 선택기 */
+    .sidebar-event-wrap {
+      padding: 16px 12px 12px;
+      border-bottom: 1px solid rgba(204,204,204,.5);
+    }
+    .sidebar-event-label {
+      font-size: 10px; font-weight: 700; color: var(--neutral-50);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0 8px; margin-bottom: 6px; display: block;
+    }
+    .sidebar-event-btn {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      gap: 6px; background: var(--neutral-99);
+      border: 1px solid rgba(204,204,204,.5); border-radius: 8px;
+      padding: 9px 12px; cursor: pointer;
+      transition: background 150ms var(--ease-out), border-color 150ms var(--ease-out);
+    }
+    .sidebar-event-btn:hover { background: var(--neutral-95); border-color: var(--neutral-90); }
+    .sidebar-event-name {
+      font-size: 13px; font-weight: 600; color: var(--neutral-10);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;
+    }
+
+    /* 사이드바 드롭다운 */
+    #sidebar-event-dropdown {
+      display: none; position: absolute; left: 12px; right: 12px;
+      top: calc(100% + 6px);
+      background: var(--neutral-100); border: 1px solid rgba(204,204,204,.5);
+      border-radius: 10px; box-shadow: var(--shadow-md); z-index: 300;
+      overflow: hidden;
+    }
+    .sidebar-event-wrap { position: relative; }
+
+    /* 내비게이션 */
+    .sidebar-nav { flex: 1; padding: 12px; }
+
+    .sidebar-section { margin-bottom: 20px; }
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 700; color: var(--neutral-50);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0 12px; margin-bottom: 4px; display: block;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; color: var(--neutral-30);
+      cursor: pointer;
+      transition: background 140ms var(--ease-out), color 140ms var(--ease-out);
+    }
+    .sidebar-item:hover { background: var(--neutral-99); color: var(--neutral-10); }
+    .sidebar-item.active {
+      background: var(--blue-10); color: var(--blue-50); font-weight: 600;
+    }
+    .sidebar-item .icon { opacity: 0.6; flex-shrink: 0; }
+    .sidebar-item.active .icon { opacity: 1; }
+
+    /* 하단 사용자 정보 */
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(204,204,204,.5);
+    }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .sidebar-user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue-10); display: flex; align-items: center;
+      justify-content: center; font-size: 13px; font-weight: 700;
+      color: var(--blue-50); flex-shrink: 0;
+    }
+    .sidebar-user-info { flex: 1; min-width: 0; }
+    .sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--neutral-10); }
+    .sidebar-user-role { font-size: 11px; color: var(--neutral-40); margin-top: 1px; }
+    .sidebar-logout {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px; border-radius: 8px; border: 1px solid rgba(204,204,204,.5); cursor: pointer;
+      background: transparent; color: var(--neutral-40);
+      font-family: var(--font-base); font-size: 13px; font-weight: 500;
+      transition: background 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+    }
+    .sidebar-logout:hover { background: rgba(244,67,54,.06); color: var(--red); border-color: var(--red); }
+
+    /* ─── Main content ─── */
+    .main { flex: 1; padding: 32px 40px; overflow-y: auto; height: 100vh; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-title {
+      font-size: 22px; font-weight: 700; color: var(--neutral-10);
+      letter-spacing: -0.01em; margin-bottom: 4px;
+    }
+    .page-desc { font-size: 14px; color: var(--neutral-40); }
+
+    /* ─── Pages ─── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── Checkbox ─── */
+    .check-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; border-radius: 10px;
+      border: 1px solid var(--neutral-90); background: var(--neutral-100);
+      cursor: pointer; transition: border-color 140ms var(--ease-out);
+    }
+    .check-row:hover { border-color: var(--blue-50); }
+    .check-row input[type="checkbox"] { accent-color: var(--blue-50); width: 16px; height: 16px; }
+    .check-row-label { font-size: 14px; font-weight: 500; color: var(--neutral-20); }
+    .check-row-sub { font-size: 12px; color: var(--neutral-40); margin-left: auto; }
+
+    /* ─── Section divider ─── */
+    .section-title {
+      font-size: 16px; font-weight: 700; color: var(--neutral-10);
+      margin-bottom: 16px; letter-spacing: -0.01em;
+    }
+
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .survey-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* QR mock */
+    .qr-mock {
+      width: 64px; height: 64px; border-radius: 6px;
+      background: repeating-conic-gradient(#1A1A1A 0% 25%, #fff 25% 50%) 0 0 / 8px 8px;
+      flex-shrink: 0;
+    }
+
+    /* Survey bar chart */
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; }
+    .bar-label { font-size: 13px; color: var(--neutral-30); width: 80px; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 8px; border-radius: 4px; background: var(--neutral-90); overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; background: var(--blue-50); transition: width .6s var(--ease-out); }
+    .bar-pct { font-size: 13px; font-weight: 600; color: var(--neutral-20); width: 36px; text-align: right; }
+
+    /* Donut chart mock */
+    .donut-wrap { display: flex; align-items: center; gap: 20px; }
+    .donut {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: conic-gradient(var(--blue-50) 0% 55%, var(--violet) 55% 100%);
+      flex-shrink: 0; position: relative;
+    }
+    .donut::after {
+      content: ''; position: absolute; inset: 18px;
+      border-radius: 50%; background: var(--neutral-100);
+    }
+    .donut-legend { display: flex; flex-direction: column; gap: 6px; }
+    .legend-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--neutral-30); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Satisfaction stars */
+    .star-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .stars { color: var(--orange); font-size: 13px; letter-spacing: -1px; }
+    .star-bar-track { flex: 1; height: 6px; border-radius: 3px; background: var(--neutral-90); overflow: hidden; }
+    .star-bar-fill { height: 100%; border-radius: 3px; background: var(--orange); }
+    .star-count { font-size: 13px; color: var(--neutral-40); width: 36px; text-align: right; }
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- ═══════════════════════════════════════ LOGIN ═══════════════════════════════════════ -->
+<div id="login-shell">
+  <div style="width:400px;">
+    <div class="card card-p" style="border-radius:20px; padding:40px;">
+      <div style="text-align:center; margin-bottom:32px;">
+        <div style="font-family:var(--font-logo); font-size:32px; color:var(--blue-50); margin-bottom:8px;">Stamply</div>
+        <div style="font-size:15px; color:var(--neutral-40);">행사 운영 관리자 로그인</div>
+      </div>
+
+      <form id="login-form">
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+          <div class="form-group">
+            <label class="input-label">이메일</label>
+            <input class="input" type="email" placeholder="admin@stamply.com" />
+          </div>
+          <div class="form-group">
+            <label class="input-label">비밀번호</label>
+            <input class="input" type="password" placeholder="비밀번호를 입력하세요." />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+          로그인
+        </button>
+      </form>
+
+      <div style="text-align:center; margin-top:20px; font-size:13px; color:var(--neutral-40);">
+        비밀번호를 잊으셨나요?
+        <a href="#" style="color:var(--blue-50); font-weight:600; text-decoration:none;">재설정하기</a>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:16px; font-size:12px; color:var(--neutral-50);">
+      테스트: 아무 값이나 입력 후 로그인
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ APP SHELL ═══════════════════════════════════════ -->
+<div id="app-shell" class="hidden">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <!-- 로고 -->
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-text">Stamply</span>
+      <span class="sidebar-logo-sub">행사 운영 관리자</span>
+    </div>
+
+    <!-- 행사 선택기 -->
+    <div class="sidebar-event-wrap">
+      <span class="sidebar-event-label">현재 행사</span>
+      <button class="sidebar-event-btn" id="sidebar-event-switcher-btn" onclick="toggleSidebarEventDropdown()">
+        <span class="sidebar-event-name" id="sidebar-current-event-name">2026 봄 팝업 페스티벌</span>
+        <i data-lucide="chevron-down" style="width:14px;height:14px;color:rgba(255,255,255,.4);flex-shrink:0;"></i>
+      </button>
+      <div id="sidebar-event-dropdown">
+        <div style="padding:6px 0;">
+          <div onclick="selectSidebarEvent('2026 봄 팝업 페스티벌')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--neutral-99)'" onmouseout="this.style.background=''">
+            <span style="font-size:13px;font-weight:600;color:var(--neutral-10);">2026 봄 팝업 페스티벌</span>
+            <span class="badge badge-green" style="font-size:11px;">진행중</span>
+          </div>
+          <div onclick="selectSidebarEvent('강남역 브랜드 전시회')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--neutral-99)'" onmouseout="this.style.background=''">
+            <span style="font-size:13px;color:var(--neutral-20);">강남역 브랜드 전시회</span>
+            <span class="badge badge-gray" style="font-size:11px;">예정</span>
+          </div>
+          <div onclick="selectSidebarEvent('홍대 문화 행사')" style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--neutral-99)'" onmouseout="this.style.background=''">
+            <span style="font-size:13px;color:var(--neutral-20);">홍대 문화 행사</span>
+            <span class="badge badge-gray" style="font-size:11px;">종료</span>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(204,204,204,.5);padding:6px;">
+          <div onclick="toggleSidebarEventDropdown();showModal('event-modal')" style="display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:7px;cursor:pointer;color:var(--blue-50);font-size:13px;font-weight:600;transition:background .15s;" onmouseover="this.style.background='var(--blue-10)'" onmouseout="this.style.background=''">
+            <i data-lucide="plus" style="width:14px;height:14px;"></i> 새 행사 등록
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 내비게이션 -->
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <span class="sidebar-section-label">메인</span>
+        <div class="sidebar-item active" onclick="showPage('dashboard', this)">
+          <i data-lucide="layout-dashboard" class="icon" style="width:16px;height:16px;"></i> 대시보드
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <span class="sidebar-section-label">관리</span>
+        <div class="sidebar-item" onclick="showPage('events', this)">
+          <i data-lucide="calendar" class="icon" style="width:16px;height:16px;"></i> 행사 관리
+        </div>
+        <div class="sidebar-item" onclick="showPage('missions', this)">
+          <i data-lucide="target" class="icon" style="width:16px;height:16px;"></i> 미션 관리
+        </div>
+        <div class="sidebar-item" onclick="showPage('surveys', this)">
+          <i data-lucide="clipboard-list" class="icon" style="width:16px;height:16px;"></i> 설문조사 관리
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <span class="sidebar-section-label">분석</span>
+        <div class="sidebar-item" onclick="showPage('analytics', this)">
+          <i data-lucide="bar-chart-2" class="icon" style="width:16px;height:16px;"></i> 통계
+        </div>
+      </div>
+    </nav>
+
+    <!-- 하단 사용자 -->
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">박</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">박도현</div>
+          <div class="sidebar-user-role">이벤트 운영담당</div>
+        </div>
+      </div>
+      <button class="sidebar-logout" onclick="logout()">
+        <i data-lucide="log-out" style="width:14px;height:14px;"></i> 로그아웃
+      </button>
+    </div>
+  </aside>
+
+  <!-- Body -->
+  <div class="app-body">
+
+    <!-- Main -->
+    <main class="main">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div id="dashboard" class="page active">
+        <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+          <div>
+            <h1 class="page-title">대시보드</h1>
+            <p class="page-desc">2026 봄 팝업 페스티벌 실시간 현황</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="gap:6px;">
+            <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> 새로고침
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="card card-p">
+            <div class="stat-label">전체 참여자</div>
+            <div class="stat-value">1,234</div>
+            <div class="stat-delta up">↑ 12% 어제 대비</div>
+          </div>
+          <div class="card card-p">
+            <div class="stat-label">미션 진행</div>
+            <div class="stat-value">850</div>
+            <div class="stat-delta up">↑ 8% 어제 대비</div>
+          </div>
+          <div class="card card-p">
+            <div class="stat-label">미션 완료</div>
+            <div class="stat-value">650</div>
+            <div class="stat-delta up">↑ 5% 어제 대비</div>
+          </div>
+          <div class="card card-p">
+            <div class="stat-label">상품 수령</div>
+            <div class="stat-value">520</div>
+            <div class="stat-delta up">↑ 3% 어제 대비</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+          <div class="card card-p">
+            <div class="section-title">미션별 완료율</div>
+            <div class="bar-chart">
+              <div class="bar-row">
+                <div class="bar-label">포토존</div>
+                <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
+                <div class="bar-pct">85%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">댓글이벤트</div>
+                <div class="bar-track"><div class="bar-fill" style="width:72%"></div></div>
+                <div class="bar-pct">72%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">상품 구매</div>
+                <div class="bar-track"><div class="bar-fill" style="width:54%"></div></div>
+                <div class="bar-pct">54%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">SNS 공유</div>
+                <div class="bar-track"><div class="bar-fill" style="width:41%"></div></div>
+                <div class="bar-pct">41%</div>
+              </div>
+            </div>
+          </div>
+          <div class="card card-p">
+            <div class="section-title">시간대별 참여자</div>
+            <div class="chart-placeholder">Recharts 라인 차트 (개발 시 연동)</div>
+          </div>
+        </div>
+
+        <!-- Mission table -->
+        <div class="card" style="margin-bottom:24px;">
+          <div style="padding:20px 24px 16px; border-bottom:1px solid rgba(204,204,204,.4);">
+            <div class="section-title" style="margin-bottom:0;">미션 현황</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>미션명</th>
+                  <th>완료자</th>
+                  <th>완료율</th>
+                  <th>상태</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-weight:600;">포토존</span></td>
+                  <td>1,050명</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="progress-track" style="width:120px;"><div class="progress-fill" style="width:85%"></div></div>
+                      <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">85.2%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-green">진행중</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight:600;">댓글이벤트</span></td>
+                  <td>890명</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="progress-track" style="width:120px;"><div class="progress-fill" style="width:72%"></div></div>
+                      <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">72.2%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-green">진행중</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight:600;">상품 구매</span></td>
+                  <td>670명</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="progress-track" style="width:120px;"><div class="progress-fill" style="width:54%"></div></div>
+                      <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">54.3%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-blue">진행중</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-weight:600;">SNS 공유</span></td>
+                  <td>510명</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="progress-track" style="width:120px;"><div class="progress-fill" style="width:41%"></div></div>
+                      <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">41.3%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-orange">저조</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── EVENTS ─── -->
+      <div id="events" class="page">
+
+        <!-- 행사 선택 바 -->
+        <div class="card" style="margin-bottom:24px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">
+            <i data-lucide="layers" style="width:18px;height:18px;color:var(--neutral-40);flex-shrink:0;"></i>
+            <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+              <div style="font-size:13px;color:var(--neutral-40);white-space:nowrap;">현재 행사</div>
+              <div style="position:relative;">
+                <button id="event-switcher-btn" onclick="toggleEventDropdown()" style="display:flex;align-items:center;gap:6px;background:var(--neutral-99);border:1px solid rgba(204,204,204,.5);border-radius:8px;padding:7px 12px;font:600 14px/1 var(--font-base);color:var(--neutral-10);cursor:pointer;transition:background .2s var(--ease-out);">
+                  <span id="current-event-name">2026 봄 팝업 페스티벌</span>
+                  <span class="badge badge-green" style="font-size:11px;">진행중</span>
+                  <i data-lucide="chevron-down" style="width:14px;height:14px;color:var(--neutral-40);"></i>
+                </button>
+                <!-- 드롭다운 -->
+                <div id="event-dropdown" style="display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:280px;background:var(--neutral-100);border:1px solid rgba(204,204,204,.5);border-radius:12px;box-shadow:var(--shadow-md);z-index:100;overflow:hidden;">
+                  <div style="padding:8px 0;">
+                    <div onclick="selectEvent('2026 봄 팝업 페스티벌','badge-green','진행중')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--neutral-99)'" onmouseout="this.style.background=''">
+                      <span style="font-weight:600;font-size:14px;">2026 봄 팝업 페스티벌</span>
+                      <span class="badge badge-green" style="font-size:11px;">진행중</span>
+                    </div>
+                    <div onclick="selectEvent('강남역 브랜드 전시회','badge-gray','예정')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--neutral-99)'" onmouseout="this.style.background=''">
+                      <span style="font-size:14px;">강남역 브랜드 전시회</span>
+                      <span class="badge badge-gray" style="font-size:11px;">예정</span>
+                    </div>
+                    <div onclick="selectEvent('홍대 문화 행사','badge-gray','종료')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--neutral-99)'" onmouseout="this.style.background=''">
+                      <span style="font-size:14px;">홍대 문화 행사</span>
+                      <span class="badge badge-gray" style="font-size:11px;">종료</span>
+                    </div>
+                  </div>
+                  <div style="border-top:1px solid rgba(204,204,204,.4);padding:8px;">
+                    <div onclick="toggleEventDropdown();showModal('event-modal')" style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--blue-50);font:600 13px/1 var(--font-base);transition:background .15s;" onmouseover="this.style.background='var(--blue-10)'" onmouseout="this.style.background=''">
+                      <i data-lucide="plus" style="width:14px;height:14px;"></i> 새 행사 등록
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showModal('event-modal')" style="gap:6px;white-space:nowrap;">
+            <i data-lucide="plus" style="width:14px;height:14px;"></i> 새 행사 등록
+          </button>
+        </div>
+
+        <!-- 행사 기본 정보 카드 -->
+        <div class="card card-p" style="margin-bottom:20px;" id="event-detail-card">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <div class="section-title" style="margin-bottom:4px;">기본 정보</div>
+              <p style="font-size:13px;color:var(--neutral-40);">행사의 이름, 기간, 장소 등 기본 정보를 확인하세요.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="toggleEditForm()" id="edit-toggle-btn" style="gap:6px;">
+              <i data-lucide="pencil" style="width:13px;height:13px;"></i> 수정
+            </button>
+          </div>
+
+          <!-- 정보 보기 (기본) -->
+          <div id="event-view" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font-size:12px;color:var(--neutral-40);font-weight:500;letter-spacing:.04em;text-transform:uppercase;">행사명</span>
+              <span style="font-size:15px;font-weight:600;">2026 봄 팝업 페스티벌</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font-size:12px;color:var(--neutral-40);font-weight:500;letter-spacing:.04em;text-transform:uppercase;">상태</span>
+              <span><span class="badge badge-green">진행중</span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font-size:12px;color:var(--neutral-40);font-weight:500;letter-spacing:.04em;text-transform:uppercase;">기간</span>
+              <span style="font-size:15px;">2026.03.01 – 2026.03.31</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font-size:12px;color:var(--neutral-40);font-weight:500;letter-spacing:.04em;text-transform:uppercase;">장소</span>
+              <span style="font-size:15px;">서울 강남구 코엑스</span>
+            </div>
+            <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:4px;">
+              <span style="font-size:12px;color:var(--neutral-40);font-weight:500;letter-spacing:.04em;text-transform:uppercase;">행사 설명</span>
+              <span style="font-size:15px;line-height:1.6;color:var(--neutral-20);">2026 봄을 맞아 개최되는 브랜드 팝업 페스티벌입니다. 총 10개 부스가 참여하며 방문객은 미션 완료 후 한정판 굿즈를 수령할 수 있습니다.</span>
+            </div>
+          </div>
+
+          <!-- 수정 폼 (숨김) -->
+          <div id="event-edit-form" style="display:none;">
+            <div class="form-grid" style="margin-bottom:16px;">
+              <div class="form-group">
+                <label class="input-label">행사명 *</label>
+                <input class="input" type="text" value="2026 봄 팝업 페스티벌" />
+              </div>
+              <div class="form-group">
+                <label class="input-label">장소 *</label>
+                <input class="input" type="text" value="서울 강남구 코엑스" />
+              </div>
+              <div class="form-group">
+                <label class="input-label">시작일 *</label>
+                <input class="input" type="date" value="2026-03-01" />
+              </div>
+              <div class="form-group">
+                <label class="input-label">종료일 *</label>
+                <input class="input" type="date" value="2026-03-31" />
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:20px;">
+              <label class="input-label">행사 설명</label>
+              <textarea class="input" rows="3">2026 봄을 맞아 개최되는 브랜드 팝업 페스티벌입니다. 총 10개 부스가 참여하며 방문객은 미션 완료 후 한정판 굿즈를 수령할 수 있습니다.</textarea>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <button class="btn btn-primary" onclick="saveEventEdit()">저장</button>
+              <button class="btn btn-secondary" onclick="toggleEditForm()">취소</button>
+              <div style="flex:1;"></div>
+              <button class="btn btn-ghost btn-sm" style="color:var(--red);" onclick="showToast('행사를 삭제하려면 확인이 필요합니다.')">
+                <i data-lucide="trash-2" style="width:14px;height:14px;"></i> 행사 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 브로슈어 관리 카드 -->
+        <div class="card card-p">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <div class="section-title" style="margin-bottom:4px;">브로슈어</div>
+              <p style="font-size:13px;color:var(--neutral-40);">방문객에게 보여질 행사 이미지를 슬라이드 순서로 업로드하세요. (최대 10장)</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="gap:6px;">
+              <i data-lucide="upload" style="width:13px;height:13px;"></i> 이미지 추가
+            </button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">
+            <!-- 등록된 이미지 슬롯 -->
+            <div style="aspect-ratio:3/4;background:var(--neutral-95);border-radius:10px;border:1px solid rgba(204,204,204,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#e8f0ff 0%,#c5d8ff 100%);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="image" style="width:28px;height:28px;color:var(--blue-50);opacity:.5;"></i>
+              </div>
+              <div style="position:absolute;top:6px;right:6px;background:rgba(23,23,25,.7);border-radius:6px;padding:3px 7px;font-size:11px;color:#fff;font-weight:600;">1</div>
+              <button onclick="showToast('이미지가 삭제되었습니다.')" style="position:absolute;top:6px;left:6px;background:rgba(255,66,66,.85);border:none;border-radius:6px;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" style="width:11px;height:11px;color:#fff;"></i>
+              </button>
+            </div>
+            <div style="aspect-ratio:3/4;background:var(--neutral-95);border-radius:10px;border:1px solid rgba(204,204,204,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#fff3e8 0%,#ffd8aa 100%);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="image" style="width:28px;height:28px;color:var(--orange);opacity:.5;"></i>
+              </div>
+              <div style="position:absolute;top:6px;right:6px;background:rgba(23,23,25,.7);border-radius:6px;padding:3px 7px;font-size:11px;color:#fff;font-weight:600;">2</div>
+              <button onclick="showToast('이미지가 삭제되었습니다.')" style="position:absolute;top:6px;left:6px;background:rgba(255,66,66,.85);border:none;border-radius:6px;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" style="width:11px;height:11px;color:#fff;"></i>
+              </button>
+            </div>
+            <div style="aspect-ratio:3/4;background:var(--neutral-95);border-radius:10px;border:1px solid rgba(204,204,204,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#e8fff0 0%,#aaffd0 100%);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="image" style="width:28px;height:28px;color:var(--green);opacity:.5;"></i>
+              </div>
+              <div style="position:absolute;top:6px;right:6px;background:rgba(23,23,25,.7);border-radius:6px;padding:3px 7px;font-size:11px;color:#fff;font-weight:600;">3</div>
+              <button onclick="showToast('이미지가 삭제되었습니다.')" style="position:absolute;top:6px;left:6px;background:rgba(255,66,66,.85);border:none;border-radius:6px;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" style="width:11px;height:11px;color:#fff;"></i>
+              </button>
+            </div>
+            <!-- 추가 슬롯 -->
+            <div style="aspect-ratio:3/4;background:transparent;border-radius:10px;border:1.5px dashed rgba(204,204,204,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:border-color .2s,background .2s;" onmouseover="this.style.borderColor='var(--blue-50)';this.style.background='var(--blue-10)'" onmouseout="this.style.borderColor='rgba(204,204,204,.6)';this.style.background='transparent'" onclick="showToast('이미지 업로드 기능은 실제 서비스에서 연결됩니다.')">
+              <i data-lucide="plus" style="width:24px;height:24px;color:var(--neutral-50);"></i>
+              <span style="font-size:12px;color:var(--neutral-50);">이미지 추가</span>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:12px;color:var(--neutral-50);">드래그하여 순서를 변경할 수 있습니다. JPG, PNG, WebP 지원 ∙ 최대 5MB</p>
+        </div>
+
+        <!-- 행사 등록 폼 모달 -->
+        <div class="card card-p" id="event-modal" style="display:none; margin-top:20px; border:1.5px solid var(--blue-50);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div class="section-title" style="margin-bottom:0;">새 행사 등록</div>
+            <button class="btn btn-ghost btn-sm" onclick="hideModal('event-modal')">
+              <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+          <div class="form-grid" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label class="input-label">행사명 *</label>
+              <input class="input" type="text" placeholder="행사명을 입력하세요." />
+            </div>
+            <div class="form-group">
+              <label class="input-label">장소 *</label>
+              <input class="input" type="text" placeholder="행사 장소를 입력하세요." />
+            </div>
+            <div class="form-group">
+              <label class="input-label">시작일 *</label>
+              <input class="input" type="date" />
+            </div>
+            <div class="form-group">
+              <label class="input-label">종료일 *</label>
+              <input class="input" type="date" />
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="input-label">행사 설명</label>
+            <textarea class="input" rows="3" placeholder="행사에 대한 설명을 입력하세요."></textarea>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="showToast('행사가 등록되었습니다.'); hideModal('event-modal')">등록 완료</button>
+            <button class="btn btn-secondary" onclick="hideModal('event-modal')">취소</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── MISSIONS ─── -->
+      <div id="missions" class="page">
+        <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+          <div>
+            <h1 class="page-title">미션 관리</h1>
+            <p class="page-desc">최대 10개의 미션을 생성할 수 있습니다.</p>
+          </div>
+          <button class="btn btn-primary" onclick="showModal('mission-modal')" style="gap:8px;">
+            <i data-lucide="plus" style="width:16px;height:16px;"></i> 미션 추가
+          </button>
+        </div>
+
+        <!-- 미션 추가 폼 -->
+        <div class="card card-p" id="mission-modal" style="display:none; margin-bottom:24px; border:1.5px solid var(--blue-50);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div class="section-title" style="margin-bottom:0;">새 미션 추가</div>
+            <button class="btn btn-ghost btn-sm" onclick="hideModal('mission-modal')">
+              <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+          <div class="form-grid" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label class="input-label">미션명 *</label>
+              <input class="input" type="text" placeholder="미션명을 입력하세요." />
+            </div>
+            <div class="form-group">
+              <label class="input-label">순서</label>
+              <select class="input">
+                <option>1번째</option>
+                <option>2번째</option>
+                <option>3번째</option>
+                <option>순서 없음</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="input-label">미션 설명</label>
+            <textarea class="input" rows="3" placeholder="방문객이 수행할 미션 내용을 입력하세요."></textarea>
+          </div>
+          <p style="font-size:13px;color:var(--neutral-40);margin-bottom:16px;">
+            저장 시 고유 QR 코드가 자동으로 생성됩니다.
+          </p>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="showToast('미션이 추가되었습니다.'); hideModal('mission-modal')">추가 완료</button>
+            <button class="btn btn-secondary" onclick="hideModal('mission-modal')">취소</button>
+          </div>
+        </div>
+
+        <!-- 미션 카드 목록 -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <!-- 미션 카드 1 -->
+          <div class="card card-p" style="display:flex;align-items:center;gap:20px;">
+            <div style="width:28px;height:28px;background:var(--blue-10);color:var(--blue-50);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">1</div>
+            <div class="qr-mock"></div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:var(--neutral-10);margin-bottom:4px;">포토존</div>
+              <div style="font-size:13px;color:var(--neutral-40);">행사장 내 포토존에서 인증샷을 찍고 SNS에 공유하세요.</div>
+              <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+                <div class="progress-track" style="width:160px;"><div class="progress-fill" style="width:85%"></div></div>
+                <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">85.2% 완료</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-shrink:0;">
+              <button class="btn btn-secondary btn-sm" onclick="showToast('QR 코드가 다운로드되었습니다.')">QR 다운로드</button>
+              <button class="btn btn-secondary btn-sm">수정</button>
+              <button class="btn btn-secondary btn-sm" style="color:var(--red);">삭제</button>
+            </div>
+          </div>
+
+          <!-- 미션 카드 2 -->
+          <div class="card card-p" style="display:flex;align-items:center;gap:20px;">
+            <div style="width:28px;height:28px;background:var(--blue-10);color:var(--blue-50);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">2</div>
+            <div class="qr-mock"></div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:var(--neutral-10);margin-bottom:4px;">댓글이벤트</div>
+              <div style="font-size:13px;color:var(--neutral-40);">공식 SNS 게시물에 행사 후기 댓글을 남겨주세요.</div>
+              <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+                <div class="progress-track" style="width:160px;"><div class="progress-fill" style="width:72%"></div></div>
+                <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">72.2% 완료</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-shrink:0;">
+              <button class="btn btn-secondary btn-sm" onclick="showToast('QR 코드가 다운로드되었습니다.')">QR 다운로드</button>
+              <button class="btn btn-secondary btn-sm">수정</button>
+              <button class="btn btn-secondary btn-sm" style="color:var(--red);">삭제</button>
+            </div>
+          </div>
+
+          <!-- 미션 카드 3 -->
+          <div class="card card-p" style="display:flex;align-items:center;gap:20px;">
+            <div style="width:28px;height:28px;background:var(--blue-10);color:var(--blue-50);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">3</div>
+            <div class="qr-mock"></div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:var(--neutral-10);margin-bottom:4px;">상품 구매</div>
+              <div style="font-size:13px;color:var(--neutral-40);">행사 부스에서 상품을 구매하면 미션이 완료됩니다.</div>
+              <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+                <div class="progress-track" style="width:160px;"><div class="progress-fill" style="width:54%"></div></div>
+                <span style="font-size:13px;font-weight:600;color:var(--neutral-20);">54.3% 완료</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-shrink:0;">
+              <button class="btn btn-secondary btn-sm" onclick="showToast('QR 코드가 다운로드되었습니다.')">QR 다운로드</button>
+              <button class="btn btn-secondary btn-sm">수정</button>
+              <button class="btn btn-secondary btn-sm" style="color:var(--red);">삭제</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SURVEYS ─── -->
+      <div id="surveys" class="page">
+        <div class="page-header">
+          <h1 class="page-title">설문조사 관리</h1>
+          <p class="page-desc">설문 항목을 설정하고 응답 현황을 확인하세요.</p>
+        </div>
+
+        <div class="two-col" style="margin-bottom:24px;">
+          <!-- 설문 설정 -->
+          <div class="card card-p">
+            <div class="section-title">설문 항목 설정</div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+              <label class="check-row">
+                <input type="checkbox" checked disabled />
+                <span class="check-row-label">성별</span>
+                <span class="check-row-sub" style="font-size:12px;color:var(--blue-50);font-weight:600;">필수</span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" checked disabled />
+                <span class="check-row-label">연령대</span>
+                <span class="check-row-sub" style="font-size:12px;color:var(--blue-50);font-weight:600;">필수</span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" id="awareness-check" />
+                <span class="check-row-label">인지 경로 (어떻게 알게 됐나요?)</span>
+                <span class="check-row-sub">선택</span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" id="satisfaction-check" />
+                <span class="check-row-label">만족도 (별점 1–5)</span>
+                <span class="check-row-sub">선택</span>
+              </label>
+            </div>
+
+            <div class="form-group" style="margin-bottom:20px;">
+              <label class="input-label">커스텀 질문 (최대 1개)</label>
+              <input class="input" type="text" placeholder="예) 다음에 또 방문하실 의향이 있나요?" />
+            </div>
+
+            <button class="btn btn-primary" onclick="showToast('설문 설정이 저장되었습니다.')">설정 저장</button>
+          </div>
+
+          <!-- 응답 현황 -->
+          <div class="card card-p">
+            <div class="section-title">응답 현황</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+              <div style="background:var(--neutral-99);border-radius:12px;padding:16px;">
+                <div style="font-size:12px;font-weight:600;color:var(--neutral-40);margin-bottom:6px;">총 응답</div>
+                <div style="font-size:24px;font-weight:700;color:var(--neutral-10);">500명</div>
+              </div>
+              <div style="background:var(--neutral-99);border-radius:12px;padding:16px;">
+                <div style="font-size:12px;font-weight:600;color:var(--neutral-40);margin-bottom:6px;">응답률</div>
+                <div style="font-size:24px;font-weight:700;color:var(--blue-50);">76.9%</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <div style="font-size:13px;font-weight:600;color:var(--neutral-30);margin-bottom:10px;">성별 분포</div>
+              <div class="donut-wrap">
+                <div class="donut"></div>
+                <div class="donut-legend">
+                  <div class="legend-row">
+                    <div class="legend-dot" style="background:var(--blue-50);"></div>
+                    남성 55% (275명)
+                  </div>
+                  <div class="legend-row">
+                    <div class="legend-dot" style="background:var(--violet);"></div>
+                    여성 45% (225명)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--neutral-30);margin-bottom:10px;">연령대 분포</div>
+              <div class="bar-chart">
+                <div class="bar-row">
+                  <div class="bar-label" style="width:70px;">10–20대</div>
+                  <div class="bar-track"><div class="bar-fill" style="width:25%"></div></div>
+                  <div class="bar-pct">25%</div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label" style="width:70px;">20–30대</div>
+                  <div class="bar-track"><div class="bar-fill" style="width:40%"></div></div>
+                  <div class="bar-pct">40%</div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label" style="width:70px;">30–40대</div>
+                  <div class="bar-track"><div class="bar-fill" style="width:22%"></div></div>
+                  <div class="bar-pct">22%</div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label" style="width:70px;">40–50대</div>
+                  <div class="bar-track"><div class="bar-fill" style="width:10%"></div></div>
+                  <div class="bar-pct">10%</div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label" style="width:70px;">50대+</div>
+                  <div class="bar-track"><div class="bar-fill" style="width:3%"></div></div>
+                  <div class="bar-pct">3%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ANALYTICS ─── -->
+      <div id="analytics" class="page">
+        <div class="page-header">
+          <h1 class="page-title">통계</h1>
+          <p class="page-desc">행사 전체 데이터를 분석하세요.</p>
+        </div>
+
+        <!-- Top KPIs -->
+        <div class="stats-grid" style="margin-bottom:24px;">
+          <div class="card card-p">
+            <div class="stat-label">미션 완료율</div>
+            <div class="stat-value">68.5%</div>
+            <div class="stat-delta up">↑ 3.2%p 목표 대비</div>
+          </div>
+          <div class="card card-p">
+            <div class="stat-label">설문 응답률</div>
+            <div class="stat-value">76.9%</div>
+            <div class="stat-delta up">↑ 목표 60% 달성</div>
+          </div>
+          <div class="card card-p">
+            <div class="stat-label">상품 수령률</div>
+            <div class="stat-value">80.0%</div>
+            <div class="stat-delta down">↓ 5%p 목표 대비</div>
+          </div>
+          <div class="card card-p">
+            <div class="stat-label">평균 체류 시간</div>
+            <div class="stat-value">24분</div>
+            <div class="stat-delta up">↑ 4분 증가</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid" style="margin-bottom:24px;">
+          <div class="card card-p">
+            <div class="section-title">시간대별 참여자 추이</div>
+            <div class="chart-placeholder">Recharts 라인 차트</div>
+          </div>
+          <div class="card card-p">
+            <div class="section-title">유입 경로 분포</div>
+            <div style="margin-top:8px;" class="bar-chart">
+              <div class="bar-row">
+                <div class="bar-label">SNS</div>
+                <div class="bar-track"><div class="bar-fill" style="width:45%"></div></div>
+                <div class="bar-pct">45%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">친구 추천</div>
+                <div class="bar-track"><div class="bar-fill" style="width:30%"></div></div>
+                <div class="bar-pct">30%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">검색</div>
+                <div class="bar-track"><div class="bar-fill" style="width:15%"></div></div>
+                <div class="bar-pct">15%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">기타</div>
+                <div class="bar-track"><div class="bar-fill" style="width:10%"></div></div>
+                <div class="bar-pct">10%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 만족도 -->
+        <div class="card card-p">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div class="section-title" style="margin-bottom:0;">만족도 분포</div>
+            <div style="font-size:22px;font-weight:700;color:var(--orange);">4.1 <span style="font-size:14px;font-weight:500;color:var(--neutral-40);">/ 5.0</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;max-width:480px;">
+            <div class="star-row">
+              <div class="stars">★★★★★</div>
+              <div class="star-bar-track"><div class="star-bar-fill" style="width:30%;background:var(--orange);"></div></div>
+              <div class="star-count">150명</div>
+            </div>
+            <div class="star-row">
+              <div class="stars">★★★★☆</div>
+              <div class="star-bar-track"><div class="star-bar-fill" style="width:36%;background:var(--orange);"></div></div>
+              <div class="star-count">180명</div>
+            </div>
+            <div class="star-row">
+              <div class="stars">★★★☆☆</div>
+              <div class="star-bar-track"><div class="star-bar-fill" style="width:24%;background:var(--orange);"></div></div>
+              <div class="star-count">120명</div>
+            </div>
+            <div class="star-row">
+              <div class="stars">★★☆☆☆</div>
+              <div class="star-bar-track"><div class="star-bar-fill" style="width:8%;background:var(--orange);"></div></div>
+              <div class="star-count">40명</div>
+            </div>
+            <div class="star-row">
+              <div class="stars">★☆☆☆☆</div>
+              <div class="star-bar-track"><div class="star-bar-fill" style="width:2%;background:var(--orange);"></div></div>
+              <div class="star-count">10명</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  /* ── Init Lucide icons ── */
+  lucide.createIcons();
+
+  /* ── Login ── */
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('login-shell').classList.add('hidden');
+    document.getElementById('app-shell').classList.remove('hidden');
+    lucide.createIcons();
+  });
+
+  function logout() {
+    document.getElementById('app-shell').classList.add('hidden');
+    document.getElementById('login-shell').classList.remove('hidden');
+    document.getElementById('login-form').reset();
+  }
+
+  /* ── Page navigation ── */
+  function showPage(pageId, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
+
+  /* ── Modal ── */
+  function showModal(id) {
+    document.getElementById(id).style.display = 'block';
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function hideModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  /* ── Sidebar Event Switcher ── */
+  function toggleSidebarEventDropdown() {
+    const dd = document.getElementById('sidebar-event-dropdown');
+    dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  }
+  function selectSidebarEvent(name) {
+    document.getElementById('sidebar-current-event-name').textContent = name;
+    /* 행사 관리 페이지의 선택기도 동기화 */
+    const mainName = document.getElementById('current-event-name');
+    if (mainName) mainName.textContent = name;
+    toggleSidebarEventDropdown();
+    showToast('행사를 변경했습니다: ' + name);
+  }
+  /* 사이드바 드롭다운 외부 클릭 닫기 */
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('sidebar-event-dropdown');
+    const btn = document.getElementById('sidebar-event-switcher-btn');
+    if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+      dd.style.display = 'none';
+    }
+    /* 행사 관리 페이지 드롭다운도 닫기 */
+    const dd2 = document.getElementById('event-dropdown');
+    const btn2 = document.getElementById('event-switcher-btn');
+    if (dd2 && btn2 && !btn2.contains(e.target) && !dd2.contains(e.target)) {
+      dd2.style.display = 'none';
+    }
+  });
+
+  /* ── Event Edit Toggle ── */
+  function toggleEditForm() {
+    const view = document.getElementById('event-view');
+    const form = document.getElementById('event-edit-form');
+    const btn  = document.getElementById('edit-toggle-btn');
+    const editing = form.style.display !== 'none';
+    view.style.display = editing ? 'grid' : 'none';
+    form.style.display = editing ? 'none' : 'block';
+    btn.innerHTML = editing
+      ? '<i data-lucide="pencil" style="width:13px;height:13px;"></i> 수정'
+      : '<i data-lucide="x" style="width:13px;height:13px;"></i> 취소';
+    lucide.createIcons();
+  }
+  function saveEventEdit() {
+    toggleEditForm();
+    showToast('행사 정보가 저장되었습니다.');
+  }
+
+  /* ── Toast ── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>
