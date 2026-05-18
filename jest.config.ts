@@ -7,7 +7,7 @@ const config: Config = {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
   },
   moduleNameMapper: {
-    '^@ui/(.*)$': '<rootDir>/ui/$1',
+    '^@components/(.*)$': '<rootDir>/components/$1',
     '^@hooks/(.*)$': '<rootDir>/hooks/$1',
     '^@utils/(.*)$': '<rootDir>/utils/$1',
     '^@constants/(.*)$': '<rootDir>/constants/$1',
