@@ -7,11 +7,7 @@ const config: Config = {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
   },
   moduleNameMapper: {
-    '^@components/(.*)$': '<rootDir>/components/$1',
-    '^@hooks/(.*)$': '<rootDir>/hooks/$1',
-    '^@utils/(.*)$': '<rootDir>/utils/$1',
-    '^@constants/(.*)$': '<rootDir>/constants/$1',
-    '^@types/(.*)$': '<rootDir>/types/$1',
+    '^@/(.*)$': '<rootDir>/$1',
   },
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
 };
