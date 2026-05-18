@@ -30,14 +30,14 @@ app/
 ├── providers.tsx
 └── layout.tsx
 
-ui/              # 공통 컴포넌트
+components/              # 컴포넌트
 hooks/           # 커스텀 훅
 utils/           # 유틸 함수
 constants/       # 상수
 types/
 └── models/      # API 응답 타입
 test/
-└── ui/          # 컴포넌트 테스트
+└── components/          # 컴포넌트 테스트
 ```
 
 ## 시작하기
