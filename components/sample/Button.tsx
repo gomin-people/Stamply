@@ -8,9 +8,9 @@ type ButtonProps = ComponentProps<'button'> & {
 }
 
 const variantStyles = {
-    primary: 'bg-violet-600 text-white',
-    outline: 'border border-violet-600 text-violet-600',
-    ghost: 'text-violet-600',
+    primary: 'bg-gomin-primary-700 text-white',
+    outline: 'border border-gomin-primary-700 text-gomin-primary-700',
+    ghost: 'text-gomin-primary-700',
     kakao: 'bg-yellow-400 text-black',
 }
 const Button = ({ children, variant = 'primary', className, disabled, ...rest }: ButtonProps) => {

@@ -12,7 +12,10 @@ const Modal = ({ enable, onClose, children }: ModalProps) => {
   const [modalOpen, setModalOpen] = useState<boolean>(enable)
 
   useEffect(() => {
-    if (enable) return
+    if (enable) {
+      setModalOpen(true)
+      return
+    }
 
     const timer = setTimeout(() => {
       setModalOpen(false)

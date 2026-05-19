@@ -9,8 +9,8 @@ type StampCardProps = CardProps & {
 const StampCard = ({ isStamped, children, className, ...rest }: StampCardProps) => {
     return (
         <Card className={cn('relative flex items-center justify-center', className)} {...rest}>
-            <div className={cn('transition-all duration-300', isStamped ? 'scale-100 opacity-100' : 'scale-0 opacity-0')}>
-                <Image src="/images/icon_stamply.svg" alt="stamp" width={97} height={97} />
+            <div className={cn('relative w-full h-full transition-all duration-300', isStamped ? 'scale-100 opacity-100' : 'scale-0 opacity-0')}>
+                <Image src="/images/icon_stamply.svg" alt="stamp" fill className="object-contain" />
             </div>
             {children}
         </Card>
