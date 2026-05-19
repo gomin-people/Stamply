@@ -21,4 +21,7 @@ export const adminStore = create(
 );
 
 export const useSelectedEventId = () =>
-  adminStore((state) => state.selectedEventId);
+  adminStore((store) => store.selectedEventId);
+
+export const useSetSelectedEventId = () =>
+  adminStore((store) => store.setSelectedEventId);
