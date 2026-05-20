@@ -5,11 +5,11 @@
 
 ## 플랫폼
 
-| 플랫폼 | 설명 |
-|--------|------|
-| 랜딩페이지 | 서비스 소개 |
+| 플랫폼          | 설명                        |
+| --------------- | --------------------------- |
+| 랜딩페이지      | 서비스 소개                 |
 | 유저 (모바일웹) | 관람객 QR 스캔 및 미션 수행 |
-| 어드민 (PC웹) | 운영자 실시간 현황 관리 |
+| 어드민 (PC웹)   | 운영자 실시간 현황 관리     |
 
 ## 기술 스택
 
@@ -27,17 +27,21 @@ app/
 ├── (landing)/   # 랜딩페이지
 ├── (user)/      # 유저 사이드 (모바일)
 ├── (admin)/     # 어드민 사이드 (PC)
+├── api/         # Next.js Route Handler API
 ├── providers.tsx
 └── layout.tsx
 
-components/              # 컴포넌트
+features/        # API 호출, React Query 훅, 도메인별 프론트 로직
+components/      # 컴포넌트
 hooks/           # 커스텀 훅
 utils/           # 유틸 함수
+├── api.ts       # API 응답, 쿠키, 파싱, 에러 유틸
+└── supabase/    # Supabase 서버 클라이언트
 constants/       # 상수
 types/
 └── models/      # API 응답 타입
 test/
-└── components/          # 컴포넌트 테스트
+└── components/  # 컴포넌트 테스트
 ```
 
 ## 시작하기
