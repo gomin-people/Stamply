@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Nanum_Gothic } from "next/font/google";
+import { Nanum_Gothic, Geist } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const nanumGothic = Nanum_Gothic({
   variable: "--font-nanum-gothic",
@@ -22,7 +25,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${nanumGothic.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", nanumGothic.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
