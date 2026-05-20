@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nanum_Gothic, Geist } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
