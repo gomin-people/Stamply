@@ -61,3 +61,10 @@ pnpm dev
 ```bash
 pnpm test
 ```
+
+## API Reference
+
+API 문서는 Scalar UI에서 확인할 수 있습니다.
+
+- **Scalar API Reference UI** : http://localhost:3000/reference
+- **OpenAPI 3.1 문서 JSON**: http://localhost:3000/openapi.json
