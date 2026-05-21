@@ -22,8 +22,10 @@ const EVENT_INSERT_FIELDS = [
   'end_time',
   'operating_remarks',
   'location',
+  'location_url',
   'notice',
-  'contact',
+  'contact_phone',
+  'contact_email',
   'production',
   'poster_image_url',
   'brochure_image_url',
@@ -41,8 +43,8 @@ const EVENT_REQUIRED_FIELDS = [
   'start_time',
   'end_time',
   'location',
-  'contact',
   'production',
+  'poster_image_url',
 ] as const;
 
 /**
