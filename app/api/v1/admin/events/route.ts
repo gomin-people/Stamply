@@ -103,7 +103,7 @@ export async function POST(request: Request) {
   const userId = toInteger(result.body.user_id);
 
   if (userId === null || userId <= 0) {
-    return badRequest('user_id는 양의 정수여야 합니다.');
+    return badRequest('userId는 양의 정수여야 합니다.');
   }
 
   const rewardStock = toInteger(result.body.reward_stock);
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
     Object.prototype.hasOwnProperty.call(result.body, 'reward_stock') &&
     (rewardStock === null || rewardStock < 0)
   ) {
-    return badRequest('reward_stock은 0 이상의 정수여야 합니다.');
+    return badRequest('rewardStock은 0 이상의 정수여야 합니다.');
   }
 
   const now = new Date().toISOString();

@@ -6,8 +6,8 @@ import {
 
 // 참여자 미션 진행 상태 타입
 export type ParticipantMission = Mission & {
-  is_completed: boolean;
-  completed_at: string | null;
+  isCompleted: boolean;
+  completedAt: string | null;
 };
 
 // 참여자 미션 진행률 응답 타입
@@ -15,8 +15,8 @@ export type ParticipantMissions = {
   participant: Participant;
   missions: ParticipantMission[];
   summary: {
-    total_count: number;
-    completed_count: number;
+    totalCount: number;
+    completedCount: number;
   };
 };
 

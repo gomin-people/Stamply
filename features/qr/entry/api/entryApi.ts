@@ -9,7 +9,7 @@ import {
 export type EntryResult = {
   event: StamplyEvent;
   participant: Participant;
-  qr_code: QrCode;
+  qrCode: QrCode;
 };
 
 /**

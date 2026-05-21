@@ -151,7 +151,7 @@ export async function PATCH(
     const userId = toInteger(payload.user_id);
 
     if (userId === null || userId <= 0) {
-      return badRequest('user_id는 양의 정수여야 합니다.');
+      return badRequest('userId는 양의 정수여야 합니다.');
     }
 
     payload.user_id = userId;
@@ -161,7 +161,7 @@ export async function PATCH(
     const rewardStock = toInteger(payload.reward_stock);
 
     if (rewardStock === null || rewardStock < 0) {
-      return badRequest('reward_stock은 0 이상의 정수여야 합니다.');
+      return badRequest('rewardStock은 0 이상의 정수여야 합니다.');
     }
 
     payload.reward_stock = rewardStock;

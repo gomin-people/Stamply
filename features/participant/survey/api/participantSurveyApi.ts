@@ -7,7 +7,7 @@ import {
 // 참여자 설문 상태 응답 타입
 export type ParticipantSurvey = Pick<
   Participant,
-  'gender' | 'age_range' | 'is_reward_claimed'
+  'gender' | 'ageRange' | 'isRewardClaimed'
 >;
 
 /**

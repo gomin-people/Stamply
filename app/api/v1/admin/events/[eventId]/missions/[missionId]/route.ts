@@ -112,7 +112,7 @@ export async function PATCH(
     const sortOrder = toInteger(payload.sort_order);
 
     if (sortOrder === null) {
-      return badRequest('sort_order는 정수여야 합니다.');
+      return badRequest('sortOrder는 정수여야 합니다.');
     }
 
     payload.sort_order = sortOrder;
@@ -122,7 +122,7 @@ export async function PATCH(
     Object.prototype.hasOwnProperty.call(payload, 'is_active') &&
     typeof payload.is_active !== 'boolean'
   ) {
-    return badRequest('is_active는 boolean이어야 합니다.');
+    return badRequest('isActive는 boolean이어야 합니다.');
   }
 
   // missions 테이블에서 id가 missionId이고 events_id가 eventId인 row 수정 후 조회

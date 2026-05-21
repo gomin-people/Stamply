@@ -10,29 +10,29 @@ import {
 // 어드민 행사 상세 응답 타입
 export type AdminEventDetail = StamplyEvent & {
   missions: Mission[];
-  qr_codes: QrCode[];
-  participant_count: number;
+  qrCodes: QrCode[];
+  participantCount: number;
 };
 
 // 행사 생성 응답 타입
 export type CreatedEvent = StamplyEvent & {
-  qr_codes: QrCode[];
+  qrCodes: QrCode[];
 };
 
 // 행사 대시보드 응답 타입
 export type EventDashboard = {
   event: StamplyEvent;
   summary: {
-    mission_count: number;
-    active_mission_count: number;
-    participant_count: number;
-    completion_count: number;
-    reward_claimed_count: number;
-    completion_rate: number;
+    missionCount: number;
+    activeMissionCount: number;
+    participantCount: number;
+    completionCount: number;
+    rewardClaimedCount: number;
+    completionRate: number;
   };
   missions: Array<
-    Pick<Mission, 'id' | 'title' | 'sort_order' | 'is_active'> & {
-      completed_count: number;
+    Pick<Mission, 'id' | 'title' | 'sortOrder' | 'isActive'> & {
+      completedCount: number;
     }
   >;
 };

@@ -118,14 +118,14 @@ export async function POST(
     Object.prototype.hasOwnProperty.call(payload, 'sort_order') &&
     sortOrder === null
   ) {
-    return badRequest('sort_order는 정수여야 합니다.');
+    return badRequest('sortOrder는 정수여야 합니다.');
   }
 
   if (
     Object.prototype.hasOwnProperty.call(payload, 'is_active') &&
     typeof payload.is_active !== 'boolean'
   ) {
-    return badRequest('is_active는 boolean이어야 합니다.');
+    return badRequest('isActive는 boolean이어야 합니다.');
   }
 
   // missions 테이블에서 events_id가 eventId인 미션 중 가장 큰 sort_order 조회

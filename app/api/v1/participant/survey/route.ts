@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     const ageRange = payload.age_range;
 
     if (ageRange !== null && typeof ageRange !== 'string') {
-      return badRequest('age_range은 문자열이거나 null이어야 합니다.');
+      return badRequest('ageRange는 문자열이거나 null이어야 합니다.');
     }
 
     if (typeof ageRange === 'string' && ageRange.trim() === '') {
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     Object.prototype.hasOwnProperty.call(payload, 'is_reward_claimed') &&
     typeof payload.is_reward_claimed !== 'boolean'
   ) {
-    return badRequest('is_reward_claimed는 boolean이어야 합니다.');
+    return badRequest('isRewardClaimed는 boolean이어야 합니다.');
   }
 
   // participant_users 테이블에서 현재 참여자 id 기준 설문 필드 수정 후 조회

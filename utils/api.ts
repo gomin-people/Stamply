@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { snakeToCamel, toCamelKeys, toSnakeKeys } from '@/utils/case';
 import { supabase } from '@/utils/supabase/server';
 
 // 참여자 식별에 사용하는 HttpOnly 쿠키의 키 이름
@@ -19,14 +20,14 @@ export type ParticipantRow = JsonObject & {
 };
 
 /**
- * API 성공 응답을 `{ data }` 형태로 통일해서 반환합니다.
+ * API 성공 응답을 `{ data }` 형태로 통일하고 data key를 camelCase로 변환해 반환합니다.
  *
  * @param data - 응답 본문에 담을 데이터
  * @param init - 상태 코드, 헤더 등 Response 초기 옵션
  * @returns JSON 성공 응답
  */
 export function ok(data: unknown, init?: ResponseInit) {
-  return NextResponse.json({ data }, init);
+  return NextResponse.json({ data: toCamelKeys(data) }, init);
 }
 
 /**
@@ -48,7 +49,9 @@ export function created(data: unknown) {
  */
 export function badRequest(message: string, details?: unknown) {
   return NextResponse.json(
-    details === undefined ? { message } : { message, details },
+    details === undefined
+      ? { message }
+      : { message, details: toCamelKeys(details) },
     { status: 400 }
   );
 }
@@ -92,7 +95,9 @@ export function notFound(message: string) {
  */
 export function conflict(message: string, details?: unknown) {
   return NextResponse.json(
-    details === undefined ? { message } : { message, details },
+    details === undefined
+      ? { message }
+      : { message, details: toCamelKeys(details) },
     { status: 409 }
   );
 }
@@ -159,7 +164,7 @@ export function parseOptionalPositiveInteger(value: string | null) {
 }
 
 /**
- * 요청 본문을 JSON 객체로 파싱합니다.
+ * 요청 본문을 JSON 객체로 파싱하고 key를 DB 컬럼명에 맞는 snake_case로 변환합니다.
  *
  * @param request - Route Handler로 들어온 Request 객체
  * @returns 파싱에 성공하면 body, 실패하면 즉시 반환 가능한 400 응답
@@ -174,7 +179,7 @@ export async function readJsonObject(
       return { response: badRequest('JSON 객체 본문이 필요합니다.') };
     }
 
-    return { body };
+    return { body: toSnakeKeys(body) as JsonObject };
   } catch {
     return { response: badRequest('올바른 JSON 본문이 필요합니다.') };
   }
@@ -188,14 +193,16 @@ export async function readJsonObject(
  * @returns 누락된 필드 이름 목록
  */
 export function getMissingFields(body: JsonObject, fields: readonly string[]) {
-  return fields.filter((field) => {
-    const value = body[field];
-    return (
-      value === undefined ||
-      value === null ||
-      (typeof value === 'string' && value.trim() === '')
-    );
-  });
+  return fields
+    .filter((field) => {
+      const value = body[field];
+      return (
+        value === undefined ||
+        value === null ||
+        (typeof value === 'string' && value.trim() === '')
+      );
+    })
+    .map(snakeToCamel);
 }
 
 /**

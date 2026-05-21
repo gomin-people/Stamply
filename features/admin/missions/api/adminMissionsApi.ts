@@ -8,12 +8,12 @@ import {
 
 // 미션 생성 응답 타입
 export type CreatedAdminMission = Mission & {
-  qr_code: QrCode;
+  qrCode: QrCode;
 };
 
 // 미션 상세 응답 타입
 export type AdminMissionDetail = Mission & {
-  qr_code: QrCode | null;
+  qrCode: QrCode | null;
 };
 
 /**
