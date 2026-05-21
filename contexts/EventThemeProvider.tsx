@@ -16,3 +16,9 @@ export function EventThemeProvider({ children }: { children: ReactNode}) {
     </EventThemeContext.Provider>
    );
 }
+
+export function useEventTheme() {
+  const context = useContext(EventThemeContext);
+  if (!context) throw new Error('useEventTheme must be used within EventThemeProvider');
+  return context;
+}
