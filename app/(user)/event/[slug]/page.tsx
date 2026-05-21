@@ -1,32 +1,16 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import EventPoster from '@/components/user/common/EventPoster';
 import ThemedButton from '@/components/user/common/ThemedButton';
 import EventThemeInitializer from '@/components/user/EventThemeInitializer';
+import { getEntryEvent } from '@/services/event';
 
 type EventEntryPageProps = {
     params: Promise<{ slug: string }>;
 }
 
-type EntryResponseData = {
-    event: {
-        posterImageUrl: string;
-        primaryColor: string | null;
-    };
-}
-
 const EventEntryPage = async ({ params }: EventEntryPageProps) => {
     const { slug } = await params;
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/qr/entry/${slug}`, {
-        cache: 'no-store',
-    });
-
-    if (res.status === 404) notFound();
-    if (!res.ok) throw new Error('행사 정보를 불러올 수 없습니다.');
-
-    const { data }: { data: EntryResponseData } = await res.json();
-    const { posterImageUrl, primaryColor } = data.event;
+    const { posterImageUrl, primaryColor } = await getEntryEvent(slug);
 
     return (
         <main className="min-h-screen bg-white flex justify-center">
