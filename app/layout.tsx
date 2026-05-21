@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nanum_Gothic, Geist } from "next/font/google";
+import { Nanum_Gothic, Geist, Monomaniac_One } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { cn } from "@/utils";
@@ -10,6 +10,12 @@ const nanumGothic = Nanum_Gothic({
   variable: "--font-nanum-gothic",
   subsets: ["latin"],
   weight: ["400", "700", "800"],
+});
+
+const monomaniacOne = Monomaniac_One({
+  variable: "--font-monomaniac-one",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={cn("h-full", "antialiased", nanumGothic.variable, "font-sans", geist.variable)}
+      className={cn("h-full", "antialiased", nanumGothic.variable, "font-sans", geist.variable, monomaniacOne.variable)}
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
