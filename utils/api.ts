@@ -356,6 +356,20 @@ function getErrorMessage(error: unknown) {
  * @param eventIdParam - 검증할 행사 ID 문자열
  * @returns 유효하고 존재하면 true, 그렇지 않으면 false
  */
+export async function getEventPrimaryColor(eventIdParam: string): Promise<string | null> {
+  const eventId = parsePositiveInteger(eventIdParam);
+  if (eventId === null) return null;
+
+  const { data, error } = await supabase
+    .from('events')
+    .select('primary_color')
+    .eq('id', eventId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data.primary_color;
+}
+
 export async function validateEvent(eventIdParam: string): Promise<boolean> {
   const eventId = parsePositiveInteger(eventIdParam);
   if (eventId === null) {

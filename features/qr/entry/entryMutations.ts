@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { enterEventByToken } from '@/features/qr/entry/api/entryApi';
+import { enterEventByToken } from '@/features/qr/entry/api/entry';
 
 // 행사 입장 mutation 요청 변수 타입
 type EnterEventVariables = {
