@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/utils/supabase/server'
+import { validateEvent } from '@/utils/api'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -8,31 +8,11 @@ interface LayoutProps {
 
 export default async function EventLayout({ children, params }: LayoutProps) {
   const { eventId: eventIdParam } = await params
-  const eventId = Number(eventIdParam)
 
-  // 1. eventId가 올바른 숫자인지 검증합니다.
-  if (isNaN(eventId) || eventId <= 0) {
-    return notFound()
-  }
+  // 공통 API 서비스 모듈(validateEvent)을 통해 행사 ID 및 존재 여부를 단 한 줄로 검증합니다.
+  const isValid = await validateEvent(eventIdParam)
 
-  // 2. Supabase에서 해당 행사 데이터가 실제로 존재하는지 유효성 검증을 합니다.
-  let eventExists = false
-  try {
-    const { data, error } = await supabase
-      .from('events')
-      .select('id')
-      .eq('id', eventId)
-      .maybeSingle()
-
-    if (!error && data) {
-      eventExists = true
-    }
-  } catch (err) {
-    console.error('Supabase validation error in layout:', err)
-  }
-
-  // 존재하지 않는 이벤트라면 하위 페이지 렌더링을 차단하고 404를 반환합니다.
-  if (!eventExists) {
+  if (!isValid) {
     return notFound()
   }
 
