@@ -1,36 +1,29 @@
-import { requestJson } from '@/features/shared/api/http';
-import {
-  type Participant,
-  type QrCode,
-  type StamplyEvent,
-} from '@/features/shared/types/stamply';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { PARTICIPANT_COOKIE_NAME } from '@/utils/api';
+import { type StamplyEvent } from '@/features/shared/types/stamply';
+import { type ApiDataResponse } from '@/features/shared/api/http';
 
-// 입장 QR 처리 응답 타입
-export type EntryResult = {
-  event: StamplyEvent;
-  participant: Participant;
-  qrCode: QrCode;
-};
+export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
+  const cookieStore = await cookies();
+  const participantCookie = cookieStore.get(PARTICIPANT_COOKIE_NAME);
 
-/**
- * ENTRY QR 토큰으로 행사 참여를 시작합니다.
- *
- * @param token - ENTRY QR token
- * @param userId - 선택적으로 연결할 외부 사용자 ID
- * @returns 행사, 참여자, QR 정보
- */
-export function enterEventByToken(token: string, userId?: number) {
-  const searchParams = new URLSearchParams();
-
-  if (userId !== undefined) {
-    searchParams.set('userId', String(userId));
+  if (!participantCookie) {
+    redirect('/qrRequired');
   }
 
-  const queryString = searchParams.toString();
-  const path =
-    queryString.length > 0
-      ? `/api/v1/qr/entry/${token}?${queryString}`
-      : `/api/v1/qr/entry/${token}`;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const res = await fetch(`${baseUrl}/api/v1/participant/events/${eventId}`, {
+    headers: {
+      Cookie: `${PARTICIPANT_COOKIE_NAME}=${participantCookie.value}`,
+    },
+    cache: 'no-store',
+  });
 
-  return requestJson<EntryResult>(path);
+  if (!res.ok) {
+    redirect('/qrRequired');
+  }
+
+  const { data: event } = (await res.json()) as ApiDataResponse<StamplyEvent>;
+  return event;
 }
