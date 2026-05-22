@@ -1,11 +1,11 @@
 import Link from 'next/link'
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ eventId: string }>
 }
 
 export default async function MissionPage({ params }: PageProps) {
-  const { slug } = await params
+  const { eventId } = await params
 
   return (
     <div className="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-56px)] bg-gomin-white">
@@ -38,7 +38,7 @@ export default async function MissionPage({ params }: PageProps) {
 
         <div className="pt-4">
           <Link
-            href={`/event/${slug}/complete`}
+            href={`/event/${eventId}/complete`}
             className="inline-flex w-full items-center justify-center h-12 px-6 font-bold text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-xl transition-all duration-200 shadow-md shadow-gomin-primary-700/20 active:scale-[0.98]"
           >
             스탬프 적립 최종 완료하기

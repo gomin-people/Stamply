@@ -1,11 +1,11 @@
 import Link from 'next/link'
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ eventId: string }>
 }
 
 export default async function CompletePage({ params }: PageProps) {
-  const { slug } = await params
+  const { eventId } = await params
 
   return (
     <div className="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-56px)] bg-gomin-white">
@@ -21,7 +21,7 @@ export default async function CompletePage({ params }: PageProps) {
             챌린지 최종 완료!
           </h2>
           <p className="text-sm text-gomin-neutral-500">
-            {slug.toUpperCase()} 스탬프 투어를 무사히 마치셨습니다.<br />
+            {eventId.toUpperCase()} 스탬프 투어를 무사히 마치셨습니다.<br />
             아래 버튼을 눌러 발급된 리워드 쿠폰을 확인해 보세요.
           </p>
         </div>
