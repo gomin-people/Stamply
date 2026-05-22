@@ -13,6 +13,8 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 
   useEffect(() => {
     if (isOpen) {
+      // 닫힘 애니메이션이 끝난 뒤 언마운트하기 위해 isOpen과 마운트 상태를 분리한다.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setModalOpen(true)
       return
     }

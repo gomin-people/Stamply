@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export function proxy(request: NextRequest) {
+export function proxy() {
   // TODO: 어드민 세션/토큰 검증 로직 추가
   return NextResponse.next();
 }
