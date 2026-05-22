@@ -8,30 +8,16 @@ interface PageProps {
 
 export default async function EventPage({ params }: PageProps) {
   const { eventId: eventIdParam } = await params
-
-  // 1. eventId가 올바른 숫자인지 파싱하고 검증합니다.
   const eventId = Number(eventIdParam)
-  if (isNaN(eventId) || eventId <= 0) {
-    return notFound() // 숫자가 아니거나 올바르지 않은 ID면 즉시 404 페이지로 보냅니다.
-  }
 
-  // 2. Supabase에서 실제 행사 데이터를 조회합니다.
-  let event = null
-  try {
-    const { data, error } = await supabase
-      .from('events')
-      .select('*')
-      .eq('id', eventId)
-      .maybeSingle()
+  // 1. 이미 layout.tsx에서 ID 유효성 및 DB 존재 여부가 철저하게 검증되었습니다.
+  // 여기서는 화면에 표시할 실제 데이터를 간결하게 가져옵니다.
+  const { data: event } = await supabase
+    .from('events')
+    .select('*')
+    .eq('id', eventId)
+    .maybeSingle()
 
-    if (!error && data) {
-      event = data
-    }
-  } catch (err) {
-    console.error('Supabase query error:', err)
-  }
-
-  // 3. 데이터베이스에 해당 이벤트가 존재하지 않으면 즉시 404 페이지로 보냅니다.
   if (!event) {
     return notFound()
   }
