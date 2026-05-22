@@ -16,3 +16,5 @@ const ThemedButton = ({ children, className, ...rest }: ThemedButtonProps) => {
 }
 
 export default ThemedButton
+
+//여전히 이 컴포넌트는 client가 필요함. qr 체크하기에서 리워드 받기로 변해야하는등의 useState가 필요 단 필요할때 추가바람. 
