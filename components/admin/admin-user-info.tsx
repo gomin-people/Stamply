@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useAdminOauthUserQueries } from "@/features/admin/oauth/user/adminOauthUserQueries"
 import { logoutAdmin } from '@/features/admin/oauth/api/adminOauthLogout';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect } from 'react';
 
 export default function AdminUserInfo() {
     const router = useRouter();
 
-    const { data: user, isLoading } = useAdminOauthUserQueries()
+    const { data: user, isLoading, isError } = useAdminOauthUserQueries()
 
     const handleLogout = async () => {
         try {
@@ -21,6 +22,10 @@ export default function AdminUserInfo() {
             alert('로그아웃에 실패했습니다.');
         }
     }
+
+    useEffect(() => {
+        if (isError) router.replace('/admin');
+    }, [isError])
 
     return (
         <div className="border-t border-gray-200 pt-4">
