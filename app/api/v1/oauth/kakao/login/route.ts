@@ -5,7 +5,7 @@ export async function GET() {
   kakaoAuthUrl.searchParams.set('client_id', process.env.KAKAO_CLIENT_ID!);
   kakaoAuthUrl.searchParams.set('redirect_uri', process.env.KAKAO_REDIRECT_URI!);
   kakaoAuthUrl.searchParams.set('response_type', 'code');
-  kakaoAuthUrl.searchParams.set('scope', 'openid profile_nickname profile_image');
+  kakaoAuthUrl.searchParams.set('scope', 'openid profile_nickname');
 
   return NextResponse.redirect(kakaoAuthUrl.toString());
 }
