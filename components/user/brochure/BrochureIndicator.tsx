@@ -4,16 +4,14 @@ type BrochureIndicatorProps = {
 }
 
 const BrochureIndicator = ({ total, currentIndex }: BrochureIndicatorProps) => {
-  if (total <= 1) return null
-
   const count = Math.min(total, 10)
 
-  return (
-    <div className="flex gap-3">
+  return total > 1 && (
+    <div className="flex gap-3 w-75">
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className={`w-20 h-1.5 rounded-[10px] transition-colors duration-300 ${
+          className={`flex-1 h-1.5 rounded-[10px] transition-colors duration-300 ${
             index === currentIndex ? 'bg-gomin-primary-700' : 'bg-gomin-neutral-300'
           }`}
         />
