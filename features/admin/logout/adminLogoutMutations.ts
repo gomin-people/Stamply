@@ -1,10 +1,9 @@
-'use client';
-
 import { useMutation } from '@tanstack/react-query';
-export function useLogoutAdminMutation() {
+
+export function useAdminLogoutMutation() {
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch('/api/v1/admin/oauth/logout', {
+      const res = await fetch('/api/v1/admin/logout', {
         method: 'POST',
       });
       if (!res.ok) {

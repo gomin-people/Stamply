@@ -2,13 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useAdminOauthUserQueries } from '@/features/admin/oauth/user/adminOauthUserQueries';
+import { useAdminUserQuery } from '@/features/admin/user/adminUserQueries';
 import { Skeleton } from '@/components/ui/skeleton';
 import Logout from '@/components/admin/logout';
 
 export default function AdminUserInfo() {
   const router = useRouter();
-  const { data: user, isLoading, isError } = useAdminOauthUserQueries();
+  const { data: user, isLoading, isError } = useAdminUserQuery();
 
   useEffect(() => {
     if (isError) router.replace('/admin');
