@@ -1,6 +1,6 @@
 import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLogoutAdminMutation } from '@/features/admin/oauth/adminOauthMutations';
+import { useAdminLogoutMutation } from '@/features/admin/logout/adminLogoutMutations';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 
 export default function Logout({ disabled = false }: Props) {
   const router = useRouter();
-  const { mutate: logout } = useLogoutAdminMutation();
+  const { mutate: logout } = useAdminLogoutMutation();
 
   const handleLogout = () => {
     logout(undefined, {
