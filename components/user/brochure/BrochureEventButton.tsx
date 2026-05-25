@@ -11,7 +11,7 @@ const BrochureEventButton = ({ eventId }: BrochureEventButtonProps) => {
 
   return (
     <button
-      className="fixed bottom-10 left-1/2 -translate-x-1/2 w-71.75 h-10.75 bg-gomin-neutral-600 rounded-[20px] text-gomin-white font-bold text-sm"
+      className="mt-4 w-71.75 h-10.75 bg-gomin-neutral-600 rounded-[20px] text-gomin-white font-bold text-sm"
       onClick={() => router.push(`/event/${eventId}`)}
     >
       행사 상세 정보

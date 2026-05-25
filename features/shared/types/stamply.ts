@@ -21,7 +21,7 @@ export type StamplyEvent = {
   contactEmail: string | null;
   production: string;
   posterImageUrl: string;
-  brochureImageUrl: unknown;
+  brochureImageUrl: string[] | null;
   stampImageUrl: string | null;
   primaryColor: string;
   rewardStock: number;
