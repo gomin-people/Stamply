@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { use } from 'react'
 import BrochureSlider from '@/components/user/brochure/BrochureSlider'
 import BrochureIndicator from '@/components/user/brochure/BrochureIndicator'
 import BrochureGuideOverlay from '@/components/user/brochure/BrochureGuideOverlay'
@@ -9,24 +8,14 @@ import BrochureGuideOverlay from '@/components/user/brochure/BrochureGuideOverla
 const images = [
   '/images/image_brochure.png',
   '/images/image_brochure2.png',
-  '/images/image_brouchure3.png'
+  '/images/image_brochure3.png'
 ]
 
-type PageProps = {
-  params: Promise<{ eventId: string }>
-}
-
-const BrochurePage = ({ params }: PageProps) => {
-  const { eventId } = use(params)
-  const storageKey = `brochure_guide_seen_${eventId}`
-
+const BrochurePage = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [showGuide, setShowGuide] = useState(() => !localStorage.getItem(storageKey))
+  const [showGuide, setShowGuide] = useState(true)
 
-  const handleDismiss = () => {
-    localStorage.setItem(storageKey, '1')
-    setShowGuide(false)
-  }
+  const handleDismiss = () => setShowGuide(false)
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? prev : prev - 1))
