@@ -2,11 +2,16 @@
 
 import { use, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { useParticipantEventQuery } from '@/features/participant/events/participantEventQueries'
 import BrochureSlider from '@/components/user/brochure/BrochureSlider'
 import BrochureIndicator from '@/components/user/brochure/BrochureIndicator'
-import BrochureGuideOverlay from '@/components/user/brochure/BrochureGuideOverlay'
 import BrochureEventButton from '@/components/user/brochure/BrochureEventButton'
+
+const BrochureGuideOverlay = dynamic(
+  () => import('@/components/user/brochure/BrochureGuideOverlay'),
+  { ssr: false }
+)
 
 type PageProps = {
   params: Promise<{ eventId: string }>
@@ -22,7 +27,6 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
   const { data: event } = useParticipantEventQuery(Number(eventId))
 
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [showGuide, setShowGuide] = useState(true)
 
   if (event && !event.brochureImageUrl?.length) {
     router.replace(`/event/${eventId}/mission`)
@@ -30,8 +34,6 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
   }
 
   const images = event?.brochureImageUrl ?? []
-
-  const handleDismiss = () => setShowGuide(false)
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? prev : prev - 1))
@@ -52,7 +54,7 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
         onPrev={handlePrev}
         onNext={handleNext}
       />
-      {!fromMission && showGuide && <BrochureGuideOverlay onDismiss={handleDismiss} />}
+      {!fromMission && <BrochureGuideOverlay eventId={eventId} />}
       {fromMission && <BrochureEventButton eventId={eventId} />}
     </div>
   )
