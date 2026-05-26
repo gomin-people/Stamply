@@ -9,7 +9,7 @@ export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
   const participantCookie = cookieStore.get(PARTICIPANT_COOKIE_NAME);
 
   if (!participantCookie) {
-    redirect('/qrRequired');
+    redirect('/qr-required');
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -21,7 +21,7 @@ export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
   });
 
   if (!res.ok) {
-    redirect('/qrRequired');
+    redirect('/qr-required');
   }
 
   const { data: event } = (await res.json()) as ApiDataResponse<StamplyEvent>;
