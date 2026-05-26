@@ -20,7 +20,9 @@ export default function MissionDeleteDialog({ mission, onDelete }: Props) {
 
   const handlerDelete = () => {
     setSaveing(true);
-    mission.id && onDelete?.(mission.id);
+    if (mission.id) {
+      onDelete?.(mission.id);
+    }
   };
 
   return (

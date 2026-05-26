@@ -35,30 +35,24 @@ export default function MissionList({ missions }: Props) {
   const eventId = Number(useParams().eventId);
   const queryClient = useQueryClient();
 
+  const invalidateMissions = () => {
+    queryClient.invalidateQueries({
+      queryKey: ['admin', 'events', eventId, 'missions'],
+    });
+  };
+
   const handlerDelete = (missionId: number) => {
     setDeletingMission(null);
     deleteAdminMission(
       { eventId, missionId },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['admin', 'events', eventId, 'missions'],
-          });
-        },
-      }
+      { onSuccess: invalidateMissions }
     );
   };
 
   const handlerToggleActive = (missionId: number, checked: boolean) => {
     updateAdminMission(
       { eventId, missionId, payload: { isActive: checked } },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['admin', 'events', eventId, 'missions'],
-          });
-        },
-      }
+      { onSuccess: invalidateMissions }
     );
   };
 
@@ -71,13 +65,7 @@ export default function MissionList({ missions }: Props) {
         missionId: mission.id,
         payload: { title: mission.title, description: mission.description },
       },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['admin', 'events', eventId, 'missions'],
-          });
-        },
-      }
+      { onSuccess: invalidateMissions }
     );
   };
 

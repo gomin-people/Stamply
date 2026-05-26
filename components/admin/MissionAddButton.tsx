@@ -14,19 +14,19 @@ type Props = {
 };
 
 export default function MissionAddButton({ disabled }: Props) {
-  const { eventId } = useParams();
+  const eventId = Number(useParams().eventId);
   const [isAdding, setIsAdding] = useState(false);
   const { mutate: createAdminMission } = useCreateAdminMissionMutation();
   const queryClient = useQueryClient();
 
   const handlerSave = (payload: Mission) => {
     createAdminMission(
-      { eventId: Number(eventId), payload },
+      { eventId, payload },
       {
         onSuccess: () => {
           setIsAdding(false);
           queryClient.invalidateQueries({
-            queryKey: ['admin', 'events', Number(eventId), 'missions'],
+            queryKey: ['admin', 'events', eventId, 'missions'],
           });
         },
       }

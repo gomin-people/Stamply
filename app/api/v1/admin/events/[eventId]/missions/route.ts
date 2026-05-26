@@ -65,7 +65,7 @@ export async function GET(
   if (error) {
     return serverError('미션 목록 조회 실패', error);
   }
-  console.log('[info] data: ', data);
+
   return ok(data ?? []);
 }
 
@@ -100,8 +100,6 @@ export async function POST(
     body.is_active = body.isActive;
     delete body.isActive;
   }
-
-  console.log('body', body);
 
   const missingFields = getMissingFields(body, MISSION_REQUIRED_FIELDS);
 
