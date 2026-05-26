@@ -350,12 +350,6 @@ function getErrorMessage(error: unknown) {
   return 'Unknown error';
 }
 
-/**
- * 주어진 eventId 문자열이 유효한 양의 정수이고 실제로 Supabase에 존재하는지 검증합니다.
- *
- * @param eventIdParam - 검증할 행사 ID 문자열
- * @returns 유효하고 존재하면 true, 그렇지 않으면 false
- */
 export async function validateEvent(eventIdParam: string): Promise<boolean> {
   const eventId = parsePositiveInteger(eventIdParam);
   if (eventId === null) {
