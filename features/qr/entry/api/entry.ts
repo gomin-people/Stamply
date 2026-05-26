@@ -12,7 +12,7 @@ export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
     redirect('/qrRequired');
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const res = await fetch(`${baseUrl}/api/v1/participant/events/${eventId}`, {
     headers: {
       Cookie: `${PARTICIPANT_COOKIE_NAME}=${participantCookie.value}`,
