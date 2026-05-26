@@ -26,10 +26,10 @@ const Header = ({ showBackButton = true, onBackClick }: HeaderProps) => {
         {showBackButton && (
           <button
             onClick={handleBack}
-            className="flex items-center justify-center w-10 h-10 -ml-2 rounded-full text-gray-700 hover:text-gray-900 active:bg-gray-100 transition-colors"
+            className="flex items-center justify-center w-10 h-10 -ml-2 mt-4 rounded-full text-gray-700 hover:text-gray-900 active:bg-gray-100 transition-colors"
             aria-label="이전 화면으로 이동"
           >
-            <ChevronLeftIcon className="w-6 h-6" />
+            <ChevronLeftIcon className="w-10 h-10" />
           </button>
         )}
       </div>
