@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
+import { getEventPrimaryColor } from '@/features/participant/events/participantEventTheme'
 import { validateEvent } from '@/utils/api'
-import { getEventPrimaryColor } from '@/features/participant/events/api/participantEventsApi'
 
 interface LayoutProps {
   children: React.ReactNode
