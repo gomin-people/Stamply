@@ -3,7 +3,7 @@ import { snakeToCamel, toCamelKeys, toSnakeKeys } from '@/utils/case';
 import { supabase } from '@/utils/supabase/server';
 
 // 참여자 식별에 사용하는 HttpOnly 쿠키의 키 이름
-export const PARTICIPANT_COOKIE_NAME = 'stamply_event_user_id';
+export const PARTICIPANT_COOKIE_NAME = 'event_user_id';
 
 // JSON 객체 형태의 요청/응답 데이터
 export type JsonObject = Record<string, unknown>;
@@ -372,4 +372,3 @@ export async function validateEvent(eventIdParam: string): Promise<boolean> {
     return false;
   }
 }
-

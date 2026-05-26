@@ -43,7 +43,6 @@ next-env.d.ts
 # claude
 CLAUDE.local.md
 AGENTS.local.md
-AGENTS.md
 /doc/
 /docs/
 .claude
