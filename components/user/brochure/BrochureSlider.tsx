@@ -19,7 +19,7 @@ const BrochureSlider = ({ images, currentIndex, onPrev, onNext }: BrochureSlider
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <Image src={src} alt={`브로셔 ${index + 1}`} fill className="object-cover" />
+          <Image src={src} alt={`브로셔 ${index + 1}`} fill className="object-cover" loading={index === 0 ? 'eager' : 'lazy'} />
         </div>
       ))}
       <button

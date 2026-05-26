@@ -42,7 +42,7 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
   }
 
   return (
-    <div className="bg-gomin-white flex flex-col items-center pt-4 pb-10">
+    <div className="bg-gomin-white flex flex-col items-center pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
       <div className="mb-4">
         <BrochureIndicator total={images.length} currentIndex={currentIndex} />
       </div>
