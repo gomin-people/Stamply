@@ -11,7 +11,12 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { FieldGroup, Field, FieldTitle } from '@/components/ui/field';
+import {
+  FieldGroup,
+  Field,
+  FieldTitle,
+  FieldError,
+} from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { Mission } from '@/types/mission';
@@ -22,11 +27,18 @@ type Props = {
 };
 
 export default function MissionDialog({ mission, onSave }: Props) {
-  const [name, setName] = useState(mission.name);
+  const [title, setTitle] = useState(mission.title);
   const [description, setDescription] = useState(mission.description);
+  const [titleError, setTitleError] = useState(false);
+  const [saveing, setSaveing] = useState(false);
 
   const handleSave = () => {
-    onSave?.({ ...mission, name, description });
+    if (!title.trim()) {
+      setTitleError(true);
+      return;
+    }
+    onSave?.({ ...mission, title, description });
+    setSaveing(true);
   };
 
   return (
@@ -43,7 +55,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
               {mission.id !== undefined ? '미션 수정' : '미션 추가'}
             </p>
             <DialogTitle className="text-xl font-bold text-gomin-black">
-              {mission.id !== undefined ? mission.name : '새 미션'}
+              {mission.id !== undefined ? mission.title : '새 미션'}
             </DialogTitle>
             <DialogDescription className="mt-1">
               {mission.id !== undefined
@@ -59,12 +71,22 @@ export default function MissionDialog({ mission, onSave }: Props) {
           <FieldTitle>
             미션명 <span className="text-red-500">*</span>
           </FieldTitle>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input
+            maxLength={20}
+            value={title}
+            aria-invalid={titleError}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (titleError) setTitleError(false);
+            }}
+          />
+          <FieldError>{titleError && '미션명을 입력해 주세요.'}</FieldError>
         </Field>
 
         <Field>
           <FieldTitle>설명</FieldTitle>
           <Textarea
+            maxLength={500}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
@@ -77,16 +99,15 @@ export default function MissionDialog({ mission, onSave }: Props) {
         <DialogClose asChild>
           <Button variant="outline">취소</Button>
         </DialogClose>
-        <DialogClose asChild>
-          <Button
-            variant="default"
-            className="bg-gomin-primary-700"
-            onClick={handleSave}
-          >
-            <Check />
-            변경사항 저장
-          </Button>
-        </DialogClose>
+        <Button
+          variant="default"
+          className="bg-gomin-primary-700"
+          onClick={handleSave}
+          disabled={saveing}
+        >
+          <Check />
+          저장
+        </Button>
       </DialogFooter>
     </DialogContent>
   );

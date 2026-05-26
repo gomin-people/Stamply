@@ -1,5 +1,6 @@
 export interface Mission {
   id?: number;
-  name: string;
+  title: string;
   description: string;
+  isActive: boolean;
 }
