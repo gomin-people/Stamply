@@ -1,6 +1,6 @@
 'use client'
 
-import IconOverlayCircle from './IconOverlayCircle'
+import OverlayCircleIcon from '@/components/icons/OverlayCircleIcon'
 
 type BrochureGuideOverlayProps = {
   onDismiss: () => void
@@ -17,8 +17,8 @@ const BrochureGuideOverlay = ({ onDismiss }: BrochureGuideOverlayProps) => {
           터치해서 페이지 이동하기
         </p>
         <div className="flex items-center gap-20 mt-2">
-          <IconOverlayCircle />
-          <IconOverlayCircle />
+          <OverlayCircleIcon />
+          <OverlayCircleIcon />
         </div>
       </div>
     </div>

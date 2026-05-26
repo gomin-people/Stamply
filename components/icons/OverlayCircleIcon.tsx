@@ -1,4 +1,4 @@
-const IconOverlayCircle = () => (
+const OverlayCircleIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="94" height="94" viewBox="0 0 94 94" fill="none">
     <g filter="url(#filter0_d_190_1723)">
       <circle cx="47" cy="47" r="18.5" stroke="white" shapeRendering="crispEdges"/>
@@ -19,4 +19,4 @@ const IconOverlayCircle = () => (
   </svg>
 )
 
-export default IconOverlayCircle
+export default OverlayCircleIcon
