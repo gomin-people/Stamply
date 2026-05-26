@@ -1,16 +1,32 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { requestJson } from '@/features/shared/api/http';
 import {
-  getAdminEventMission,
-  getAdminEventMissions,
-} from '@/features/admin/missions/api/adminMissionsApi';
+  type Mission,
+  type QrCode,
+} from '@/features/shared/types/stamply';
+
+// 미션 상세 응답 타입
+type AdminMissionDetail = Mission & {
+  qrCode: QrCode | null;
+};
+
+function getAdminEventMissions(eventId: number) {
+  return requestJson<Mission[]>(`/api/v1/admin/events/${eventId}/missions`);
+}
+
+function getAdminEventMission(eventId: number, missionId: number) {
+  return requestJson<AdminMissionDetail>(
+    `/api/v1/admin/events/${eventId}/missions/${missionId}`
+  );
+}
 
 /**
  * 어드민 미션 목록을 조회합니다.
  *
  * @param eventId - 행사 ID
- * @returns React Query 미션 목록 query
+ * @returns React Query 미션 목록
  */
 export function useAdminMissionsQuery(eventId: number | null | undefined) {
   return useQuery({
@@ -25,7 +41,7 @@ export function useAdminMissionsQuery(eventId: number | null | undefined) {
  *
  * @param eventId - 행사 ID
  * @param missionId - 미션 ID
- * @returns React Query 미션 상세 query
+ * @returns React Query 미션 상세
  */
 export function useAdminMissionQuery(
   eventId: number | null | undefined,

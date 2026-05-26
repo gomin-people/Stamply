@@ -1,13 +1,41 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { enterEventByToken } from '@/features/qr/entry/api/entryApi';
+import { requestJson } from '@/features/shared/api/http';
+import {
+  type Participant,
+  type QrCode,
+  type StamplyEvent,
+} from '@/features/shared/types/stamply';
+
+// 입장 QR 처리 응답 타입
+type EntryResult = {
+  event: StamplyEvent;
+  participant: Participant;
+  qrCode: QrCode;
+};
 
 // 행사 입장 mutation 요청 변수 타입
 type EnterEventVariables = {
   token: string;
   userId?: number;
 };
+
+function enterEventByToken(token: string, userId?: number) {
+  const searchParams = new URLSearchParams();
+
+  if (userId !== undefined) {
+    searchParams.set('userId', String(userId));
+  }
+
+  const queryString = searchParams.toString();
+  const path =
+    queryString.length > 0
+      ? `/api/v1/qr/entry/${token}?${queryString}`
+      : `/api/v1/qr/entry/${token}`;
+
+  return requestJson<EntryResult>(path);
+}
 
 /**
  * ENTRY QR 기반 행사 입장 mutation입니다.
