@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { cn } from '@/utils'
 
 type BrochureSliderProps = {
   images: string[]
@@ -11,15 +12,23 @@ type BrochureSliderProps = {
 
 const BrochureSlider = ({ images, currentIndex, onPrev, onNext }: BrochureSliderProps) => {
   return (
-    <div className="relative w-78 h-168.5 rounded-[20px] overflow-hidden shadow-[0_4px_4px_0_rgba(0,0,0,0.25)]">
+    <div className="relative w-78 h-168.5 rounded-[20px] overflow-hidden shadow-card">
       {images.map((src, index) => (
         <div
           key={src}
-          className={`absolute inset-0 transition-opacity duration-300 ${
+          className={cn(
+            'absolute inset-0 transition-opacity duration-300',
             index === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
+          )}
         >
-          <Image src={src} alt={`브로셔 ${index + 1}`} fill sizes="312px" className="object-cover" loading={index === 0 ? 'eager' : 'lazy'} />
+          <Image
+            src={src}
+            alt={`브로셔 ${index + 1}`}
+            fill
+            sizes="312px"
+            className="object-cover"
+            loading={index === 0 ? 'eager' : 'lazy'}
+          />
         </div>
       ))}
       <button

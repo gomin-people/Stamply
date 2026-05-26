@@ -25,13 +25,7 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
   const router = useRouter()
 
   const { data: event } = useParticipantEventQuery(Number(eventId))
-
   const [currentIndex, setCurrentIndex] = useState(0)
-
-  if (event && !event.brochureImageUrl?.length) {
-    router.replace(`/event/${eventId}/mission`)
-    return null
-  }
 
   const images = event?.brochureImageUrl ?? []
 
@@ -41,6 +35,11 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? prev : prev + 1))
+  }
+
+  if (event && !event.brochureImageUrl?.length) {
+    router.replace(`/event/${eventId}/mission`)
+    return null
   }
 
   return (

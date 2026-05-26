@@ -8,18 +8,15 @@ type BrochureGuideOverlayProps = {
 }
 
 const BrochureGuideOverlay = ({ eventId }: BrochureGuideOverlayProps) => {
-  const [visible, setVisible] = useState(
-    !localStorage.getItem(`brochure-guide-seen-${eventId}`)
-  )
-
-  if (!visible) return null
+  const storageKey = `brochure-guide-seen-${eventId}`
+  const [visible, setVisible] = useState(!localStorage.getItem(storageKey))
 
   const handleDismiss = () => {
-    localStorage.setItem(`brochure-guide-seen-${eventId}`, '1')
+    localStorage.setItem(storageKey, '1')
     setVisible(false)
   }
 
-  return (
+  return visible && (
     <div
       className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[rgba(17,17,17,0.5)]"
       onClick={handleDismiss}
