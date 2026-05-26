@@ -27,6 +27,7 @@ export default function Logout({ disabled = false }: Props) {
       aria-label="로그아웃"
       variant="outline"
       size="icon"
+      className="cursor-pointer disabled:cursor-not-allowed"
     >
       <LogOut className="w-5 h-5" />
     </Button>

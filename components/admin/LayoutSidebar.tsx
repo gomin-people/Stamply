@@ -2,19 +2,13 @@
 
 import { usePathname } from 'next/navigation';
 import { getAdminRouteConfig } from '@/constants/adminRoutes';
+import { getAdminEventIdFromPathname } from '@/utils/adminRoute';
 import Sidebar from './Sidebar';
-
-const getEventId = (pathname: string) => {
-  const segments = pathname.split('/').filter(Boolean);
-  const eventIdIndex = segments.indexOf('events') + 1;
-
-  return eventIdIndex > 0 ? segments[eventIdIndex] : null;
-};
 
 export default function LayoutSidebar() {
   const pathname = usePathname();
   const route = getAdminRouteConfig(pathname);
-  const eventId = getEventId(pathname);
+  const eventId = getAdminEventIdFromPathname(pathname);
 
   if (!route || !eventId) {
     return null;

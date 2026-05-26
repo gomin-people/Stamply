@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 interface EventDetailPageProps {
   params: Promise<{
     eventId: string;

@@ -1,18 +1,23 @@
-import {
-  BarChart3,
-  ClipboardList,
-  FileText,
-  type LucideIcon,
-} from 'lucide-react'; // todo: 아이콘 라이브러리 변경 고려
+import { House, LayoutGrid, Target, type LucideIcon } from 'lucide-react'; // todo: 아이콘 라이브러리 변경 고려
 
 export type AdminRouteConfig = {
   pattern: string;
   title: string;
+  description?: AdminRouteDescriptionSegment[];
   sidebar?: {
     title?: string;
     icon: LucideIcon;
   };
 };
+
+export type AdminRouteDescriptionSegment =
+  | {
+      type: 'text';
+      text: string;
+    }
+  | {
+      type: 'eventTitle';
+    };
 
 type AdminRouteParams = {
   eventId: string;
@@ -25,23 +30,42 @@ export const adminRoutes: AdminRouteConfig[] = [
   {
     pattern: '/admin/events/[eventId]/dashboard',
     title: '대시보드',
+    description: [
+      { type: 'text', text: '현재 운영 중인 행사 · ' },
+      { type: 'eventTitle' },
+      { type: 'text', text: '의 실시간 현황입니다.' },
+    ],
     sidebar: {
-      icon: BarChart3,
+      icon: LayoutGrid,
     },
   },
   {
     pattern: '/admin/events/[eventId]',
     title: '행사 상세',
+    description: [
+      { type: 'eventTitle' },
+      {
+        type: 'text',
+        text: '의 등록 정보를 수정합니다. 변경사항은 저장 시 즉시 반영됩니다.',
+      },
+    ],
     sidebar: {
       title: '행사 관리',
-      icon: FileText,
+      icon: House,
     },
   },
   {
     pattern: '/admin/events/[eventId]/missions',
     title: '미션 관리',
+    description: [
+      { type: 'eventTitle' },
+      {
+        type: 'text',
+        text: '의 미션 목록입니다. 행을 끌어 순서를 변경할 수 있습니다. 최대 10개까지 미션을 활성화할 수 있습니다.',
+      },
+    ],
     sidebar: {
-      icon: ClipboardList,
+      icon: Target,
     },
   },
 ];
