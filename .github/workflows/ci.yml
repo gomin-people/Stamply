@@ -6,11 +6,6 @@ on:
     branches:
       - develop
       - main
-  # develop은 Preview, main은 Production 배포 브랜치로 사용한다.
-  push:
-    branches:
-      - develop
-      - main
 
 concurrency:
   # 같은 브랜치에 새 커밋이 올라오면 이전 CI는 취소한다.
@@ -53,6 +48,9 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Test
+        run: pnpm test
 
       - name: Build
         run: pnpm build
