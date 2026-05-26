@@ -1,9 +1,8 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import {
   badRequest,
   getParticipantEventUserId,
   notFound,
-  ok,
   parseOptionalPositiveInteger,
   serverError,
   setParticipantCookie,
@@ -87,11 +86,9 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
     }
 
     if (currentParticipant) {
-      const response = ok({
-        event,
-        participant: currentParticipant,
-        qr_code: qrCode,
-      });
+      const response = NextResponse.redirect(
+        new URL(`/event/${event.id}`, request.url)
+      );
       setParticipantCookie(response, currentParticipant.event_user_id);
       return response;
     }
@@ -112,13 +109,9 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
     return serverError('참여자 생성 실패', participantError);
   }
 
-  const response = ok({
-    event,
-    participant,
-    qr_code: qrCode,
-  });
-  // 이후 사용자 API가 현재 참여자를 찾을 수 있도록 HttpOnly 쿠키를 설정
+  const response = NextResponse.redirect(
+    new URL(`/event/${event.id}`, request.url)
+  );
   setParticipantCookie(response, participant.event_user_id);
-
   return response;
 }
