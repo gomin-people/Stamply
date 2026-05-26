@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAdminUserQuery } from '@/features/admin/user/adminUserQueries';
 import { Skeleton } from '@/components/ui/skeleton';
-import Logout from '@/components/admin/logout';
+import LogoutButton from '@/components/admin/LogoutButton';
 
 export default function AdminUserInfo() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function AdminUserInfo() {
           )}
         </div>
 
-        <Logout disabled={isLoading} />
+        <LogoutButton disabled={isLoading} />
       </div>
     </div>
   );
