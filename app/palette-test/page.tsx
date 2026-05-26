@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { generatePalette, hexToHsl, hslToHex } from '@/utils';
 
 export default function PaletteTestPage() {
@@ -19,16 +19,11 @@ export default function PaletteTestPage() {
     return hslToHex(h, s, l);
   }, [h, s, l]);
 
-  // HSL 상태값 변화에 따라 Hex 입력 필드 텍스트 동기화
-  useEffect(() => {
-    setHexInput(keyColor);
-  }, [keyColor]);
-
   // 유틸리티 함수를 호출하여 7단계 명암 컬러 팔레트 오브젝트 실시간 생성
   const palette = useMemo(() => {
     try {
       return generatePalette(keyColor);
-    } catch (e) {
+    } catch {
       return generatePalette('#5435EB');
     }
   }, [keyColor]);
@@ -41,7 +36,7 @@ export default function PaletteTestPage() {
       try {
         const [parsedH] = hexToHsl(val);
         setH(Math.round(parsedH));
-      } catch (e) {
+      } catch {
         // 타이핑 중에 완성되지 않은 Hex 코드로 인한 파싱 오류는 무시
       }
     }
@@ -104,7 +99,11 @@ export default function PaletteTestPage() {
                   min="0"
                   max="360"
                   value={h}
-                  onChange={(e) => setH(Number(e.target.value))}
+                  onChange={(e) => {
+                    const newH = Number(e.target.value);
+                    setH(newH);
+                    setHexInput(hslToHex(newH, s, l));
+                  }}
                   className="w-full h-4 rounded-2xl appearance-none cursor-pointer accent-indigo-600 transition-all hover:scale-[1.005]"
                   style={{
                     background:
