@@ -1,4 +1,3 @@
-import KakaoLogin from '@/components/admin/KakaoLogin';
 import StamplyLogo from '@/components/admin/StamplyLogo';
 
 export default function AdminHomePage() {
@@ -10,8 +9,6 @@ export default function AdminHomePage() {
           <StamplyLogo />
           <p className="text-base text-[#6D6D6D]">행사 운영 관리자 로그인</p>
         </div>
-
-        <KakaoLogin />
       </div>
     </main>
   );
