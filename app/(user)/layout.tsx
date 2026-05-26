@@ -1,5 +1,5 @@
 import { EventThemeProvider } from '@/contexts/EventThemeProvider';
-import LayoutHeader from '@/components/user/LayoutHeader';
+import LayoutHeader from '@/components/user/header/LayoutHeader';
 
 export default function UserLayout({
   children,
