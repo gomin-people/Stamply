@@ -36,16 +36,6 @@ export default function MissionPage() {
 
   return (
     <div className="p-8">
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gomin-black">미션 관리</h1>
-          <p className="mt-1 text-sm text-gomin-neutral-400">
-            &quot;성수 팝업 페스타 2026&quot; 의 미션 목록입니다. 행을 끌어
-            순서를 변경할 수 있습니다.
-          </p>
-        </div>
-      </div>
-
       <div className="bg-white border rounded-xl border-gomin-neutral-100">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gomin-neutral-100">
           <MissionFilter toggleValue={handleToggle} />
