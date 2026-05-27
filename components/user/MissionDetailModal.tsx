@@ -61,7 +61,9 @@ export default function MissionDetailModal({
         });
       } else {
         alert(
-          isStamped ? '테스트 미션 취소 처리 실패' : '테스트 미션 완료 처리 실패'
+          isStamped
+            ? '테스트 미션 취소 처리 실패'
+            : '테스트 미션 완료 처리 실패'
         );
       }
     } catch (err) {
