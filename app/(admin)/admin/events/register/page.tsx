@@ -21,13 +21,6 @@ export default function CreateEventPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gomin-black">행사 등록</h1>
-        <p className="mt-1 text-sm text-gomin-neutral-400">
-          새로운 행사를 단계별로 등록합니다.
-        </p>
-      </div>
-
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
         <EventFormStepper currentStep={currentStep} />
 
