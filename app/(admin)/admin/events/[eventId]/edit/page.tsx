@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { use } from 'react';
 import EventFormStepper from '@/components/admin/event/EventFormStepper';
 import EventFormFooter from '@/components/admin/event/EventFormFooter';
-import EventStep1Form from '@/components/admin/event/EventStep1Form';
+import EventInfoForm from '@/components/admin/event/EventInfoForm';
 import EventStep2Form from '@/components/admin/event/EventStep2Form';
 import EventStep3Form from '@/components/admin/event/EventStep3Form';
 
 const TOTAL_STEPS = 3;
 
-const stepComponents = [EventStep1Form, EventStep2Form, EventStep3Form];
+const stepComponents = [EventInfoForm, EventStep2Form, EventStep3Form];
 
 type Props = {
   params: Promise<{ eventId: string }>;
