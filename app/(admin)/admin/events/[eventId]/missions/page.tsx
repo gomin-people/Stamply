@@ -1,13 +1,13 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import MissionFilter from '@/components/admin/MissionFilter';
-import QRDownloadButton from '@/components/admin/QRDownloadButton';
-import MissionAddButton from '@/components/admin/MissionAddButton';
-import MissionList from '@/components/admin/MissionList';
+import MissionFilter from '@/components/admin/mission/MissionFilter';
+import QRDownloadButton from '@/components/admin/mission/QRDownloadButton';
+import MissionAddButton from '@/components/admin/mission/MissionAddButton';
+import MissionList from '@/components/admin/mission/MissionList';
 import { useAdminMissionsQuery } from '@/features/admin/missions/adminMissionQueries';
 import { useParams } from 'next/navigation';
-import MissionListSkeleton from '@/components/admin/MissionListSkeleton';
+import MissionListSkeleton from '@/components/admin/mission/MissionListSkeleton';
 import { Button } from '@/components/ui/button';
 
 export default function MissionPage() {

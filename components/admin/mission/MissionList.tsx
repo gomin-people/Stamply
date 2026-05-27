@@ -6,9 +6,9 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import type { AdminMissionDetail } from '@/types/models/admin';
-import MissionDialog from '@/components/admin/MissionDialog';
-import MissionDeleteDialog from '@/components/admin/MissionDeleteDialog';
-import QRDialog from '@/components/admin/QRDialog';
+import MissionDialog from '@/components/admin/mission/MissionDialog';
+import MissionDeleteDialog from '@/components/admin/mission/MissionDeleteDialog';
+import QRDialog from '@/components/admin/mission/QRDialog';
 import { Mission } from '@/types/mission';
 import {
   useDeleteAdminMissionMutation,
