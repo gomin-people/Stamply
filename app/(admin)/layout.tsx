@@ -1,6 +1,6 @@
-import LayoutFooter from '@/components/admin/LayoutFooter';
-import LayoutHeader from '@/components/admin/LayoutHeader';
-import LayoutSidebar from '@/components/admin/LayoutSidebar';
+import Footer from '@/components/admin/Footer';
+import Header from '@/components/admin/Header';
+import Sidebar from '@/components/admin/Sidebar';
 
 export default function AdminLayout({
   children,
@@ -9,11 +9,11 @@ export default function AdminLayout({
 }) {
   return (
     <div className="flex min-h-screen bg-gomin-neutral-100">
-      <LayoutSidebar />
+      <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col bg-gomin-neutral-100">
-        <LayoutHeader />
+        <Header />
         <main className="flex-1">{children}</main>
-        <LayoutFooter />
+        <Footer />
       </div>
     </div>
   );

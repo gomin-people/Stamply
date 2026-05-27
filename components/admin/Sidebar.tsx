@@ -1,14 +1,24 @@
-import { getAdminSidebarItems } from '@/constants/adminRoutes';
+'use client';
+
+import { usePathname } from 'next/navigation';
+import {
+  getAdminRouteConfig,
+  getAdminSidebarItems,
+} from '@/constants/adminRoutes';
+import { getAdminEventIdFromPathname } from '@/utils/adminRoute';
 import EventSelector from './EventSelector';
 import SidebarNav from './SidebarNav';
 import AdminUserInfo from '@/components/admin/AdminUserInfo';
 
-interface SidebarProps {
-  eventId: string;
-  pathname: string;
-}
+const Sidebar = () => {
+  const pathname = usePathname();
+  const route = getAdminRouteConfig(pathname);
+  const eventId = getAdminEventIdFromPathname(pathname);
 
-const Sidebar = ({ eventId, pathname }: SidebarProps) => {
+  if (!route || !eventId) {
+    return null;
+  }
+
   const items = getAdminSidebarItems(eventId);
 
   return (

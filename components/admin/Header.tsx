@@ -1,20 +1,26 @@
 'use client';
 
-import type { AdminRouteDescriptionSegment } from '@/constants/adminRoutes';
+import { usePathname } from 'next/navigation';
+import { getAdminRouteConfig } from '@/constants/adminRoutes';
+import { getAdminEventTitle } from '@/constants/adminEventMocks';
+import { getAdminEventIdFromPathname } from '@/utils/adminRoute';
 
-interface HeaderProps {
-  title?: string;
-  description?: AdminRouteDescriptionSegment[];
-  eventTitle?: string;
-}
+const Header = () => {
+  const pathname = usePathname();
+  const route = getAdminRouteConfig(pathname);
+  const eventId = getAdminEventIdFromPathname(pathname);
+  const eventTitle = eventId ? getAdminEventTitle(eventId) : undefined;
 
-const Header = ({ title, description, eventTitle }: HeaderProps) => {
+  if (!route) {
+    return null;
+  }
+
   return (
     <header className="relative flex w-full flex-col px-4 pt-6 pl-8">
-      <h1 className="text-xl font-semibold text-gomin-black">{title}</h1>
-      {description && (
+      <h1 className="text-xl font-semibold text-gomin-black">{route.title}</h1>
+      {route.description && (
         <p className="mt-2 text-sm text-gomin-neutral-500">
-          {description.map((segment, index) => {
+          {route.description.map((segment, index) => {
             if (segment.type === 'eventTitle') {
               return (
                 <strong
