@@ -1,14 +1,13 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { getAdminRouteConfig } from '@/constants/adminRoutes';
 import { getAdminEventTitle } from '@/constants/adminEventMocks';
-import { getAdminEventIdFromPathname } from '@/utils/adminRoute';
 
 const Header = () => {
   const pathname = usePathname();
+  const { eventId } = useParams<{ eventId?: string }>();
   const route = getAdminRouteConfig(pathname);
-  const eventId = getAdminEventIdFromPathname(pathname);
   const eventTitle = eventId ? getAdminEventTitle(eventId) : undefined;
 
   if (!route) {
