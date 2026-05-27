@@ -39,6 +39,8 @@ export default function MissionDialog({ mission, onSave }: Props) {
     }
     startTransition(async () => {
       await onSave?.({ ...mission, title, description });
+      setTitle('');
+      setDescription('');
     });
   };
 
