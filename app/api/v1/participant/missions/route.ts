@@ -1,5 +1,5 @@
 import { type NextRequest } from 'next/server';
-import { getCurrentParticipant, ok, serverError } from '@/utils/api';
+import { badRequest, getCurrentParticipant, ok, serverError } from '@/utils/api';
 import { supabase } from '@/utils/supabase/server';
 
 /**
