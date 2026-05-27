@@ -16,10 +16,10 @@ type Props = {
 };
 
 export default function MissionDeleteDialog({ mission, onDelete }: Props) {
-  const [saveing, setSaveing] = useState(false);
+  const [saving, setsaving] = useState(false);
 
-  const handlerDelete = () => {
-    setSaveing(true);
+  const handleDelete = () => {
+    setsaving(true);
     if (mission.id) {
       onDelete?.(mission.id);
     }
@@ -34,7 +34,9 @@ export default function MissionDeleteDialog({ mission, onDelete }: Props) {
         <DialogTitle className="text-xl font-bold text-gomin-black">
           &quot;{mission.title}&quot;를 삭제하시겠습니까?
         </DialogTitle>
-        <DialogDescription className="mt-1"></DialogDescription>
+        <DialogDescription className="mt-1">
+          삭제된 미션은 복구할 수 없습니다.
+        </DialogDescription>
       </DialogHeader>
 
       <DialogFooter>
@@ -45,8 +47,8 @@ export default function MissionDeleteDialog({ mission, onDelete }: Props) {
           <Button
             variant="default"
             className="bg-gomin-primary-700"
-            onClick={handlerDelete}
-            disabled={saveing}
+            onClick={handleDelete}
+            disabled={saving}
           >
             삭제하기
           </Button>

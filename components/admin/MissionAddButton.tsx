@@ -19,7 +19,7 @@ export default function MissionAddButton({ disabled }: Props) {
   const { mutate: createAdminMission } = useCreateAdminMissionMutation();
   const queryClient = useQueryClient();
 
-  const handlerSave = (payload: Mission) => {
+  const handleSave = (payload: Mission) => {
     createAdminMission(
       { eventId, payload },
       {
@@ -47,7 +47,7 @@ export default function MissionAddButton({ disabled }: Props) {
         <MissionDialog
           key={String(isAdding)}
           mission={{ title: '', description: '', isActive: false }}
-          onSave={handlerSave}
+          onSave={handleSave}
         />
       </Dialog>
     </>

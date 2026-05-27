@@ -6,14 +6,19 @@ import QRDownloadButton from '@/components/admin/QRDownloadButton';
 import MissionAddButton from '@/components/admin/MissionAddButton';
 import MissionList from '@/components/admin/MissionList';
 import { useAdminMissionsQuery } from '@/features/admin/missions/adminMissionQueries';
-import { notFound, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import MissionListSkeleton from '@/components/admin/MissionListSkeleton';
 import { Button } from '@/components/ui/button';
 
 export default function MissionPage() {
   const [filter, setFilter] = useState('all');
   const eventId = Number(useParams().eventId);
-  const { data: missions, isLoading, isError, refetch } = useAdminMissionsQuery(eventId);
+  const {
+    data: missions,
+    isLoading,
+    isError,
+    refetch,
+  } = useAdminMissionsQuery(eventId);
   const filteredMissions = useMemo(() => {
     if (!missions) return [];
     return missions.filter((mission) => {
@@ -24,12 +29,8 @@ export default function MissionPage() {
     });
   }, [missions, filter]);
 
-  if (!eventId) {
-    return notFound();
-  }
-
   const totalCount = missions?.length ?? 0;
-  const handlerToggle = (value: string) => {
+  const handleToggle = (value: string) => {
     setFilter(value);
   };
 
@@ -47,7 +48,7 @@ export default function MissionPage() {
 
       <div className="bg-white border rounded-xl border-gomin-neutral-100">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gomin-neutral-100">
-          <MissionFilter toggleValue={handlerToggle} />
+          <MissionFilter toggleValue={handleToggle} />
           <div className="flex items-center gap-2">
             <MissionAddButton disabled={totalCount >= 10} />
             <QRDownloadButton missions={filteredMissions} />

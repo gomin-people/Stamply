@@ -30,7 +30,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
   const [title, setTitle] = useState(mission.title);
   const [description, setDescription] = useState(mission.description);
   const [titleError, setTitleError] = useState(false);
-  const [saveing, setSaveing] = useState(false);
+  const [saving, setsaving] = useState(false);
 
   const handleSave = () => {
     if (!title.trim()) {
@@ -38,7 +38,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
       return;
     }
     onSave?.({ ...mission, title, description });
-    setSaveing(true);
+    setsaving(true);
   };
 
   return (
@@ -103,7 +103,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
           variant="default"
           className="bg-gomin-primary-700"
           onClick={handleSave}
-          disabled={saveing}
+          disabled={saving}
         >
           <Check />
           저장

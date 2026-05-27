@@ -41,7 +41,7 @@ export default function MissionList({ missions }: Props) {
     });
   };
 
-  const handlerDelete = (missionId: number) => {
+  const handleDelete = (missionId: number) => {
     setDeletingMission(null);
     deleteAdminMission(
       { eventId, missionId },
@@ -49,14 +49,14 @@ export default function MissionList({ missions }: Props) {
     );
   };
 
-  const handlerToggleActive = (missionId: number, checked: boolean) => {
+  const handleToggleActive = (missionId: number, checked: boolean) => {
     updateAdminMission(
       { eventId, missionId, payload: { isActive: checked } },
       { onSuccess: invalidateMissions }
     );
   };
 
-  const handlerSave = (mission: Mission) => {
+  const handleSave = (mission: Mission) => {
     if (!mission.id) return;
     setEditingMission(null);
     updateAdminMission(
@@ -102,7 +102,7 @@ export default function MissionList({ missions }: Props) {
               defaultChecked={mission.isActive}
               className="data-checked:bg-gomin-primary-600"
               onCheckedChange={(checked) =>
-                handlerToggleActive(mission.id, checked)
+                handleToggleActive(mission.id, checked)
               }
             />
           </div>
@@ -151,7 +151,7 @@ export default function MissionList({ missions }: Props) {
         onOpenChange={(open) => !open && setEditingMission(null)}
       >
         {editingMission && (
-          <MissionDialog mission={editingMission} onSave={handlerSave} />
+          <MissionDialog mission={editingMission} onSave={handleSave} />
         )}
       </Dialog>
 
@@ -163,7 +163,7 @@ export default function MissionList({ missions }: Props) {
           <MissionDeleteDialog
             key={deletingMission.id}
             mission={deletingMission}
-            onDelete={handlerDelete}
+            onDelete={handleDelete}
           />
         )}
       </Dialog>
