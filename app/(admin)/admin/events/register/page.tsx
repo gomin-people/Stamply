@@ -28,7 +28,7 @@ export default function CreateEventPage() {
           <StepForm />
         </div>
 
-        <div className="px-8 py-4">
+        <div className="px-6 pb-4">
           <EventFormFooter
             currentStep={currentStep}
             totalSteps={TOTAL_STEPS}

@@ -98,7 +98,7 @@ export default function EventFormStepper({ currentStep }: Props) {
   });
 
   return (
-    <div className="flex h-19 w-full items-center border-b border-gomin-neutral-100 px-8">
+    <div className="flex h-24 w-full items-center border-b border-gomin-neutral-100 px-8">
       {items}
     </div>
   );
