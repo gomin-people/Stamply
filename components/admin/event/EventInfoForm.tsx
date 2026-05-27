@@ -1,7 +1,6 @@
 'use client';
 import { useRef, useState } from 'react';
 import { ImageIcon, Link2, Mail, MapPin, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -54,12 +53,9 @@ export default function EventInfoForm() {
     setPosterPreview(URL.createObjectURL(e.target.files[0]));
   };
 
-  const handleSubmit = (e: React.SubmitEvent) => {
-    e.preventDefault();
-  };
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="flex gap-8">
           {/* 포스터 이미지 */}
           <div className="w-64 shrink-0">
@@ -264,11 +260,6 @@ export default function EventInfoForm() {
               />
             </div>
 
-            <div className="flex justify-end">
-              <Button type="submit" size="lg">
-                유효성 검사
-              </Button>
-            </div>
           </div>
         </div>
       </form>

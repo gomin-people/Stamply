@@ -24,11 +24,11 @@ export default function CreateEventPage() {
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
         <EventFormStepper currentStep={currentStep} />
 
-        <div className="p-8">
+        <div className="p-6">
           <StepForm />
         </div>
 
-        <div className="px-8 pb-8">
+        <div className="px-8 py-4">
           <EventFormFooter
             currentStep={currentStep}
             totalSteps={TOTAL_STEPS}

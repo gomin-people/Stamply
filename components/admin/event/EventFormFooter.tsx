@@ -19,7 +19,7 @@ export default function EventFormFooter({
   completeLabel = '등록 완료',
 }: Props) {
   return (
-    <div className="flex items-center gap-2 border-t border-gomin-neutral-100 pt-6">
+    <div className="flex h-[100px] items-center gap-2 border-t border-gomin-neutral-100">
       <span className="flex-1 text-xs font-medium">
         <span className="text-gomin-black">{currentStep}</span>
         <span className="text-gomin-neutral-400"> / {totalSteps} 단계</span>

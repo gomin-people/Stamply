@@ -29,7 +29,7 @@ export default function EventFormStepper({ currentStep }: Props) {
 
     if (index > 0) {
       items.push(
-        <div key={`divider-${index}`} className="h-px flex-1 bg-gomin-neutral-200" />,
+        <div key={`divider-${index}`} className="h-px flex-1 bg-gomin-neutral-200 mt-2.5" />,
       );
     }
 
@@ -37,7 +37,7 @@ export default function EventFormStepper({ currentStep }: Props) {
       <div key={step.number} className="flex shrink-0 items-center gap-3 rounded-full px-2 py-1.5">
         <div
           className={cn(
-            'flex size-8 shrink-0 items-center justify-center rounded-full border text-sm font-medium',
+            'flex size-8 shrink-0 items-center justify-center rounded-full border text-sm font-medium mt-2',
             isCompleted
               ? 'border-gomin-primary-100 bg-gomin-primary-100 text-gomin-primary-700'
               : isActive
@@ -59,6 +59,8 @@ export default function EventFormStepper({ currentStep }: Props) {
               ) : (
                 <motion.span
                   key={step.number}
+                  className="flex items-center justify-center"
+                  style={{ lineHeight: 1 }}
                   initial={{ scale: 0.6, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.6, opacity: 0 }}
@@ -69,10 +71,10 @@ export default function EventFormStepper({ currentStep }: Props) {
               )}
             </AnimatePresence>
         </div>
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col leading-none">
           <span
             className={cn(
-              'text-[10px] font-medium uppercase tracking-widest',
+              'text-xs font-semibold uppercase tracking-widest',
               isActive || isCompleted
                 ? 'text-gomin-primary-700'
                 : 'text-gomin-neutral-400 opacity-70',
@@ -82,7 +84,7 @@ export default function EventFormStepper({ currentStep }: Props) {
           </span>
           <span
             className={cn(
-              'text-xs font-medium',
+              'text-sm font-semibold',
               isActive || isCompleted
                 ? 'text-gomin-black'
                 : 'text-gomin-neutral-400',
