@@ -20,16 +20,16 @@ const Header = ({ showBackButton = true, onBackClick }: HeaderProps) => {
   };
 
   return (
-    <header className="relative w-full h-14 flex items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full h-14 flex items-center justify-between px-4 bg-transparent pointer-events-none">
       {/* Left Area: Back Button */}
       <div className="flex items-center min-w-10">
         {showBackButton && (
           <button
             onClick={handleBack}
-            className="flex items-center justify-center w-10 h-10 -ml-2 mt-4 rounded-full text-gray-700 hover:text-gray-900 active:bg-gray-100 transition-colors"
+            className="pointer-events-auto flex items-center justify-center w-11 h-11 -ml-1 mt-4 rounded-full bg-white/80 backdrop-blur-md text-gray-700 hover:text-gray-900 hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-[0_4px_12px_rgba(0,0,0,0.08)] border border-black/5"
             aria-label="이전 화면으로 이동"
           >
-            <ChevronLeftIcon className="w-10 h-10" />
+            <ChevronLeftIcon className="w-8 h-8 -ml-0.5" />
           </button>
         )}
       </div>

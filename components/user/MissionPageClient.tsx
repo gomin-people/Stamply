@@ -94,7 +94,7 @@ export default function MissionPageClient({
           <div className="mb-4 min-h-[56px] flex items-center">
             {!isAllCompleted ? (
               <h2 className="text-2xl font-nanum font-extrabold text-gomin-neutral-700 leading-tight tracking-tight select-none">
-                <span className="text-gomin-primary-700 font-extrabold">
+                <span className="text-gomin-primary-700 font-nanum font-extrabold">
                   {incompleteCount}개
                 </span>
                 의 스탬프를 더 모으고
