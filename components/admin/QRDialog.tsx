@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { Download, Printer, QrCode } from 'lucide-react';
 import { getMissionCheckUrl } from '@/utils/qr';
 import QRCode from 'react-qr-code';
