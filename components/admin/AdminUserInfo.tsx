@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAdminUserQuery } from '@/features/admin/user/adminUserQueries';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import LogoutButton from '@/components/admin/LogoutButton';
 
@@ -15,7 +16,8 @@ export default function AdminUserInfo() {
   }, [isError, router]);
 
   return (
-    <div className="border-t border-gray-200 pt-4">
+    <div>
+      <Separator className="mb-4 bg-gomin-neutral-100" />
       <div className="flex items-center gap-2.5 p-2">
         {isLoading ? (
           <Skeleton className="w-9 h-9 rounded-full shrink-0" />
