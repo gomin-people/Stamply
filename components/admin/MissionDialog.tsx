@@ -30,7 +30,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
   const [title, setTitle] = useState(mission.title);
   const [description, setDescription] = useState(mission.description);
   const [titleError, setTitleError] = useState(false);
-  const [saving, setsaving] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleSave = () => {
     if (!title.trim()) {
@@ -38,7 +38,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
       return;
     }
     onSave?.({ ...mission, title, description });
-    setsaving(true);
+    setSaving(true);
   };
 
   return (

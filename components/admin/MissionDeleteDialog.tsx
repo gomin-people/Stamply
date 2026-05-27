@@ -16,10 +16,10 @@ type Props = {
 };
 
 export default function MissionDeleteDialog({ mission, onDelete }: Props) {
-  const [saving, setsaving] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleDelete = () => {
-    setsaving(true);
+    setSaving(true);
     if (mission.id) {
       onDelete?.(mission.id);
     }
