@@ -29,7 +29,7 @@ export default function Logout({ disabled = false }: Props) {
       size="icon"
       className="cursor-pointer disabled:cursor-not-allowed"
     >
-      <LogOut className="w-5 h-5" />
+      <LogOut className="size-5" />
     </Button>
   );
 }

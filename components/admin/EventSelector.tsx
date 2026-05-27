@@ -9,6 +9,7 @@ import {
 } from '@/constants/adminEventMocks';
 import { cn } from '@/utils';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,17 +59,18 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
       </label>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
+          <Button
             id="admin-event-select"
             type="button"
-            className="mt-2 flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border border-gomin-primary-300 bg-gomin-primary-100 px-3 text-sm font-semibold text-gomin-black transition-colors hover:border-gomin-primary-400 hover:bg-gomin-primary-200 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+            variant="outline"
+            className="mt-2 flex h-14 w-full cursor-pointer rounded-xl border-gomin-primary-300 bg-gomin-primary-100 px-3 font-semibold text-gomin-black transition-colors hover:border-gomin-primary-400 hover:bg-gomin-primary-200 focus-visible:ring-0"
           >
             <span className="max-w-full truncate">{selectedEvent.title}</span>
-          </button>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           sideOffset={12}
-          className="rounded-xl border-gomin-neutral-200 bg-gomin-white p-2"
+          className="rounded-xl bg-gomin-white p-2"
         >
           {adminEventOptions.map((event) => {
             const isSelected = event.id === routeEventId;
@@ -77,12 +79,12 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
               <DropdownMenuItem
                 key={event.id}
                 data-selected={isSelected}
-                className="flex h-13 cursor-pointer items-center justify-between gap-1.5 rounded-lg px-1.5 text-left transition-colors focus:bg-gomin-neutral-100 data-[selected=true]:text-gomin-black"
+                className="h-13 cursor-pointer justify-between rounded-lg text-left transition-colors focus:bg-gomin-neutral-100"
                 onSelect={() => selectEvent(event.id)}
               >
                 <span
                   className={cn(
-                    'min-w-0 truncate text-sm font-semibold',
+                    'min-w-0 truncate font-semibold',
                     isSelected ? 'text-gomin-black' : 'text-gomin-neutral-500'
                   )}
                 >
@@ -96,8 +98,8 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
           })}
 
           <DropdownMenuSeparator className="my-2 bg-gomin-neutral-100" />
-          <DropdownMenuItem className="flex h-12 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-gomin-neutral-300 text-sm font-semibold text-gomin-white transition-colors focus:bg-gomin-neutral-400 focus:text-gomin-white focus:**:text-gomin-white">
-            <Plus className="h-5 w-5" aria-hidden="true" />
+          <DropdownMenuItem className="h-12 cursor-pointer justify-center rounded-lg bg-gomin-neutral-300 font-semibold text-gomin-white transition-colors focus:bg-gomin-neutral-400 focus:text-gomin-white focus:**:text-gomin-white">
+            <Plus className="size-5" aria-hidden="true" />
             <span>새 행사 만들기</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

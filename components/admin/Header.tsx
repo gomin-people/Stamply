@@ -15,7 +15,7 @@ const Header = () => {
   }
 
   return (
-    <header className="relative flex w-full flex-col px-4 pt-6 pl-8">
+    <header className="flex flex-col pt-6 pr-4 pl-8">
       <h1 className="text-xl font-semibold text-gomin-black">{route.title}</h1>
       {route.description && (
         <p className="mt-2 text-sm text-gomin-neutral-500">
