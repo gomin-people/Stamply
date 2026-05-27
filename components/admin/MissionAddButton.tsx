@@ -16,21 +16,21 @@ type Props = {
 export default function MissionAddButton({ disabled }: Props) {
   const eventId = Number(useParams().eventId);
   const [isAdding, setIsAdding] = useState(false);
-  const { mutate: createAdminMission } = useCreateAdminMissionMutation();
+  const { mutateAsync: createAdminMissionAsync } =
+    useCreateAdminMissionMutation();
   const queryClient = useQueryClient();
 
-  const handleSave = (payload: Mission) => {
-    createAdminMission(
-      { eventId, payload },
-      {
-        onSuccess: () => {
-          setIsAdding(false);
-          queryClient.invalidateQueries({
-            queryKey: ['admin', 'events', eventId, 'missions'],
-          });
-        },
-      }
-    );
+  const handleSave = async (payload: Mission): Promise<void> => {
+    try {
+      await createAdminMissionAsync({ eventId, payload });
+      queryClient.invalidateQueries({
+        queryKey: ['admin', 'events', eventId, 'missions'],
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
@@ -45,7 +45,6 @@ export default function MissionAddButton({ disabled }: Props) {
 
       <Dialog open={isAdding} onOpenChange={setIsAdding}>
         <MissionDialog
-          key={String(isAdding)}
           mission={{ title: '', description: '', isActive: false }}
           onSave={handleSave}
         />

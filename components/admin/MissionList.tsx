@@ -30,8 +30,10 @@ export default function MissionList({ missions }: Props) {
     token: string;
     id: number;
   } | null>(null);
-  const { mutate: deleteAdminMission } = useDeleteAdminMissionMutation();
-  const { mutate: updateAdminMission } = useUpdateAdminMissionMutation();
+  const { mutateAsync: deleteAdminMissionAsync } =
+    useDeleteAdminMissionMutation();
+  const { mutateAsync: updateAdminMissionAsync } =
+    useUpdateAdminMissionMutation();
   const eventId = Number(useParams().eventId);
   const queryClient = useQueryClient();
 
@@ -41,32 +43,45 @@ export default function MissionList({ missions }: Props) {
     });
   };
 
-  const handleDelete = (missionId: number) => {
-    setDeletingMission(null);
-    deleteAdminMission(
-      { eventId, missionId },
-      { onSuccess: invalidateMissions }
-    );
+  const handleDelete = async (missionId: number) => {
+    try {
+      await deleteAdminMissionAsync({ eventId, missionId });
+      invalidateMissions();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setDeletingMission(null);
+    }
   };
 
-  const handleToggleActive = (missionId: number, checked: boolean) => {
-    updateAdminMission(
-      { eventId, missionId, payload: { isActive: checked } },
-      { onSuccess: invalidateMissions }
-    );
+  const handleToggleActive = async (missionId: number, checked: boolean) => {
+    try {
+      await updateAdminMissionAsync({
+        eventId,
+        missionId,
+        payload: { isActive: checked },
+      });
+      invalidateMissions();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handleSave = (mission: Mission) => {
+  const handleSave = async (mission: Mission) => {
+    console.log(mission);
     if (!mission.id) return;
-    setEditingMission(null);
-    updateAdminMission(
-      {
+    try {
+      await updateAdminMissionAsync({
         eventId,
         missionId: mission.id,
         payload: { title: mission.title, description: mission.description },
-      },
-      { onSuccess: invalidateMissions }
-    );
+      });
+      invalidateMissions();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setEditingMission(null);
+    }
   };
 
   if (missions.length === 0) {
@@ -161,7 +176,6 @@ export default function MissionList({ missions }: Props) {
       >
         {deletingMission && (
           <MissionDeleteDialog
-            key={deletingMission.id}
             mission={deletingMission}
             onDelete={handleDelete}
           />

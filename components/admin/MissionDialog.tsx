@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Check } from 'lucide-react';
 import {
   DialogContent,
@@ -23,22 +23,23 @@ import type { Mission } from '@/types/mission';
 
 type Props = {
   mission: Mission;
-  onSave?: (updated: Mission) => void;
+  onSave?: (mission: Mission) => Promise<void>;
 };
 
 export default function MissionDialog({ mission, onSave }: Props) {
   const [title, setTitle] = useState(mission.title);
   const [description, setDescription] = useState(mission.description);
   const [titleError, setTitleError] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleSave = () => {
     if (!title.trim()) {
       setTitleError(true);
       return;
     }
-    onSave?.({ ...mission, title, description });
-    setSaving(true);
+    startTransition(async () => {
+      await onSave?.({ ...mission, title, description });
+    });
   };
 
   return (
@@ -103,7 +104,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
           variant="default"
           className="bg-gomin-primary-700"
           onClick={handleSave}
-          disabled={saving}
+          disabled={isPending}
         >
           <Check />
           저장
