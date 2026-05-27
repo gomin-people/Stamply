@@ -9,10 +9,11 @@ export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
   const participantCookie = cookieStore.get(PARTICIPANT_COOKIE_NAME);
 
   if (!participantCookie) {
-    redirect('/qrRequired');
+    redirect('/qr-required');
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/participant/events/${eventId}`, {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const res = await fetch(`${baseUrl}/api/v1/participant/events/${eventId}`, {
     headers: {
       Cookie: `${PARTICIPANT_COOKIE_NAME}=${participantCookie.value}`,
     },
@@ -20,7 +21,7 @@ export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
   });
 
   if (!res.ok) {
-    redirect('/qrRequired');
+    redirect('/qr-required');
   }
 
   const { data: event } = (await res.json()) as ApiDataResponse<StamplyEvent>;

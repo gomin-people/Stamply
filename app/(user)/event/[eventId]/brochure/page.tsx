@@ -1,41 +1,57 @@
-import Link from 'next/link'
+'use client'
 
-interface PageProps {
-  params: Promise<{ eventId: string }>
-}
+import { useState } from 'react'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import { useParticipantEventQuery } from '@/features/participant/events/participantEventQueries'
+import BrochureSlider from '@/components/user/brochure/BrochureSlider'
+import BrochureIndicator from '@/components/user/brochure/BrochureIndicator'
+import BrochureEventButton from '@/components/user/brochure/BrochureEventButton'
 
-export default async function BrochurePage({ params }: PageProps) {
-  const { eventId } = await params
+const BrochureGuideOverlay = dynamic(
+  () => import('@/components/user/brochure/BrochureGuideOverlay'),
+  { ssr: false }
+)
+
+const BrochurePage = () => {
+  const { eventId } = useParams<{ eventId: string }>()
+  const searchParams = useSearchParams()
+  const fromMission = searchParams.get('from') === 'mission'
+
+  const router = useRouter()
+  const { data: event } = useParticipantEventQuery(Number(eventId))
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  if (event && !event.brochureImageUrl?.length) {
+    router.replace(`/event/${eventId}/mission`)
+    return null
+  }
+
+  const images = event?.brochureImageUrl ?? []
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? prev : prev - 1))
+  }
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? prev : prev + 1))
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-56px)] bg-gomin-white">
-      <div className="max-w-md w-full space-y-6">
-        <div className="space-y-2">
-          <span className="inline-block px-3 py-1 text-xs font-semibold text-gomin-primary-700 bg-gomin-primary-100 rounded-full">
-            STEP 1. 브로슈어 안내
-          </span>
-          <h2 className="text-2xl font-black text-gomin-black">
-            행사 안내장
-          </h2>
-          <div className="p-5 border border-gomin-neutral-200 rounded-2xl bg-gomin-neutral-100 text-left space-y-3">
-            <h3 className="font-bold text-gomin-black">📖 {eventId.toUpperCase()} 즐기기</h3>
-            <ul className="text-xs text-gomin-neutral-500 space-y-2 list-disc list-inside">
-              <li>행사 부스를 방문하여 퀴즈를 풀어보세요.</li>
-              <li>스탬프를 획득하여 푸짐한 리워드를 받아가세요.</li>
-              <li>주변의 맛집 제휴 혜택도 놓치지 마세요!</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-4">
-          <Link
-            href={`/event/${eventId}/mission`}
-            className="inline-flex w-full items-center justify-center h-12 px-6 font-bold text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-xl transition-all duration-200 shadow-md shadow-gomin-primary-700/20 active:scale-[0.98]"
-          >
-            안내 확인 완료 & 미션 시작하기
-          </Link>
-        </div>
+    <div className="bg-gomin-white flex flex-col items-center pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
+      <div className="mb-4">
+        <BrochureIndicator total={images.length} currentIndex={currentIndex} />
       </div>
+      <BrochureSlider
+        images={images}
+        currentIndex={currentIndex}
+        onPrev={handlePrev}
+        onNext={handleNext}
+      />
+      {!fromMission && <BrochureGuideOverlay />}
+      {fromMission && <BrochureEventButton />}
     </div>
   )
 }
+
+export default BrochurePage
