@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Download, Printer, QrCode } from 'lucide-react';
+import { getMissionCheckUrl } from '@/utils/qr';
 import QRCode from 'react-qr-code';
 import {
   DialogContent,
@@ -22,6 +23,7 @@ const QR_SIZE = 240;
 
 export default function QRDialog({ missionTitle, token, qrId }: Props) {
   const svgRef = useRef<HTMLDivElement>(null);
+  const qrCodeUrl = getMissionCheckUrl(token);
 
   const handleDownload = () => {
     const svgEl = svgRef.current?.querySelector('svg');
@@ -114,7 +116,7 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
           ref={svgRef}
           className="rounded-2xl border border-gomin-neutral-100 bg-white p-5 shadow-sm"
         >
-          <QRCode value={token} size={QR_SIZE} />
+          {qrCodeUrl && <QRCode value={qrCodeUrl} size={QR_SIZE} />}
         </div>
       </div>
 

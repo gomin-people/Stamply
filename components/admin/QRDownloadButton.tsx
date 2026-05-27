@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import type { AdminMissionDetail } from '@/types/models/admin';
+import { getMissionCheckUrl } from '@/utils/qr';
 
 type Props = {
   missions: AdminMissionDetail[];
@@ -83,7 +84,7 @@ export default function QRDownloadButton({ missions }: Props) {
         {missions.flatMap((mission) =>
           (mission.qrCodes ?? []).map((qr) => (
             <div key={qr.id} data-token={qr.token}>
-              <QRCode value={qr.token} size={QR_SIZE} />
+              <QRCode value={getMissionCheckUrl(qr.token)} size={QR_SIZE} />
             </div>
           ))
         )}
