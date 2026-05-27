@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { supabase } from '@/utils/supabase/server';
 import { PARTICIPANT_COOKIE_NAME } from '@/utils/api';
@@ -37,6 +37,10 @@ export default async function MissionPage({ params }: PageProps) {
   const cookieStore = await cookies();
   const eventUserId = cookieStore.get(PARTICIPANT_COOKIE_NAME)?.value || null;
 
+  if (!eventUserId) {
+    redirect('/qr-required');
+  }
+
   const [
     { data: participant },
     { data: qrCodes }
@@ -44,7 +48,7 @@ export default async function MissionPage({ params }: PageProps) {
     supabase
       .from('participant_users')
       .select('id')
-      .eq('event_user_id', eventUserId || '')
+      .eq('event_user_id', eventUserId)
       .maybeSingle(),
     supabase
       .from('qr_codes')
@@ -53,18 +57,20 @@ export default async function MissionPage({ params }: PageProps) {
       .eq('type', 'MISSION'),
   ]);
 
+  if (!participant) {
+    redirect('/qr-required');
+  }
+
   let completedMissionsIds: number[] = [];
 
-  if (participant) {
-    const { data: completions } = await supabase
-      .from('mission_completions')
-      .select('missions_id')
-      .eq('events_id', eventId)
-      .eq('participant_users_id', participant.id);
+  const { data: completions } = await supabase
+    .from('mission_completions')
+    .select('missions_id')
+    .eq('events_id', eventId)
+    .eq('participant_users_id', participant.id);
 
-    if (completions) {
-      completedMissionsIds = completions.map((c) => c.missions_id);
-    }
+  if (completions) {
+    completedMissionsIds = completions.map((c) => c.missions_id);
   }
 
   const qrMap = new Map<number, string>();
