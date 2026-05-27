@@ -86,9 +86,9 @@ const getAdminRoutePath = (pattern: string, params: AdminRouteParams) => {
  * 현재 경로에 해당하는 관리자 라우트 설정
  */
 export const getAdminRouteConfig = (pathname: string) => {
-  return adminRoutes.find((route) =>
-    patternToRegex(route.pattern).test(pathname)
-  );
+  return [...adminRoutes]
+    .sort((a, b) => b.pattern.length - a.pattern.length)
+    .find((route) => patternToRegex(route.pattern).test(pathname));
 };
 
 /**
