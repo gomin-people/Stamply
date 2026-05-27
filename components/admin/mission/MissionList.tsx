@@ -68,7 +68,6 @@ export default function MissionList({ missions }: Props) {
   };
 
   const handleSave = async (mission: Mission) => {
-    console.log(mission);
     if (!mission.id) return;
     try {
       await updateAdminMissionAsync({
