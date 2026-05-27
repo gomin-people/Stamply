@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import MissionDialog from "@/components/admin/mission/MissionDialog";
-import { Mission } from "@/types/mission";
+import { Mission } from "@/types";
 import { useCreateAdminMissionMutation } from "@/features/admin/missions/adminMissionMutations";
 import { useParams } from "next/navigation";
 
