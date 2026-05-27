@@ -20,7 +20,7 @@ export default function CreateEventPage() {
   const handleNext = () => setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
 
   return (
-    <div className="p-8">
+    <div className="mx-auto w-full max-w-7xl px-[10vw] py-8">
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
         <EventFormStepper currentStep={currentStep} />
 
