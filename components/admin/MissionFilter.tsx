@@ -4,9 +4,13 @@ export type MissionFilter = 'all' | 'active' | 'inactive';
 
 type Props = {
   defaultValue?: MissionFilter;
+  toggleValue: (value: MissionFilter) => void;
 };
 
-export default function MissionFilter({ defaultValue = 'all' }: Props) {
+export default function MissionFilter({
+  defaultValue = 'all',
+  toggleValue,
+}: Props) {
   return (
     <ToggleGroup
       type="single"
@@ -14,6 +18,7 @@ export default function MissionFilter({ defaultValue = 'all' }: Props) {
       size="sm"
       spacing={0}
       defaultValue={defaultValue}
+      onValueChange={toggleValue}
     >
       <ToggleGroupItem
         value="all"

@@ -8,9 +8,8 @@ import {
   pickBodyFields,
   readJsonObject,
   serverError,
-  toInteger,
 } from '@/utils/api';
-import { supabase } from '@/utils/supabase/server';
+import { createSessionClient } from '@/utils/supabase/session-server';
 
 // 행사 하위 미션 목록 route parameter 타입
 type AdminEventMissionsRouteContext = {
@@ -42,6 +41,7 @@ export async function GET(
   { params }: AdminEventMissionsRouteContext
 ) {
   void request;
+  const supabase = await createSessionClient();
   const { eventId: eventIdParam } = await params;
   const eventId = parsePositiveInteger(eventIdParam);
 
@@ -49,13 +49,18 @@ export async function GET(
     return badRequest('올바른 행사 ID가 필요합니다.');
   }
 
-  // missions 테이블에서 events_id가 eventId인 미션 목록을 sort_order, id 오름차순 조회
+  // missions 테이블에서 events_id가 eventId인 미션 목록을 sort_order 오름차순 조회
   const { data, error } = await supabase
     .from('missions')
-    .select('*')
+    .select(
+      `
+    *,
+    qr_codes!inner(id, token)
+  `
+    )
     .eq('events_id', eventId)
-    .order('sort_order', { ascending: true })
-    .order('id', { ascending: true });
+    .eq('qr_codes.type', 'MISSION')
+    .order('sort_order', { ascending: true });
 
   if (error) {
     return serverError('미션 목록 조회 실패', error);
@@ -75,6 +80,7 @@ export async function POST(
   request: Request,
   { params }: AdminEventMissionsRouteContext
 ) {
+  const supabase = await createSessionClient();
   const { eventId: eventIdParam } = await params;
   const eventId = parsePositiveInteger(eventIdParam);
 
@@ -88,7 +94,14 @@ export async function POST(
     return result.response;
   }
 
-  const missingFields = getMissingFields(result.body, MISSION_REQUIRED_FIELDS);
+  // 프론트에서 camelCase로 전달된 isActive를 DB 필드명 is_active로 정규화
+  const body = result.body;
+  if ('isActive' in body) {
+    body.is_active = body.isActive;
+    delete body.isActive;
+  }
+
+  const missingFields = getMissingFields(body, MISSION_REQUIRED_FIELDS);
 
   if (missingFields.length > 0) {
     return badRequest('필수 미션 필드가 누락되었습니다.', {
@@ -111,15 +124,15 @@ export async function POST(
     return notFound('행사를 찾을 수 없습니다.');
   }
 
-  const payload = pickBodyFields(result.body, MISSION_INSERT_FIELDS);
-  const sortOrder = toInteger(payload.sort_order);
+  const payload = pickBodyFields(body, MISSION_INSERT_FIELDS);
+  // const sortOrder = toInteger(payload.sort_order);
 
-  if (
-    Object.prototype.hasOwnProperty.call(payload, 'sort_order') &&
-    sortOrder === null
-  ) {
-    return badRequest('sortOrder는 정수여야 합니다.');
-  }
+  // if (
+  //   Object.prototype.hasOwnProperty.call(payload, 'sort_order') &&
+  //   sortOrder === null
+  // ) {
+  //   return badRequest('sortOrder는 정수여야 합니다.');
+  // }
 
   if (
     Object.prototype.hasOwnProperty.call(payload, 'is_active') &&
@@ -147,9 +160,9 @@ export async function POST(
     ...payload,
     events_id: eventId,
     sort_order:
-      sortOrder ?? (typeof lastMission?.sort_order === 'number'
+      typeof lastMission?.sort_order === 'number'
         ? lastMission.sort_order + 1
-        : 1),
+        : 1,
     is_active:
       typeof payload.is_active === 'boolean' ? payload.is_active : true,
     created_at: now,

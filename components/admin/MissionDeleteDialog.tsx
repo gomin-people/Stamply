@@ -4,24 +4,39 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Mission } from '@/types/mission';
+import { useState } from 'react';
 
 type Props = {
-  id: number;
-  onDelete?: () => void;
+  mission: Mission;
+  onDelete?: (id: number) => void;
 };
 
-export default function MissionDeleteDialog({ id, onDelete }: Props) {
+export default function MissionDeleteDialog({ mission, onDelete }: Props) {
+  const [saving, setSaving] = useState(false);
+
+  const handleDelete = () => {
+    setSaving(true);
+    if (mission.id) {
+      onDelete?.(mission.id);
+    }
+  };
+
   return (
-    <DialogContent className="sm:max-w-sm" showCloseButton={false}>
+    <DialogContent className="sm:max-w-lg" showCloseButton={false}>
       <DialogHeader>
         <p className="mb-1 text-xs font-medium text-gomin-primary-600">
           미션 삭제
         </p>
         <DialogTitle className="text-xl font-bold text-gomin-black">
-          미션 #{id}를 삭제하시겠습니까?
+          &quot;{mission.title}&quot;를 삭제하시겠습니까?
         </DialogTitle>
+        <DialogDescription className="mt-1">
+          삭제된 미션은 복구할 수 없습니다.
+        </DialogDescription>
       </DialogHeader>
 
       <DialogFooter>
@@ -32,7 +47,8 @@ export default function MissionDeleteDialog({ id, onDelete }: Props) {
           <Button
             variant="default"
             className="bg-gomin-primary-700"
-            onClick={onDelete}
+            onClick={handleDelete}
+            disabled={saving}
           >
             삭제하기
           </Button>

@@ -102,7 +102,19 @@ export async function PATCH(
     return result.response;
   }
 
-  const payload = pickBodyFields(result.body, MISSION_UPDATE_FIELDS);
+  // 프론트에서 camelCase로 전달된 필드명을 DB 필드명으로 정규화
+  const body = result.body;
+  if ('isActive' in body) {
+    body.is_active = body.isActive;
+    delete body.isActive;
+  }
+
+  if ('sortOrder' in body) {
+    body.sort_order = body.sortOrder;
+    delete body.sortOrder;
+  }
+
+  const payload = pickBodyFields(body, MISSION_UPDATE_FIELDS);
 
   if (Object.keys(payload).length === 0) {
     return badRequest('수정할 미션 필드가 필요합니다.');
