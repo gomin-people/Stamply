@@ -18,10 +18,10 @@ type EntryResult = {
 // 행사 입장 mutation 요청 변수 타입
 type EnterEventVariables = {
   token: string;
-  userId?: number;
+  userId?: string;
 };
 
-function enterEventByToken(token: string, userId?: number) {
+function enterEventByToken(token: string, userId?: string) {
   const searchParams = new URLSearchParams();
 
   if (userId !== undefined) {

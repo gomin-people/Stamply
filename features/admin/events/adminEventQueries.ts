@@ -33,7 +33,7 @@ type EventDashboard = {
   >;
 };
 
-function getAdminEvents(userId?: number) {
+function getAdminEvents(userId?: string) {
   const searchParams = new URLSearchParams();
 
   if (userId !== undefined) {
@@ -65,7 +65,7 @@ function getEventDashboard(eventId: number) {
  * @param userId - 선택적으로 필터링할 운영자 ID
  * @returns React Query 어드민 행사 목록
  */
-export function useAdminEventsQuery(userId?: number) {
+export function useAdminEventsQuery(userId?: string) {
   return useQuery({
     queryKey: ['admin', 'events', 'list', userId],
     queryFn: () => getAdminEvents(userId),

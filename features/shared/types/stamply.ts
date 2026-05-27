@@ -7,7 +7,7 @@ export type Gender = 'MALE' | 'FEMALE' | 'UNKNOWN';
 // 행사 API 응답 타입
 export type StamplyEvent = {
   id: number;
-  userId: number;
+  userId: string;
   title: string;
   startDate: string;
   endDate: string;
@@ -55,7 +55,7 @@ export type QrCode = {
 export type Participant = {
   id: number;
   eventsId: number;
-  userId: number | null;
+  userId: string | null;
   eventUserId: string;
   createdAt: string;
   gender: Gender | null;
@@ -74,7 +74,7 @@ export type MissionCompletion = {
 
 // 행사 생성 요청 타입
 export type EventCreatePayload = {
-  userId: number;
+  userId: string;
   title: string;
   startDate: string;
   endDate: string;

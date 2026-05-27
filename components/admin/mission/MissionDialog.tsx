@@ -28,7 +28,7 @@ type Props = {
 
 export default function MissionDialog({ mission, onSave }: Props) {
   const [title, setTitle] = useState(mission.title);
-  const [description, setDescription] = useState(mission.description);
+  const [description, setDescription] = useState(mission.description ?? '');
   const [titleError, setTitleError] = useState(false);
   const [isPending, startTransition] = useTransition();
 

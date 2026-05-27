@@ -3,7 +3,7 @@ import {
   badRequest,
   getParticipantEventUserId,
   notFound,
-  parseOptionalPositiveInteger,
+  parseOptionalNonEmptyString,
   serverError,
   setParticipantCookie,
 } from '@/utils/api';
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
   }
 
   const requestedUserId = request.nextUrl.searchParams.get('userId');
-  const userId = parseOptionalPositiveInteger(requestedUserId);
+  const userId = parseOptionalNonEmptyString(requestedUserId);
 
   if (requestedUserId !== null && userId === null) {
     return badRequest('올바른 userId가 필요합니다.');

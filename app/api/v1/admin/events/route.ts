@@ -4,11 +4,12 @@ import {
   created,
   getMissingFields,
   ok,
-  parseOptionalPositiveInteger,
+  parseOptionalNonEmptyString,
   pickBodyFields,
   readJsonObject,
   serverError,
   toInteger,
+  toNonEmptyString,
 } from '@/utils/api';
 import { supabase } from '@/utils/supabase/server';
 
@@ -55,7 +56,7 @@ const EVENT_REQUIRED_FIELDS = [
  */
 export async function GET(request: NextRequest) {
   const requestedUserId = request.nextUrl.searchParams.get('userId');
-  const userId = parseOptionalPositiveInteger(requestedUserId);
+  const userId = parseOptionalNonEmptyString(requestedUserId);
 
   if (requestedUserId !== null && userId === null) {
     return badRequest('올바른 userId가 필요합니다.');
@@ -102,10 +103,10 @@ export async function POST(request: Request) {
     });
   }
 
-  const userId = toInteger(result.body.user_id);
+  const userId = toNonEmptyString(result.body.user_id);
 
-  if (userId === null || userId <= 0) {
-    return badRequest('userId는 양의 정수여야 합니다.');
+  if (userId === null) {
+    return badRequest('userId는 비어 있지 않은 문자열이어야 합니다.');
   }
 
   const rewardStock = toInteger(result.body.reward_stock);
