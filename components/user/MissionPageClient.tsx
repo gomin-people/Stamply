@@ -15,13 +15,20 @@ interface EventData {
   title?: string;
   name?: string;
   description?: string;
-  [key: string]: any;
+}
+
+interface InitialMission {
+  id: number;
+  title: string;
+  description: string | null;
+  isCompleted: boolean;
+  token?: string | null;
 }
 
 interface MissionPageClientProps {
   event: EventData;
   eventId: string;
-  initialMissions: any[];
+  initialMissions: InitialMission[];
 }
 
 type ViewMode = 'list' | 'grid';
@@ -35,7 +42,7 @@ export default function MissionPageClient({
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
-  const { data, isLoading, isError, error } = useParticipantMissionsQuery();
+  const { data, isError } = useParticipantMissionsQuery();
 
   // 1순위: 로그인/참여 완료 세션 정보가 반영된 React Query 실시간 데이터
   // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
