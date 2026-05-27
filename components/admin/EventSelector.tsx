@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import {
@@ -17,6 +18,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  useSelectedEventId,
+  useSetSelectedEventId,
+} from '@/stores/admin';
 
 interface EventSelectorProps {
   eventId: string;
@@ -32,14 +37,22 @@ const getStatusBadgeClassName = (status: AdminEventStatus) =>
 export default function EventSelector({ eventId }: EventSelectorProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const routeEventId =
-    getAdminEventOption(eventId)?.id ?? adminEventOptions[0].id;
+  const selectedEventId = useSelectedEventId();
+  const setSelectedEventId = useSetSelectedEventId();
+  const routeEvent = getAdminEventOption(eventId);
   const selectedEvent =
-    adminEventOptions.find((event) => event.id === routeEventId) ??
+    routeEvent ??
+    getAdminEventOption(selectedEventId ?? '') ??
     adminEventOptions[0];
+
+  useEffect(() => {
+    setSelectedEventId(selectedEvent.id);
+  }, [selectedEvent.id, setSelectedEventId]);
 
   const selectEvent = (nextEventId: string) => {
     if (nextEventId !== eventId) {
+      setSelectedEventId(nextEventId);
+
       router.push(
         pathname.replace(
           `/admin/events/${eventId}`,
@@ -73,7 +86,7 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
           className="rounded-xl bg-gomin-white p-2"
         >
           {adminEventOptions.map((event) => {
-            const isSelected = event.id === routeEventId;
+            const isSelected = event.id === selectedEvent.id;
 
             return (
               <DropdownMenuItem
