@@ -8,6 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans);
+  --font-nanum: var(--font-nanum-gothic);
   --color-gomin-primary-700: #5435eb;
   --color-gomin-primary-600: #725ae6;
   --color-gomin-primary-500: #8a77e7;
