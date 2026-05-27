@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
 import EventFormStepper from '@/components/admin/event/EventFormStepper';
 import EventFormFooter from '@/components/admin/event/EventFormFooter';
 import EventInfoForm from '@/components/admin/event/EventInfoForm';
@@ -12,8 +11,7 @@ const TOTAL_STEPS = 3;
 
 const stepComponents = [EventInfoForm, EventStep2Form, EventStep3Form];
 
-export default function EventEditPage() {
-  const { eventId } = useParams<{ eventId: string }>();
+export default function CreateEventPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   const StepForm = stepComponents[currentStep - 1];
@@ -22,29 +20,22 @@ export default function EventEditPage() {
   const handleNext = () => setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
 
   return (
-    <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gomin-black">행사 수정</h1>
-        <p className="mt-1 text-sm text-gomin-neutral-400">
-          행사 정보를 수정합니다. (ID: {eventId})
-        </p>
-      </div>
-
+    <div className="mx-auto w-full max-w-7xl px-10 py-8">
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
         <EventFormStepper currentStep={currentStep} />
 
-        <div className="p-8">
+        <div className="p-6">
           <StepForm />
         </div>
 
-        <div className="px-8 pb-8">
+        <div className="px-6 pb-4">
           <EventFormFooter
             currentStep={currentStep}
             totalSteps={TOTAL_STEPS}
             onPrev={handlePrev}
             onNext={handleNext}
             isLastStep={currentStep === TOTAL_STEPS}
-            completeLabel="행사 수정 완료"
+            completeLabel="행사 등록 완료"
           />
         </div>
       </div>
