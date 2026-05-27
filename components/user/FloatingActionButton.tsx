@@ -1,6 +1,7 @@
 'use client';
 
 import { ScanLine } from 'lucide-react';
+import ThemedButton from '@/components/user/common/ThemedButton';
 
 interface FloatingActionButtonProps {
   isAllCompleted: boolean;
@@ -13,9 +14,9 @@ export default function FloatingActionButton({
 }: FloatingActionButtonProps) {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50">
-      <button
+      <ThemedButton
         onClick={onClick}
-        className="w-full flex items-center justify-center gap-2 h-14 font-sans font-extrabold text-lg text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-[20px] transition-all duration-300 shadow-[0_8px_30px_rgba(84,53,235,0.35)] active:scale-[0.97] hover:scale-[1.01]"
+        className="w-full max-w-none"
       >
         {!isAllCompleted ? (
           <>
@@ -25,7 +26,7 @@ export default function FloatingActionButton({
         ) : (
           <span>리워드 수령하기</span>
         )}
-      </button>
+      </ThemedButton>
     </div>
   );
 }
