@@ -1,7 +1,7 @@
 'use client'
 
-import { use, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { useParticipantEventQuery } from '@/features/participant/events/participantEventQueries'
 import BrochureSlider from '@/components/user/brochure/BrochureSlider'
@@ -13,19 +13,19 @@ const BrochureGuideOverlay = dynamic(
   { ssr: false }
 )
 
-type PageProps = {
-  params: Promise<{ eventId: string }>
-  searchParams: Promise<{ from?: string }>
-}
+const BrochurePage = () => {
+  const { eventId } = useParams<{ eventId: string }>()
+  const searchParams = useSearchParams()
+  const fromMission = searchParams.get('from') === 'mission'
 
-const BrochurePage = ({ params, searchParams }: PageProps) => {
-  const { eventId } = use(params)
-  const { from } = use(searchParams)
-  const fromMission = from === 'mission'
   const router = useRouter()
-
   const { data: event } = useParticipantEventQuery(Number(eventId))
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  if (event && !event.brochureImageUrl?.length) {
+    router.replace(`/event/${eventId}/mission`)
+    return null
+  }
 
   const images = event?.brochureImageUrl ?? []
 
@@ -35,11 +35,6 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? prev : prev + 1))
-  }
-
-  if (event && !event.brochureImageUrl?.length) {
-    router.replace(`/event/${eventId}/mission`)
-    return null
   }
 
   return (
@@ -53,8 +48,8 @@ const BrochurePage = ({ params, searchParams }: PageProps) => {
         onPrev={handlePrev}
         onNext={handleNext}
       />
-      {!fromMission && <BrochureGuideOverlay eventId={eventId} />}
-      {fromMission && <BrochureEventButton eventId={eventId} />}
+      {!fromMission && <BrochureGuideOverlay />}
+      {fromMission && <BrochureEventButton />}
     </div>
   )
 }

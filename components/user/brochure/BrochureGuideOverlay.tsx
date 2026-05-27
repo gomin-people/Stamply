@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useParams } from 'next/navigation'
 import OverlayCircleIcon from '@/components/icons/OverlayCircleIcon'
 
-type BrochureGuideOverlayProps = {
-  eventId: string
-}
-
-const BrochureGuideOverlay = ({ eventId }: BrochureGuideOverlayProps) => {
+const BrochureGuideOverlay = () => {
+  const { eventId } = useParams<{ eventId: string }>()
   const storageKey = `brochure-guide-seen-${eventId}`
   const [visible, setVisible] = useState(!localStorage.getItem(storageKey))
 

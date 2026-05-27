@@ -4,7 +4,7 @@ import { PARTICIPANT_COOKIE_NAME } from '@/utils/api';
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.match(/^\/event\/[^/]+\/brochure/)) {
+  if (pathname.match(/^\/event\/[^/]+\/brochure/) && !pathname.startsWith('/admin')) {
     const participantCookie = request.cookies.get(PARTICIPANT_COOKIE_NAME);
     if (!participantCookie) {
       return NextResponse.redirect(new URL('/qr-required', request.url));
