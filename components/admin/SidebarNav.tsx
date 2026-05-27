@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 type SidebarNavItem = {
   label: string;
@@ -15,7 +16,8 @@ interface SidebarNavProps {
 // 관리자 사이드바 라우트 메뉴 목록
 export default function SidebarNav({ items, pathname }: SidebarNavProps) {
   return (
-    <nav className="mt-6 space-y-1 border-t border-gomin-neutral-100 pt-4">
+    <nav className="mt-6 space-y-1">
+      <Separator className="mb-4 bg-gomin-neutral-100" />
       <p className="ml-2 mb-2 text-xs text-gomin-neutral-500">메뉴</p>
       {items.map((item) => {
         const Icon = item.icon;
