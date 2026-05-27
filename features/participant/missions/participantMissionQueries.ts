@@ -7,10 +7,10 @@ import {
   type Participant,
 } from '@/features/shared/types/stamply';
 
-// 참여자 미션 진행 상태 타입
 type ParticipantMission = Mission & {
   isCompleted: boolean;
   completedAt: string | null;
+  token?: string | null;
 };
 
 // 참여자 미션 진행률 응답 타입

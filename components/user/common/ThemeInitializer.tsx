@@ -9,7 +9,7 @@ interface ThemeInitializerProps {
 }
 
 export function ThemeInitializer({ primaryColor }: ThemeInitializerProps) {
-  const { setPrimaryColor } = useEventTheme();
+  const { primaryColor: contextColor, setPrimaryColor } = useEventTheme();
 
   // 클라이언트 마운트 및 primaryColor 변경 시 전역 컨텍스트 상태 동기화
   useEffect(() => {
@@ -18,14 +18,17 @@ export function ThemeInitializer({ primaryColor }: ThemeInitializerProps) {
     }
   }, [primaryColor, setPrimaryColor]);
 
-  // SSR 시점에 즉시 주입할 7단계 명암 팔레트 생성
+  // 현재 활성화된 테마 컬러 결정 (1순위: 컨텍스트 컬러, 2순위: props 컬러)
+  const activeColor = contextColor || primaryColor || '#5435EB';
+
+  // SSR 및 실시간 변경 시점에 즉시 주입할 7단계 명암 팔레트 생성
   const palette = useMemo(() => {
     try {
-      return generatePalette(primaryColor);
+      return generatePalette(activeColor);
     } catch {
       return generatePalette('#5435EB');
     }
-  }, [primaryColor]);
+  }, [activeColor]);
 
   // SSR 및 최초 브라우저 렌더링 단계에서 FOUC(색상 깜빡임) 방지를 위해 style 태그 즉시 출력
   return (

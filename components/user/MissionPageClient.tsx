@@ -45,7 +45,7 @@ export default function MissionPageClient({
         title: m.title,
         description: m.description ?? '',
         isStamped: m.isCompleted,
-        token: (m as any).token ?? null, // QR 토큰 바인딩
+        token: m.token ?? null, // QR 토큰 바인딩
       }))
     : initialMissions.map((m) => ({
         id: m.id,
@@ -57,7 +57,7 @@ export default function MissionPageClient({
 
   // 미완료된 미션 수 계산
   const incompleteCount = missions.filter((m) => !m.isStamped).length;
-  const isAllCompleted = data ? incompleteCount === 0 : false;
+  const isAllCompleted = incompleteCount === 0;
 
   const hasError = isError;
   const isMissionsEmpty = missions.length === 0;
