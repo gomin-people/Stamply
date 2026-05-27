@@ -24,7 +24,7 @@ export default function MissionItem({ mission }: MissionItemProps) {
       <div
         onClick={() => setIsOpen(true)}
         className={`flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none transition-all duration-300 hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent ${
-          mission.isStamped ? 'bg-[#F3F1FE]' : 'bg-[#EBEBEB]'
+          mission.isStamped ? 'bg-gomin-primary-100' : 'bg-gomin-neutral-100'
         }`}
       >
         {/* 스탬프 도장 이미지 영역 (왼쪽) - 둥근 원 테두리를 제거하고 순수 이미지 노출 */}

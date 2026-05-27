@@ -13,7 +13,7 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
 
   return (
     <main className="min-h-screen bg-white flex justify-center">
-      <div className="w-full max-w-100.5 flex flex-col items-center px-12 pt-41 pb-10">
+      <div className="w-full max-w-100.5 flex flex-col items-center justify-center px-12  pb-10">
         <EventPoster src={event.posterImageUrl} width={300} height={440} />
         <Link
           href={`/event/${eventId}/brochure`}
