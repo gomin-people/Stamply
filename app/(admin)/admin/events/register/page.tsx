@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import EventFormStepper from '@/components/admin/Event/EventFormStepper';
-import EventFormFooter from '@/components/admin/Event/EventFormFooter';
-import EventStep1Form from '@/components/admin/Event/EventStep1Form';
-import EventStep2Form from '@/components/admin/Event/EventStep2Form';
-import EventStep3Form from '@/components/admin/Event/EventStep3Form';
+import EventFormStepper from '@/components/admin/event/EventFormStepper';
+import EventFormFooter from '@/components/admin/event/EventFormFooter';
+import EventStep1Form from '@/components/admin/event/EventStep1Form';
+import EventStep2Form from '@/components/admin/event/EventStep2Form';
+import EventStep3Form from '@/components/admin/event/EventStep3Form';
 
 const TOTAL_STEPS = 3;
 
