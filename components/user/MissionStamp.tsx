@@ -1,25 +1,23 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import IconStamply from '@/components/icons/IconStamply'
-import Modal from '@/components/sample/Modal'
-import Button from '@/components/sample/Button'
+import { useState } from 'react';
+import IconStamply from '@/components/icons/IconStamply';
+import Modal from '@/components/sample/Modal';
+import Button from '@/components/sample/Button';
 
 type Mission = {
-  id: number
-  title: string
-  description: string
-  isStamped: boolean
-}
+  id: number;
+  title: string;
+  description: string;
+  isStamped: boolean;
+};
 
 interface MissionStampProps {
-  mission: Mission
+  mission: Mission;
 }
 
 export default function MissionStamp({ mission }: MissionStampProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
-
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -32,17 +30,29 @@ export default function MissionStamp({ mission }: MissionStampProps) {
         }`}
       >
         {/* 미션 텍스트 (도장이 찍혔을 경우 도장 아래에 겹쳐서 보임) */}
-        <div className={`flex flex-col items-center justify-center text-center space-y-2 z-10 ${
-          mission.isStamped ? 'text-gomin-primary-700/60' : 'text-gomin-neutral-500'
-        }`}>
-          <span className={`text-xl font-black ${
-            mission.isStamped ? 'text-gomin-neutral-800/80' : 'text-gomin-neutral-700'
-          }`}>
+        <div
+          className={`flex flex-col items-center justify-center text-center space-y-2 z-10 ${
+            mission.isStamped
+              ? 'text-gomin-primary-700/60'
+              : 'text-gomin-neutral-500'
+          }`}
+        >
+          <span
+            className={`text-2xl font-sans font-black ${
+              mission.isStamped
+                ? 'text-gomin-neutral-800/80'
+                : 'text-gomin-neutral-600'
+            }`}
+          >
             {mission.title}
           </span>
-          <p className={`text-xs leading-relaxed max-w-[120px] font-medium ${
-            mission.isStamped ? 'text-gomin-neutral-500/70' : 'text-gomin-neutral-400'
-          }`}>
+          <p
+            className={`text-[14px] font-sans max-w-[120px] leading-tight font-bold ${
+              mission.isStamped
+                ? 'text-gomin-neutral-500/70'
+                : 'text-gomin-neutral-400'
+            }`}
+          >
             {mission.description}
           </p>
         </div>
@@ -61,14 +71,18 @@ export default function MissionStamp({ mission }: MissionStampProps) {
           <span className="inline-block self-start px-2.5 py-0.5 text-xs font-semibold text-gomin-primary-700 bg-gomin-primary-100 rounded-full mb-1">
             미션 정보
           </span>
-          <h4 className="font-extrabold text-xl text-gomin-black">{mission.title}</h4>
-          <p className="text-gomin-neutral-500 text-sm mt-1 leading-relaxed">{mission.description}</p>
+          <h4 className="font-extrabold text-xl text-gomin-black">
+            {mission.title}
+          </h4>
+          <p className="text-gomin-neutral-500 text-sm mt-1 leading-relaxed">
+            {mission.description}
+          </p>
           <div className="flex items-center gap-2 mt-4 p-3 bg-gomin-neutral-100 rounded-xl">
-            <span className="text-lg">
-              {mission.isStamped ? '🎉' : '🔒'}
-            </span>
+            <span className="text-lg">{mission.isStamped ? '🎉' : '🔒'}</span>
             <span className="text-sm font-semibold text-gomin-neutral-700">
-              {mission.isStamped ? '이미 완료된 미션입니다!' : '아직 미완료된 미션입니다. QR코드를 스캔해 보세요!'}
+              {mission.isStamped
+                ? '이미 완료된 미션입니다!'
+                : '아직 미완료된 미션입니다. QR코드를 스캔해 보세요!'}
             </span>
           </div>
           <Button
@@ -80,5 +94,5 @@ export default function MissionStamp({ mission }: MissionStampProps) {
         </div>
       </Modal>
     </>
-  )
+  );
 }

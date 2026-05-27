@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { ScanLine } from 'lucide-react'
+import { ScanLine } from 'lucide-react';
 
 interface FloatingActionButtonProps {
-  isAllCompleted: boolean
-  onClick: () => void
+  isAllCompleted: boolean;
+  onClick: () => void;
 }
 
 export default function FloatingActionButton({
@@ -15,7 +15,7 @@ export default function FloatingActionButton({
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50">
       <button
         onClick={onClick}
-        className="w-full flex items-center justify-center gap-2 h-14 font-extrabold text-lg text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-2xl transition-all duration-300 shadow-[0_8px_30px_rgba(84,53,235,0.35)] active:scale-[0.97] hover:scale-[1.01]"
+        className="w-full flex items-center justify-center gap-2 h-14 font-sans font-extrabold text-lg text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-[20px] transition-all duration-300 shadow-[0_8px_30px_rgba(84,53,235,0.35)] active:scale-[0.97] hover:scale-[1.01]"
       >
         {!isAllCompleted ? (
           <>
@@ -27,5 +27,5 @@ export default function FloatingActionButton({
         )}
       </button>
     </div>
-  )
+  );
 }

@@ -23,12 +23,12 @@ export default function MissionItem({ mission }: MissionItemProps) {
     <>
       <div
         onClick={() => setIsOpen(true)}
-        className={`flex items-center gap-6 p-6 rounded-[32px] cursor-pointer w-full select-none transition-all duration-300 hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent ${
+        className={`flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none transition-all duration-300 hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent ${
           mission.isStamped ? 'bg-[#F3F1FE]' : 'bg-[#EBEBEB]'
         }`}
       >
         {/* 스탬프 도장 이미지 영역 (왼쪽) - 둥근 원 테두리를 제거하고 순수 이미지 노출 */}
-        <div className="w-20 h-20 shrink-0 relative flex items-center justify-center select-none">
+        <div className="w-26 h-26 shrink-0 relative flex items-center justify-center select-none">
           <IconStamply
             className={`w-full h-full ${
               mission.isStamped
@@ -39,9 +39,9 @@ export default function MissionItem({ mission }: MissionItemProps) {
         </div>
 
         {/* 텍스트 정보 영역 (오른쪽) */}
-        <div className="flex flex-col text-left space-y-1.5 flex-1">
+        <div className="flex flex-col text-left space-y-2 flex-1">
           <span
-            className={`text-[25px] font-black tracking-tight leading-none ${
+            className={`text-[25px] font-sans font-black tracking-tight leading-none ${
               mission.isStamped
                 ? 'text-gomin-primary-700'
                 : 'text-gomin-neutral-600'
@@ -49,7 +49,13 @@ export default function MissionItem({ mission }: MissionItemProps) {
           >
             {mission.title}
           </span>
-          <div className="flex flex-col text-[16px] font-bold text-gomin-black leading-tight tracking-tight whitespace-pre-line">
+          <div
+            className={`flex flex-col text-[16px] font-sans font-bold leading-tight tracking-tight whitespace-pre-line ${
+              mission.isStamped
+                ? 'text-gomin-neutral-600'
+                : 'text-gomin-neutral-500'
+            }`}
+          >
             {mission.description}
           </div>
         </div>

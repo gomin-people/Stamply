@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import { Menu, LayoutGrid } from 'lucide-react'
+import { Menu, LayoutGrid } from 'lucide-react';
 
-type ViewMode = 'list' | 'grid'
+type ViewMode = 'list' | 'grid';
 
 interface ViewToggleProps {
-  viewMode: ViewMode
-  onChange: (mode: ViewMode) => void
+  viewMode: ViewMode;
+  onChange: (mode: ViewMode) => void;
 }
 
 export default function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-1">
       {/* 리스트 뷰 버튼 */}
       <button
         onClick={() => onChange('list')}
@@ -38,5 +38,5 @@ export default function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
         <LayoutGrid className="w-7 h-7 stroke-[2.5]" />
       </button>
     </div>
-  )
+  );
 }
