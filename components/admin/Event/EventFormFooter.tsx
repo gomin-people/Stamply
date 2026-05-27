@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type Props = {
@@ -7,6 +7,7 @@ type Props = {
   onPrev?: () => void;
   onNext?: () => void;
   isLastStep?: boolean;
+  completeLabel?: string;
 };
 
 export default function EventFormFooter({
@@ -15,9 +16,10 @@ export default function EventFormFooter({
   onPrev,
   onNext,
   isLastStep = false,
+  completeLabel = '등록 완료',
 }: Props) {
   return (
-    <div className="flex items-center gap-2.5 border-t border-gomin-neutral-100 pt-6">
+    <div className="flex items-center gap-2 border-t border-gomin-neutral-100 pt-6">
       <span className="flex-1 text-xs font-medium">
         <span className="text-gomin-black">{currentStep}</span>
         <span className="text-gomin-neutral-400"> / {totalSteps} 단계</span>
@@ -25,7 +27,7 @@ export default function EventFormFooter({
 
       <Button
         variant="outline"
-        className="rounded-xl px-6 py-3"
+        className="h-auto! gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
         disabled={currentStep === 1}
         onClick={onPrev}
       >
@@ -34,11 +36,21 @@ export default function EventFormFooter({
       </Button>
 
       <Button
-        className="rounded-xl bg-gomin-primary-700 px-6 py-3 shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] hover:bg-gomin-primary-700/90"
+        size={null}
+        className="gap-1.5 rounded-xl bg-gomin-primary-700 px-5.5 py-3 text-sm font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-transform hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0"
         onClick={onNext}
       >
-        {isLastStep ? '완료' : '다음'}
-        {!isLastStep && <ChevronRight className="size-3.5" />}
+        {isLastStep ? (
+          <>
+            {completeLabel}
+            <Check className="size-3.5" />
+          </>
+        ) : (
+          <>
+            다음
+            <ChevronRight className="size-3.5" />
+          </>
+        )}
       </Button>
     </div>
   );
