@@ -59,6 +59,10 @@ export default function MissionPageClient({
   const incompleteCount = missions.filter((m) => !m.isStamped).length;
   const isAllCompleted = data ? incompleteCount === 0 : false;
 
+  const hasError = isError;
+  const isMissionsEmpty = missions.length === 0;
+  const showBrochureAndActionButtons = !hasError && !isMissionsEmpty;
+
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
     if (isAllCompleted) {
@@ -82,37 +86,51 @@ export default function MissionPageClient({
             {eventName}
           </h1>
           {/* 우측 별도 컴포넌트로 보여지는 브로슈어 버튼 */}
-          <BrochureButton eventId={eventId} />
+          {showBrochureAndActionButtons && <BrochureButton eventId={eventId} />}
         </div>
 
         {/* 3. 진행 상황 안내 문구 */}
-        <div className="mb-4 min-h-[56px] flex items-center">
-          {!isAllCompleted ? (
-            <h2 className="text-2xl font-nanum font-extrabold text-gomin-neutral-700 leading-tight tracking-tight select-none">
-              <span className="text-gomin-primary-700 font-extrabold">
-                {incompleteCount}개
-              </span>
-              의 스탬프를 더 모으고
-              <br />
-              리워드를 받으세요
-            </h2>
-          ) : (
-            <h2 className="text-2xl font-nanum font-extrabold text-gomin-black leading-tight tracking-tight flex items-center gap-1.5 select-none">
-              🎉 축하합니다!
-              <br />
-              모든 스탬프를 수집했어요!
-            </h2>
-          )}
-        </div>
+        {showBrochureAndActionButtons && (
+          <div className="mb-4 min-h-[56px] flex items-center">
+            {!isAllCompleted ? (
+              <h2 className="text-2xl font-nanum font-extrabold text-gomin-neutral-700 leading-tight tracking-tight select-none">
+                <span className="text-gomin-primary-700 font-extrabold">
+                  {incompleteCount}개
+                </span>
+                의 스탬프를 더 모으고
+                <br />
+                리워드를 받으세요
+              </h2>
+            ) : (
+              <h2 className="text-2xl font-nanum font-extrabold text-gomin-black leading-tight tracking-tight flex items-center gap-1.5 select-none">
+                🎉 축하합니다!
+                <br />
+                모든 스탬프를 수집했어요!
+              </h2>
+            )}
+          </div>
+        )}
 
         {/* 4. UI 선택 토글 버튼 (리스트형 vs 격자형) */}
-        <div className="flex justify-end mb-5">
-          <ViewToggle viewMode={viewMode} onChange={setViewMode} />
-        </div>
+        {showBrochureAndActionButtons && (
+          <div className="flex justify-end mb-5">
+            <ViewToggle viewMode={viewMode} onChange={setViewMode} />
+          </div>
+        )}
 
         {/* 5. 미션 뷰 렌더링 영역 */}
         <div className="transition-all duration-300">
-          {missions.length === 0 ? (
+          {hasError ? (
+            /* 미션을 불러오는데 실패한 경우 Error State 처리 */
+            <div className="flex flex-col items-center justify-center py-20 text-center select-none">
+              <span className="text-4xl mb-4">⚠️</span>
+              <p className="text-gomin-neutral-500 font-sans font-bold text-[16px] leading-tight">
+                미션 목록을 불러오지 못했습니다.
+                <br />
+                네트워크 상태를 확인하고 다시 시도해 주세요.
+              </p>
+            </div>
+          ) : isMissionsEmpty ? (
             /* 등록된 미션이 없는 경우 Empty State 처리 */
             <div className="flex flex-col items-center justify-center py-20 text-center select-none">
               <span className="text-4xl mb-4">📭</span>
@@ -141,10 +159,12 @@ export default function MissionPageClient({
       </main>
 
       {/* 6. 하단 고정 플로팅 액션 버튼 */}
-      <FloatingActionButton
-        isAllCompleted={isAllCompleted}
-        onClick={handleAction}
-      />
+      {showBrochureAndActionButtons && (
+        <FloatingActionButton
+          isAllCompleted={isAllCompleted}
+          onClick={handleAction}
+        />
+      )}
     </div>
   );
 }
