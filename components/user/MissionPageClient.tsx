@@ -38,19 +38,21 @@ export default function MissionPageClient({
   const { data, isLoading, isError, error } = useParticipantMissionsQuery();
 
   // 1순위: 로그인/참여 완료 세션 정보가 반영된 React Query 실시간 데이터
-  // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (isStamped 기본값 false)
+  // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
   const missions = data
     ? data.missions.map((m) => ({
         id: m.id,
         title: m.title,
         description: m.description ?? '',
         isStamped: m.isCompleted,
+        token: (m as any).token ?? null, // QR 토큰 바인딩
       }))
     : initialMissions.map((m) => ({
         id: m.id,
         title: m.title,
         description: m.description ?? '',
-        isStamped: false, // pre-fetch 상태에서는 기본적으로 미완료
+        isStamped: !!m.isCompleted,
+        token: m.token ?? null, // 서버에서 넘겨준 QR 토큰 바인딩
       }));
 
   // 미완료된 미션 수 계산

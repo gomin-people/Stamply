@@ -4,12 +4,14 @@ import { useState } from 'react';
 import IconStamply from '@/components/icons/IconStamply';
 import Modal from '@/components/sample/Modal';
 import Button from '@/components/sample/Button';
+import { useQueryClient } from '@tanstack/react-query';
 
 type Mission = {
   id: number;
   title: string;
   description: string;
   isStamped: boolean;
+  token: string | null;
 };
 
 interface MissionItemProps {
@@ -18,6 +20,49 @@ interface MissionItemProps {
 
 export default function MissionItem({ mission }: MissionItemProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // TODO: [테스트용 코드 - 배포 전 삭제] - START
+  const [isPending, setIsPending] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleTestToggle = async () => {
+    setIsPending(true);
+    try {
+      const isStamped = mission.isStamped;
+      
+      let response: Response;
+      if (isStamped) {
+        response = await fetch('/api/v1/participant/missions', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ missionId: mission.id }),
+        });
+      } else {
+        if (!mission.token) {
+          alert('미션 완료 처리를 위한 QR 토큰이 발급되지 않았습니다.');
+          setIsPending(false);
+          return;
+        }
+        response = await fetch(`/api/v1/qr/mission-check/${mission.token}`, {
+          method: 'POST',
+        });
+      }
+
+      if (response.ok) {
+        await queryClient.invalidateQueries({
+          queryKey: ['participant', 'missions'],
+        });
+      } else {
+        alert(isStamped ? '테스트 미션 취소 처리 실패' : '테스트 미션 완료 처리 실패');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('통신 중 오류가 발생했습니다.');
+    } finally {
+      setIsPending(false);
+    }
+  };
+  // TODO: [테스트용 코드 - 배포 전 삭제] - END
 
   return (
     <>
@@ -81,8 +126,28 @@ export default function MissionItem({ mission }: MissionItemProps) {
                 : '아직 미완료된 미션입니다. QR코드를 스캔해 보세요!'}
             </span>
           </div>
+
+          {/* TODO: [테스트용 코드 - 배포 전 삭제] - START */}
+          {/* 개발자 테스트용 상태 전환 버튼 추가 */}
+          <button
+            disabled={isPending}
+            onClick={handleTestToggle}
+            className={`mt-4 w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-[0.98] cursor-pointer border border-dashed ${
+              mission.isStamped
+                ? 'border-red-400 bg-red-50/30 text-red-500 hover:bg-red-50'
+                : 'border-green-400 bg-green-50/30 text-green-600 hover:bg-green-50'
+            }`}
+          >
+            {isPending
+              ? '처리 중...'
+              : mission.isStamped
+              ? '🛠️ [테스트] 미션 완료 취소하기'
+              : '🛠️ [테스트] 강제 미션 완료하기'}
+          </button>
+          {/* TODO: [테스트용 코드 - 배포 전 삭제] - END */}
+
           <Button
-            className="mt-6 w-full py-3.5 rounded-xl font-bold bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all active:scale-[0.98]"
+            className="mt-3 w-full py-3.5 rounded-xl font-bold bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all active:scale-[0.98]"
             onClick={() => setIsOpen(false)}
           >
             닫기
