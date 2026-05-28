@@ -72,9 +72,7 @@ export default function MissionPageClient({
     if (isAllCompleted) {
       router.push(`/event/${eventId}/complete`);
     } else {
-      alert(
-        '오프라인 부스에 배치된 QR 코드를 카메라로 스캔하여 스탬프를 획득해 주세요!'
-      );
+      router.push(`/event/${eventId}/qr-check`);
     }
   };
 
