@@ -10,11 +10,14 @@ const BrochureGuideOverlay = () => {
   const [visible, setVisible] = useState(!localStorage.getItem(storageKey));
 
   useEffect(() => {
+    const prevent = (e: TouchEvent) => e.preventDefault()
+
     if (visible) {
-      document.body.style.overflow = 'hidden'
+      document.addEventListener('touchmove', prevent, { passive: false })
     }
+
     return () => {
-      document.body.style.overflow = ''
+      document.removeEventListener('touchmove', prevent)
     }
   }, [visible])
 
