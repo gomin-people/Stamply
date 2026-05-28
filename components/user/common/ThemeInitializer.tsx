@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { useEventTheme } from '@/contexts/EventThemeProvider';
+import { useMemo } from 'react';
 import { generatePalette } from '@/utils';
 
 interface ThemeInitializerProps {
@@ -9,19 +8,9 @@ interface ThemeInitializerProps {
 }
 
 export function ThemeInitializer({ primaryColor }: ThemeInitializerProps) {
-  const { primaryColor: contextColor, setPrimaryColor } = useEventTheme();
+  const activeColor = primaryColor || '#5435EB';
 
-  // 클라이언트 마운트 및 primaryColor 변경 시 전역 컨텍스트 상태 동기화
-  useEffect(() => {
-    if (primaryColor) {
-      setPrimaryColor(primaryColor);
-    }
-  }, [primaryColor, setPrimaryColor]);
-
-  // 현재 활성화된 테마 컬러 결정 (1순위: 컨텍스트 컬러, 2순위: props 컬러)
-  const activeColor = contextColor || primaryColor || '#5435EB';
-
-  // SSR 및 실시간 변경 시점에 즉시 주입할 7단계 명암 팔레트 생성
+  // props로 받은 색상으로 즉시 7단계 테마 팔레트 생성 (클라이언트/서버 공통)
   const palette = useMemo(() => {
     try {
       return generatePalette(activeColor);
