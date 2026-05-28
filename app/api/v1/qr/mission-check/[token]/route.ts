@@ -101,6 +101,7 @@ export async function GET(
       events_id: qrCode.events_id,
       missions_id: qrCode.missions_id,
       participant_users_id: participantResult.participant.id,
+      completed_at: new Date().toISOString(),
     });
 
   if (completionError && getErrorCode(completionError) !== "23505") {
