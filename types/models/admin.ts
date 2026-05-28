@@ -12,7 +12,7 @@ export interface MissionModel {
   id: number;
   eventId: number;
   title: string;
-  description: string;
+  description: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;

@@ -12,7 +12,7 @@ export type JsonObject = Record<string, unknown>;
 export type ParticipantRow = JsonObject & {
   id: number;
   events_id: number;
-  user_id: number | null;
+  user_id: string | null;
   event_user_id: string;
   gender: 'MALE' | 'FEMALE' | 'UNKNOWN' | null;
   age_range: string | null;
@@ -161,6 +161,36 @@ export function parseOptionalPositiveInteger(value: string | null) {
   }
 
   return parsePositiveInteger(value);
+}
+
+/**
+ * unknown 값을 비어 있지 않은 문자열로 정규화합니다.
+ *
+ * @param value - 검사할 값
+ * @returns 공백이 아닌 문자열이면 trim된 문자열, 아니면 null
+ */
+export function toNonEmptyString(value: unknown) {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
+ * 선택적 query parameter를 비어 있지 않은 문자열로 정규화합니다.
+ *
+ * @param value - query parameter 문자열 또는 null
+ * @returns 값이 없으면 null, 공백이 아닌 문자열이면 trim된 문자열
+ */
+export function parseOptionalNonEmptyString(value: string | null) {
+  if (value === null) {
+    return null;
+  }
+
+  return toNonEmptyString(value);
 }
 
 /**

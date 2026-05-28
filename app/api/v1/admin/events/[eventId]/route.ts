@@ -7,6 +7,7 @@ import {
   readJsonObject,
   serverError,
   toInteger,
+  toNonEmptyString,
 } from '@/utils/api';
 import { supabase } from '@/utils/supabase/server';
 
@@ -150,10 +151,10 @@ export async function PATCH(
   }
 
   if (Object.prototype.hasOwnProperty.call(payload, 'user_id')) {
-    const userId = toInteger(payload.user_id);
+    const userId = toNonEmptyString(payload.user_id);
 
-    if (userId === null || userId <= 0) {
-      return badRequest('userId는 양의 정수여야 합니다.');
+    if (userId === null) {
+      return badRequest('userId는 비어 있지 않은 문자열이어야 합니다.');
     }
 
     payload.user_id = userId;
