@@ -8,13 +8,14 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans);
-  --color-gomin-primary-700: #5435eb;
-  --color-gomin-primary-600: #725ae6;
-  --color-gomin-primary-500: #8a77e7;
-  --color-gomin-primary-400: #a293e7;
-  --color-gomin-primary-300: #bfb5ed;
-  --color-gomin-primary-200: #d9d3f9;
-  --color-gomin-primary-100: #f3f1fe;
+  --font-nanum: var(--font-nanum-gothic);
+  --color-gomin-primary-700: var(--primary-700, #5435eb);
+  --color-gomin-primary-600: var(--primary-600, #725ae6);
+  --color-gomin-primary-500: var(--primary-500, #8a77e7);
+  --color-gomin-primary-400: var(--primary-400, #a293e7);
+  --color-gomin-primary-300: var(--primary-300, #bfb5ed);
+  --color-gomin-primary-200: var(--primary-200, #d9d3f9);
+  --color-gomin-primary-100: var(--primary-100, #f3f1fe);
   --color-gomin-black: #111111;
   --color-gomin-white: #ffffff;
   --color-gomin-neutral-700: #282828;
@@ -134,6 +135,9 @@
 }
 
 @layer base {
+  /* :root {
+    --removed-body-scroll-bar-size: 0px !important;
+  } */
   * {
     @apply border-border outline-ring/50;
   }
@@ -142,5 +146,15 @@
   }
   html {
     @apply font-sans;
+    /* scrollbar-gutter: stable; */
+    /* overflow-y: scroll; */
+  }
+  /* body[data-scroll-locked] {
+    padding-right: 0px !important;
+  } */
+  
+  /* 중앙 정렬된 fixed 요소가 스크롤 잠금 시 뷰포트 확대 및 중심점 이동으로 인해 오른쪽으로 밀리는 현상 해결 */
+  body[data-scroll-locked] .fixed.left-1\/2 {
+    margin-left: calc(var(--removed-body-scroll-bar-size, 0px) / -2) !important;
   }
 }

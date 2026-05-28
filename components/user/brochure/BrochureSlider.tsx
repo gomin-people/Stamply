@@ -1,16 +1,21 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import { cn } from '@/utils'
+import Image from 'next/image';
+import { cn } from '@/utils';
 
 type BrochureSliderProps = {
-  images: string[]
-  currentIndex: number
-  onPrev: () => void
-  onNext: () => void
-}
+  images: string[];
+  currentIndex: number;
+  onPrev: () => void;
+  onNext: () => void;
+};
 
-const BrochureSlider = ({ images, currentIndex, onPrev, onNext }: BrochureSliderProps) => {
+const BrochureSlider = ({
+  images,
+  currentIndex,
+  onPrev,
+  onNext,
+}: BrochureSliderProps) => {
   return (
     <div className="relative w-78 h-168.5 rounded-[20px] overflow-hidden shadow-card">
       {images.map((src, index) => (
@@ -42,7 +47,7 @@ const BrochureSlider = ({ images, currentIndex, onPrev, onNext }: BrochureSlider
         aria-label="다음 페이지"
       />
     </div>
-  )
-}
+  );
+};
 
-export default BrochureSlider
+export default BrochureSlider;
