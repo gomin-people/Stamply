@@ -48,12 +48,16 @@ export default async function MissionPage({ params }: PageProps) {
   const { data: missionsData } = await missionsRes.json();
 
   // API가 ok() 함수에 의해 snake_case -> camelCase로 자동 정규화된 값을 그대로 바인딩합니다.
-  const initialMissions = (missionsData.missions ?? []).map((m: any) => ({
+  const initialMissions = (missionsData.missions ?? []).map((m: {
+    id: number;
+    title: string;
+    description: string | null;
+    isCompleted: boolean;
+  }) => ({
     id: m.id,
     title: m.title,
     description: m.description,
     isCompleted: m.isCompleted,
-    token: m.token,
   }));
 
   return (

@@ -9,7 +9,6 @@ type Mission = {
   title: string;
   description: string;
   isStamped: boolean;
-  token?: string | null;
 };
 
 interface MissionItemProps {

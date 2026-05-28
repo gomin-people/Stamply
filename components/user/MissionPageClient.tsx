@@ -22,7 +22,6 @@ interface InitialMission {
   title: string;
   description: string | null;
   isCompleted: boolean;
-  token?: string | null;
 }
 
 interface MissionPageClientProps {
@@ -52,14 +51,12 @@ export default function MissionPageClient({
         title: m.title,
         description: m.description ?? '',
         isStamped: m.isCompleted,
-        token: m.token ?? null, // QR 토큰 바인딩
       }))
     : initialMissions.map((m) => ({
         id: m.id,
         title: m.title,
         description: m.description ?? '',
         isStamped: !!m.isCompleted,
-        token: m.token ?? null, // 서버에서 넘겨준 QR 토큰 바인딩
       }));
 
   // 미완료된 미션 수 계산
