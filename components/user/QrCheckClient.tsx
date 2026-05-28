@@ -159,11 +159,9 @@ export default function QrCheckClient({ eventId }: QrCheckClientProps) {
       </div>
       <div className="absolute inset-x-0 bottom-[calc(3rem+env(safe-area-inset-bottom))] px-6">
         <div className="mx-auto w-72 max-w-[78vw]">
-          {/* <ThemedButton className="max-w-none" onClick={handleBack}>
-            <span>돌아가기</span>
-          </ThemedButton> */}
           <button
             className="max-w-none w-full h-14 rounded-[20px] text-white font-sans font-extrabold text-lg transition-all duration-300 active:scale-[0.97] hover:scale-[1.01] flex items-center justify-center gap-2"
+            onClick={handleBack}
             style={{
               backgroundColor: 'var(--primary-700)',
             }}
