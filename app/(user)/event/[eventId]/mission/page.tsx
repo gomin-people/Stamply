@@ -1,7 +1,7 @@
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { PARTICIPANT_COOKIE_NAME } from '@/utils/api';
 import MissionPageClient from '@/components/user/MissionPageClient';
+import { getEntryEvent } from '@/features/qr/entry/api/entry';
 
 interface PageProps {
   params: Promise<{ eventId: string }>;
@@ -10,41 +10,25 @@ interface PageProps {
 export default async function MissionPage({ params }: PageProps) {
   const { eventId: eventIdParam } = await params;
 
+  // 1. getEntryEvent를 사용하여 유저 세션 검증 및 이벤트 정보 동시 획득 (에러 발생 시 내부적으로 redirect 처리됨)
+  const event = await getEntryEvent(eventIdParam);
+
   const cookieStore = await cookies();
-  const eventUserId = cookieStore.get(PARTICIPANT_COOKIE_NAME)?.value || null;
-
-  if (!eventUserId) {
-    redirect('/qr-required');
-  }
-
   const cookieHeader = cookieStore.toString();
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-  // 1. 참여자 행사 정보 및 완료 여부 사전 조회 (API v1 호출)
-  const [eventRes, missionsRes] = await Promise.all([
-    fetch(`${baseUrl}/api/v1/participant/events/${eventIdParam}`, {
-      headers: {
-        Cookie: cookieHeader,
-      },
-      next: { revalidate: 0 }, // 실시간 반영을 위해 캐시 무력화
-    }),
-    fetch(`${baseUrl}/api/v1/participant/missions`, {
-      headers: {
-        Cookie: cookieHeader,
-      },
-      next: { revalidate: 0 }, // 실시간 반영을 위해 캐시 무력화
-    }),
-  ]);
+  // 2. 미션 데이터 조회
+  const missionsRes = await fetch(`${baseUrl}/api/v1/participant/missions`, {
+    headers: {
+      Cookie: cookieHeader,
+    },
+    next: { revalidate: 0 }, // 실시간 반영을 위해 캐시 무력화
+  });
 
-  if (!eventRes.ok || !missionsRes.ok) {
-    // 만약 참여자 쿠키 세션이 만료되거나 세션 불일치 등으로 401을 반환하면 QR 재인증(쿠키 재발급)으로 유도
-    if (eventRes.status === 401 || missionsRes.status === 401) {
-      redirect('/qr-required');
-    }
-    return notFound();
+  if (!missionsRes.ok) {
+    redirect('/qr-required');
   }
 
-  const { data: event } = await eventRes.json();
   const { data: missionsData } = await missionsRes.json();
 
   // API가 ok() 함수에 의해 snake_case -> camelCase로 자동 정규화된 값을 그대로 바인딩합니다.
