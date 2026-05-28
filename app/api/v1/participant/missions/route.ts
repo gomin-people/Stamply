@@ -65,11 +65,13 @@ export async function GET(request: NextRequest) {
   const qrMap = new Map<number, string>();
   // TODO: [테스트용 코드 - 배포 전 삭제] - END
 
-  // 완료 기록을 미션 ID 기준 Map으로 바꿔 미션 목록에 빠르게 병합
+  // 완료 기록을 미션 ID 기준 Map으로 바꿔 미션 목록에 빠르게 병합 (삭제/비활성화된 미션은 제외)
+  const activeMissionIds = new Set(missions?.map((m) => m.id) ?? []);
   for (const completion of completions ?? []) {
     if (
       typeof completion.missions_id === 'number' &&
-      typeof completion.completed_at === 'string'
+      typeof completion.completed_at === 'string' &&
+      activeMissionIds.has(completion.missions_id)
     ) {
       completionMap.set(completion.missions_id, completion.completed_at);
     }

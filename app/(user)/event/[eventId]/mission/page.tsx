@@ -69,8 +69,11 @@ export default async function MissionPage({ params }: PageProps) {
     .eq('events_id', eventId)
     .eq('participant_users_id', participant.id);
 
-  if (completions) {
-    completedMissionsIds = completions.map((c) => c.missions_id);
+  if (completions && dbMissions) {
+    const activeMissionIds = new Set(dbMissions.map((m) => m.id));
+    completedMissionsIds = completions
+      .map((c) => c.missions_id)
+      .filter((id) => activeMissionIds.has(id));
   }
 
   const qrMap = new Map<number, string>();

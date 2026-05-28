@@ -98,8 +98,20 @@ export async function GET(
 
   const completionCounts = new Map<number, number>();
 
-  // 미션별 완료 수는 mission_completions를 missions_id 기준으로 묶어 계산
-  for (const completion of completions ?? []) {
+  // 현재 존재하는 활성(is_active = true) 미션 ID 목록 생성 (삭제/비활성화 제외)
+  const activeMissionIds = new Set(
+    missions
+      ?.filter((mission) => mission.is_active)
+      .map((mission) => mission.id) ?? []
+  );
+
+  // 완료 기록 중 실제로 활성화되어 있는 미션의 완료 기록만 필터링
+  const filteredCompletions = completions?.filter((completion) => 
+    completion.missions_id !== null && activeMissionIds.has(completion.missions_id)
+  ) ?? [];
+
+  // 미션별 완료 수는 필터링된 완료 기록을 기준으로 계산
+  for (const completion of filteredCompletions) {
     const missionId = completion.missions_id;
 
     if (typeof missionId === 'number') {
@@ -110,12 +122,11 @@ export async function GET(
     }
   }
 
-  const activeMissionCount =
-    missions?.filter((mission) => mission.is_active).length ?? 0;
+  const activeMissionCount = activeMissionIds.size;
   // 완료율 분모는 참여자 수와 활성 미션 수를 기준으로 계산
   const totalPossibleCompletions =
     (participantCount ?? 0) * activeMissionCount;
-  const totalCompletions = completions?.length ?? 0;
+  const totalCompletions = filteredCompletions.length;
 
   return ok({
     event,
