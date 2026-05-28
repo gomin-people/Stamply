@@ -7,7 +7,7 @@ import { useParticipantEventQuery } from '@/features/participant/events/particip
 import BrochureSlider from '@/components/user/brochure/BrochureSlider';
 import BrochureIndicator from '@/components/user/brochure/BrochureIndicator';
 import BrochureEventButton from '@/components/user/brochure/BrochureEventButton';
-import ThemedButton from '@/components/user/common/ThemedButton';
+import FloatingActionButton from '@/components/user/FloatingActionButton';
 
 const BrochureGuideOverlay = dynamic(
   () => import("@/components/user/brochure/BrochureGuideOverlay"),
@@ -60,14 +60,10 @@ const BrochurePage = () => {
 
       {/* 3번 추가 구현: 최초 진입(fromMission = false)이고 브로슈어를 다 읽었을(마지막 슬라이드) 때 '스탬프 투어 시작하기' 버튼 활성화 */}
       {!fromMission && isLastPage && (
-        <div className="mt-6 w-full max-w-76 px-4 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <ThemedButton
-            className="w-full"
-            onClick={() => router.push(`/event/${eventId}/mission`)}
-          >
-            스탬프 투어 시작하기
-          </ThemedButton>
-        </div>
+        <FloatingActionButton
+          label="스탬프 투어 시작하기"
+          onClick={() => router.push(`/event/${eventId}/mission`)}
+        />
       )}
 
       {!fromMission && <BrochureGuideOverlay />}

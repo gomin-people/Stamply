@@ -1,13 +1,22 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import OverlayCircleIcon from "@/components/icons/OverlayCircleIcon";
+import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import OverlayCircleIcon from '@/components/icons/OverlayCircleIcon'
 
 const BrochureGuideOverlay = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const storageKey = `brochure-guide-seen-${eventId}`;
   const [visible, setVisible] = useState(!localStorage.getItem(storageKey));
+
+  useEffect(() => {
+    if (visible) {
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [visible])
 
   const handleDismiss = () => {
     localStorage.setItem(storageKey, "1");
