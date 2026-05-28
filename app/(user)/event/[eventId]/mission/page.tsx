@@ -1,6 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { supabase } from '@/utils/supabase/server';
 import { PARTICIPANT_COOKIE_NAME } from '@/utils/api';
 import MissionPageClient from '@/components/user/MissionPageClient';
 
@@ -10,30 +9,7 @@ interface PageProps {
 
 export default async function MissionPage({ params }: PageProps) {
   const { eventId: eventIdParam } = await params;
-  const eventId = Number(eventIdParam);
 
-  // 1. 이미 layout.tsx에서 유효한 이벤트 ID 및 존재 유무가 완전히 검증되었습니다.
-  // 여기서는 미션 보드에서 필요한 실제 DB 데이터를 정확하게 가져옵니다.
-  const { data: event } = await supabase
-    .from('events')
-    .select('*')
-    .eq('id', eventId)
-    .maybeSingle();
-
-  if (!event) {
-    return notFound();
-  }
-
-  // 2. missions 테이블에서 해당 행사의 활성화된 미션 데이터들을 조회합니다.
-  const { data: dbMissions } = await supabase
-    .from('missions')
-    .select('*')
-    .eq('events_id', eventId)
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
-    .order('id', { ascending: true });
-
-  // 3. 참여자 식별 쿠키를 통해 해당 유저의 미션 완료 기록(mission_completions) 및 미션별 QR 토큰들을 사전 조회합니다.
   const cookieStore = await cookies();
   const eventUserId = cookieStore.get(PARTICIPANT_COOKIE_NAME)?.value || null;
 
@@ -41,55 +17,43 @@ export default async function MissionPage({ params }: PageProps) {
     redirect('/qr-required');
   }
 
-  const [
-    { data: participant },
-    { data: qrCodes }
-  ] = await Promise.all([
-    supabase
-      .from('participant_users')
-      .select('id')
-      .eq('event_user_id', eventUserId)
-      .maybeSingle(),
-    supabase
-      .from('qr_codes')
-      .select('missions_id,token')
-      .eq('events_id', eventId)
-      .eq('type', 'MISSION'),
+  const cookieHeader = cookieStore.toString();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+  // 1. 참여자 행사 정보 및 완료 여부 사전 조회 (API v1 호출)
+  const [eventRes, missionsRes] = await Promise.all([
+    fetch(`${baseUrl}/api/v1/participant/events/${eventIdParam}`, {
+      headers: {
+        Cookie: cookieHeader,
+      },
+      next: { revalidate: 0 }, // 실시간 반영을 위해 캐시 무력화
+    }),
+    fetch(`${baseUrl}/api/v1/participant/missions`, {
+      headers: {
+        Cookie: cookieHeader,
+      },
+      next: { revalidate: 0 }, // 실시간 반영을 위해 캐시 무력화
+    }),
   ]);
 
-  if (!participant) {
-    redirect('/qr-required');
-  }
-
-  let completedMissionsIds: number[] = [];
-
-  const { data: completions } = await supabase
-    .from('mission_completions')
-    .select('missions_id')
-    .eq('events_id', eventId)
-    .eq('participant_users_id', participant.id);
-
-  if (completions && dbMissions) {
-    const activeMissionIds = new Set(dbMissions.map((m) => m.id));
-    completedMissionsIds = completions
-      .map((c) => c.missions_id)
-      .filter((id) => activeMissionIds.has(id));
-  }
-
-  const qrMap = new Map<number, string>();
-  for (const qr of qrCodes ?? []) {
-    if (typeof qr.missions_id === 'number' && typeof qr.token === 'string') {
-      qrMap.set(qr.missions_id, qr.token);
+  if (!eventRes.ok || !missionsRes.ok) {
+    // 만약 참여자 쿠키 세션이 만료되거나 세션 불일치 등으로 401을 반환하면 QR 재인증(쿠키 재발급)으로 유도
+    if (eventRes.status === 401 || missionsRes.status === 401) {
+      redirect('/qr-required');
     }
+    return notFound();
   }
 
-  // 4. 조회한 미션 데이터에 완료 여부(isCompleted) 및 QR 토큰(token) 정보를 바인딩하여 줍니다.
-  const initialMissions = (dbMissions ?? []).map((m) => ({
+  const { data: event } = await eventRes.json();
+  const { data: missionsData } = await missionsRes.json();
+
+  // API가 ok() 함수에 의해 snake_case -> camelCase로 자동 정규화된 값을 그대로 바인딩합니다.
+  const initialMissions = (missionsData.missions ?? []).map((m: any) => ({
     id: m.id,
     title: m.title,
     description: m.description,
-    isCompleted: completedMissionsIds.includes(m.id),
-    token: qrMap.get(m.id) ?? null,
+    isCompleted: m.isCompleted,
+    token: m.token,
   }));
 
   return (
