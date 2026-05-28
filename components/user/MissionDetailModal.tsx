@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import Modal from '@/components/sample/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import Button from '@/components/sample/Button';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -76,52 +82,57 @@ export default function MissionDetailModal({
   // TODO: [테스트용 코드 - 배포 전 삭제] - END
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="flex flex-col gap-2 p-1">
-        <span className="inline-block self-start px-2.5 py-0.5 text-xs font-semibold text-gomin-primary-700 bg-gomin-primary-100 rounded-full mb-1">
-          미션 정보
-        </span>
-        <h4 className="font-extrabold text-xl text-gomin-black">
-          {mission.title}
-        </h4>
-        <p className="text-gomin-neutral-500 text-sm mt-1 leading-relaxed">
-          {mission.description}
-        </p>
-        <div className="flex items-center gap-2 mt-4 p-3 bg-gomin-neutral-100 rounded-xl">
-          <span className="text-lg">{mission.isStamped ? '🎉' : '🔒'}</span>
-          <span className="text-sm font-semibold text-gomin-neutral-700">
-            {mission.isStamped
-              ? '이미 완료된 미션입니다!'
-              : '아직 미완료된 미션입니다. QR코드를 스캔해 보세요!'}
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="text-left">
+          <span className="inline-block self-start px-2.5 py-0.5 text-xs font-semibold text-gomin-primary-700 bg-gomin-primary-100 rounded-full w-fit mb-1">
+            미션 정보
           </span>
+          <DialogTitle className="font-extrabold text-xl text-gomin-black">
+            {mission.title}
+          </DialogTitle>
+          <DialogDescription className="text-gomin-neutral-500 text-sm mt-1 leading-relaxed">
+            {mission.description}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-2 p-1">
+          <div className="flex items-center gap-2 mt-2 p-3 bg-gomin-neutral-100 rounded-xl">
+            <span className="text-lg">{mission.isStamped ? '🎉' : '🔒'}</span>
+            <span className="text-sm font-semibold text-gomin-neutral-700">
+              {mission.isStamped
+                ? '이미 완료된 미션입니다!'
+                : '아직 미완료된 미션입니다. QR코드를 스캔해 보세요!'}
+            </span>
+          </div>
+
+          {/* TODO: [테스트용 코드 - 배포 전 삭제] - START */}
+          {/* 개발자 테스트용 상태 전환 버튼 추가 */}
+          <button
+            disabled={isPending}
+            onClick={handleTestToggle}
+            className={`mt-4 w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-[0.98] cursor-pointer border border-dashed ${
+              mission.isStamped
+                ? 'border-red-400 bg-red-50/30 text-red-500 hover:bg-red-50'
+                : 'border-green-400 bg-green-50/30 text-green-600 hover:bg-green-50'
+            }`}
+          >
+            {isPending
+              ? '처리 중...'
+              : mission.isStamped
+                ? '🛠️ [테스트] 미션 완료 취소하기'
+                : '🛠️ [테스트] 강제 미션 완료하기'}
+          </button>
+          {/* TODO: [테스트용 코드 - 배포 전 삭제] - END */}
+
+          <Button
+            className="mt-3 w-full py-3.5 rounded-xl font-bold bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all active:scale-[0.98]"
+            onClick={onClose}
+          >
+            닫기
+          </Button>
         </div>
-
-        {/* TODO: [테스트용 코드 - 배포 전 삭제] - START */}
-        {/* 개발자 테스트용 상태 전환 버튼 추가 */}
-        <button
-          disabled={isPending}
-          onClick={handleTestToggle}
-          className={`mt-4 w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-[0.98] cursor-pointer border border-dashed ${
-            mission.isStamped
-              ? 'border-red-400 bg-red-50/30 text-red-500 hover:bg-red-50'
-              : 'border-green-400 bg-green-50/30 text-green-600 hover:bg-green-50'
-          }`}
-        >
-          {isPending
-            ? '처리 중...'
-            : mission.isStamped
-              ? '🛠️ [테스트] 미션 완료 취소하기'
-              : '🛠️ [테스트] 강제 미션 완료하기'}
-        </button>
-        {/* TODO: [테스트용 코드 - 배포 전 삭제] - END */}
-
-        <Button
-          className="mt-3 w-full py-3.5 rounded-xl font-bold bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all active:scale-[0.98]"
-          onClick={onClose}
-        >
-          닫기
-        </Button>
-      </div>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }
