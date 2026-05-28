@@ -9,13 +9,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-noto-sans);
   --font-nanum: var(--font-nanum-gothic);
-  --color-gomin-primary-700: var(--primary-700, #5435eb);
-  --color-gomin-primary-600: var(--primary-600, #725ae6);
-  --color-gomin-primary-500: var(--primary-500, #8a77e7);
-  --color-gomin-primary-400: var(--primary-400, #a293e7);
-  --color-gomin-primary-300: var(--primary-300, #bfb5ed);
-  --color-gomin-primary-200: var(--primary-200, #d9d3f9);
-  --color-gomin-primary-100: var(--primary-100, #f3f1fe);
+  --color-gomin-primary-700: var(--primary-700);
+  --color-gomin-primary-600: var(--primary-600);
+  --color-gomin-primary-500: var(--primary-500);
+  --color-gomin-primary-400: var(--primary-400);
+  --color-gomin-primary-300: var(--primary-300);
+  --color-gomin-primary-200: var(--primary-200);
+  --color-gomin-primary-100: var(--primary-100);
   --color-gomin-black: #111111;
   --color-gomin-white: #ffffff;
   --color-gomin-neutral-700: #282828;
@@ -66,6 +66,16 @@
 }
 
 :root {
+  /* 기본 테마 색상 변수 선언 (FOUC 및 Tailwind v4 테마 변수 실시간 동적 갱신 보장) */
+  --primary-100: #f3f1fe;
+  --primary-200: #d9d3f9;
+  --primary-300: #bfb5ed;
+  --primary-400: #a293e7;
+  --primary-500: #8a77e7;
+  --primary-600: #725ae6;
+  --primary-700: #5435eb;
+  --primary-color: #5435eb;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
