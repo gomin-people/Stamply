@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { supabase } from '@/utils/supabase/server';
+import { getEventPrimaryColor } from '@/features/participant/events/participantEventTheme';
 import { ThemeInitializer } from '@/components/user/common/ThemeInitializer';
 
 interface LayoutProps {
@@ -9,24 +9,13 @@ interface LayoutProps {
 
 export default async function EventLayout({ children, params }: LayoutProps) {
   const { eventId: eventIdParam } = await params;
-  const eventId = Number(eventIdParam);
 
-  if (isNaN(eventId) || eventId <= 0) {
+  // features에 이미 구현된 함수를 활용해 행사 존재 여부 검증 및 primaryColor 획득
+  const primaryColor = await getEventPrimaryColor(eventIdParam);
+
+  if (!primaryColor) {
     return notFound();
   }
-
-  // Supabase를 통해 행사의 존재 여부 검증 및 테마 색상(primary_color)을 단일 쿼리로 동시 조회합니다.
-  const { data: event, error } = await supabase
-    .from('events')
-    .select('primary_color')
-    .eq('id', eventId)
-    .maybeSingle();
-
-  if (error || !event) {
-    return notFound();
-  }
-
-  const primaryColor = event.primary_color || '#5435EB';
 
   return (
     <>
