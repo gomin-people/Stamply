@@ -1,8 +1,7 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   badRequest,
-  conflict,
-  created,
+  clearParticipantCookie,
   forbidden,
   getCurrentParticipant,
   getErrorCode,
@@ -19,13 +18,13 @@ type MissionCheckRouteContext = {
 };
 
 /**
- * MISSION QR 토큰으로 현재 참여자의 미션 완료를 저장합니다.
+ * MISSION QR 토큰으로 미션 완료를 저장하고 미션 페이지로 이동합니다.
  *
  * @param request - 참여자 식별 쿠키를 포함한 요청 객체
  * @param context - QR token route parameter
- * @returns 완료된 미션과 미션 완료 기록
+ * @returns 미션 완료 후 미션 페이지 redirect 응답
  */
-export async function POST(
+export async function GET(
   request: NextRequest,
   { params }: MissionCheckRouteContext
 ) {
@@ -37,8 +36,20 @@ export async function POST(
 
   const participantResult = await getCurrentParticipant(request);
 
+  // 쿠키가 없거나 쿠키가 있는데 참여자 정보 조회 실패한 경우 모두 QR 체크 필요 페이지로 리다이렉트
   if ("response" in participantResult) {
-    return participantResult.response;
+    if (
+      participantResult.response.status !== 401 &&
+      participantResult.response.status !== 404
+    ) {
+      return participantResult.response;
+    }
+
+    const response = NextResponse.redirect(
+      new URL("/qr-required", request.url)
+    );
+    clearParticipantCookie(response);
+    return response;
   }
 
   // qr_codes 테이블에서 token과 type MISSION 기준 QR 전체 컬럼 조회
@@ -69,7 +80,7 @@ export async function POST(
   // missions 테이블에서 QR의 missions_id, events_id, is_active 기준 미션 조회
   const { data: mission, error: missionError } = await supabase
     .from("missions")
-    .select("*")
+    .select("id")
     .eq("id", qrCode.missions_id)
     .eq("events_id", qrCode.events_id)
     .eq("is_active", true)
@@ -83,39 +94,21 @@ export async function POST(
     return notFound("활성 미션을 찾을 수 없습니다.");
   }
 
-  // mission_completions 테이블에 events_id, missions_id, participant_users_id 기준 완료 기록 삽입 후 조회
-  const { data: completion, error: completionError } = await supabase
+  // mission_completions 테이블에 events_id, missions_id, participant_users_id 기준 완료 기록 삽입
+  const { error: completionError } = await supabase
     .from("mission_completions")
     .insert({
       events_id: qrCode.events_id,
       missions_id: qrCode.missions_id,
       participant_users_id: participantResult.participant.id,
       completed_at: new Date().toISOString(),
-    })
-    .select("*")
-    .single();
+    });
 
-  if (completionError) {
-    // 중복 완료는 DB unique constraint의 23505 에러로 판별
-    if (getErrorCode(completionError) === "23505") {
-      // mission_completions 테이블에서 missions_id와 participant_users_id 기준 기존 완료 기록 조회
-      const { data: existingCompletion } = await supabase
-        .from("mission_completions")
-        .select("*")
-        .eq("missions_id", qrCode.missions_id)
-        .eq("participant_users_id", participantResult.participant.id)
-        .maybeSingle();
-
-      return conflict("이미 완료한 미션입니다.", {
-        completion: existingCompletion,
-      });
-    }
-
+  if (completionError && getErrorCode(completionError) !== "23505") {
     return serverError("미션 완료 저장 실패", completionError);
   }
 
-  return created({
-    mission,
-    completion,
-  });
+  return NextResponse.redirect(
+    new URL(`/event/${qrCode.events_id}/mission`, request.url)
+  );
 }

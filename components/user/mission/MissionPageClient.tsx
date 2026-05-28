@@ -85,7 +85,7 @@ export default function MissionPageClient({
     if (isAllCompleted) {
       setIsSurveyOpen(true);
     } else {
-      router.push(`/event/${eventId}/qr-check`);
+      window.location.assign(`/event/${eventId}/qr-check`);
     }
   };
 

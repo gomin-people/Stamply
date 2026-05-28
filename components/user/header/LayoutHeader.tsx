@@ -21,6 +21,11 @@ const shouldHideHeader = (pathname: string) => {
     return true;
   }
 
+  // 4. QR 스캔 페이지 (.../qr-check) 형태인 경우 숨김
+  if (segments[segments.length - 1] === 'qr-check') {
+    return true;
+  }
+
   return false;
 };
 
