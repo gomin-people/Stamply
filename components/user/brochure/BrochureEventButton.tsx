@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
 const BrochureEventButton = () => {
   const { eventId } = useParams<{ eventId: string }>();

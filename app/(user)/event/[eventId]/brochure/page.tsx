@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import { useParticipantEventQuery } from "@/features/participant/events/participantEventQueries";
-import BrochureSlider from "@/components/user/brochure/BrochureSlider";
-import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
-import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";
-import ThemedButton from "@/components/user/common/ThemedButton";
+import { useState } from 'react';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { useParticipantEventQuery } from '@/features/participant/events/participantEventQueries';
+import BrochureSlider from '@/components/user/brochure/BrochureSlider';
+import BrochureIndicator from '@/components/user/brochure/BrochureIndicator';
+import BrochureEventButton from '@/components/user/brochure/BrochureEventButton';
+import ThemedButton from '@/components/user/common/ThemedButton';
 
 const BrochureGuideOverlay = dynamic(
   () => import("@/components/user/brochure/BrochureGuideOverlay"),
@@ -17,7 +17,7 @@ const BrochureGuideOverlay = dynamic(
 const BrochurePage = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const searchParams = useSearchParams();
-  const fromMission = searchParams.get("from") === "mission";
+  const fromMission = searchParams.get('from') === 'mission';
 
   const router = useRouter();
   const { data: event } = useParticipantEventQuery(Number(eventId));
