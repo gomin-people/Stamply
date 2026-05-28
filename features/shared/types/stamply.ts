@@ -74,7 +74,6 @@ export type MissionCompletion = {
 
 // 행사 생성 요청 타입
 export type EventCreatePayload = {
-  userId: string;
   title: string;
   startDate: string;
   endDate: string;
