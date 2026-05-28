@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import MissionPageClient from "@/components/user/mission/MissionPageClient";
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
+import { getRequestOrigin } from "@/utils/server-url";
 
 type PageProps = {
   params: Promise<{ eventId: string }>;
@@ -15,7 +16,7 @@ export default async function MissionPage({ params }: PageProps) {
 
   const cookieStore = await cookies();
   const cookieHeader = cookieStore.toString();
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = await getRequestOrigin();
 
   // 2. 미션 데이터 조회
   const missionsRes = await fetch(`${baseUrl}/api/v1/participant/missions`, {
