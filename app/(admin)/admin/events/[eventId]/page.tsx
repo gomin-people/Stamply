@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import EventFormStepper from "@/components/admin/event/EventFormStepper";
-import EventFormFooter from "@/components/admin/event/EventFormFooter";
-import EventInfoForm from "@/components/admin/event/EventInfoForm";
-import EventStep2Form from "@/components/admin/event/EventStep2Form";
-import EventStep3Form from "@/components/admin/event/EventStep3Form";
+import { useState } from 'react';
+import { useParams } from 'next/navigation';
+import EventFormStepper from '@/components/admin/event/EventFormStepper';
+import EventFormFooter from '@/components/admin/event/EventFormFooter';
+import EventInfoForm from '@/components/admin/event/EventInfoForm';
+import EventBrochureForm from '@/components/admin/event/EventBrochureForm';
+import EventStep3Form from '@/components/admin/event/EventStep3Form';
 
 const TOTAL_STEPS = 3;
 
-const stepComponents = [EventInfoForm, EventStep2Form, EventStep3Form];
+const stepComponents = [EventInfoForm, EventBrochureForm, EventStep3Form];
 
 export default function EventEditPage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -23,13 +23,6 @@ export default function EventEditPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gomin-black">행사 수정</h1>
-        <p className="mt-1 text-sm text-gomin-neutral-400">
-          행사 정보를 수정합니다. (ID: {eventId})
-        </p>
-      </div>
-
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
         <EventFormStepper currentStep={currentStep} />
 
