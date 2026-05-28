@@ -15,6 +15,7 @@ interface EventData {
   title?: string;
   name?: string;
   description?: string;
+  stampImageUrl?: string | null;
 }
 
 interface InitialMission {
@@ -146,14 +147,22 @@ export default function MissionPageClient({
             /* 스탬프 뷰: 격자형 정사각형 카드 */
             <div className="grid grid-cols-2 gap-4">
               {missions.map((mission) => (
-                <MissionStamp key={mission.id} mission={mission} />
+                <MissionStamp
+                  key={mission.id}
+                  mission={mission}
+                  stampImageUrl={event.stampImageUrl}
+                />
               ))}
             </div>
           ) : (
             /* 리스트 뷰: 가로형 카드 */
             <div className="flex flex-col gap-4">
               {missions.map((mission) => (
-                <MissionItem key={mission.id} mission={mission} />
+                <MissionItem
+                  key={mission.id}
+                  mission={mission}
+                  stampImageUrl={event.stampImageUrl}
+                />
               ))}
             </div>
           )}

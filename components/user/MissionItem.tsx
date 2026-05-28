@@ -13,9 +13,10 @@ type Mission = {
 
 interface MissionItemProps {
   mission: Mission;
+  stampImageUrl?: string | null;
 }
 
-export default function MissionItem({ mission }: MissionItemProps) {
+export default function MissionItem({ mission, stampImageUrl }: MissionItemProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -28,13 +29,23 @@ export default function MissionItem({ mission }: MissionItemProps) {
       >
         {/* 스탬프 도장 이미지 영역 (왼쪽) - 둥근 원 테두리를 제거하고 순수 이미지 노출 */}
         <div className="w-26 h-26 shrink-0 relative flex items-center justify-center select-none">
-          <IconStamply
-            className={`w-full h-full ${
-              mission.isStamped
-                ? 'text-gomin-primary-700 opacity-100'
-                : 'text-gomin-neutral-400 opacity-30'
-            }`}
-          />
+          {stampImageUrl ? (
+            <img
+              src={stampImageUrl}
+              alt="Stamp"
+              className={`w-full h-full object-contain ${
+                mission.isStamped ? 'opacity-100' : 'opacity-30 grayscale'
+              }`}
+            />
+          ) : (
+            <IconStamply
+              className={`w-full h-full ${
+                mission.isStamped
+                  ? 'text-gomin-primary-700 opacity-100'
+                  : 'text-gomin-neutral-400 opacity-30'
+              }`}
+            />
+          )}
         </div>
 
         {/* 텍스트 정보 영역 (오른쪽) */}

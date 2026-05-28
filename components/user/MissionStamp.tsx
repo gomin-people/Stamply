@@ -13,9 +13,10 @@ type Mission = {
 
 interface MissionStampProps {
   mission: Mission;
+  stampImageUrl?: string | null;
 }
 
-export default function MissionStamp({ mission }: MissionStampProps) {
+export default function MissionStamp({ mission, stampImageUrl }: MissionStampProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -58,8 +59,16 @@ export default function MissionStamp({ mission }: MissionStampProps) {
 
         {/* 완료 상태일 때 보라색 도장 오버레이 */}
         {mission.isStamped && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none transform  scale-[0.95] text-gomin-primary-700">
-            <IconStamply className="w-[81%] h-[85%] aspect-[162/171] opacity-95 animate-fade-in" />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none transform rotate-[-12deg] scale-[0.95] text-gomin-primary-700">
+            {stampImageUrl ? (
+              <img
+                src={stampImageUrl}
+                alt="Stamp"
+                className="w-[81%] h-[85%] object-contain opacity-95 animate-fade-in"
+              />
+            ) : (
+              <IconStamply className="w-[81%] h-[85%] aspect-[162/171] opacity-95 animate-fade-in" />
+            )}
           </div>
         )}
       </div>
