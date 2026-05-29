@@ -37,7 +37,11 @@ const EventBrochureForm = forwardRef<StepFormHandle>(
 
     return (
       <div className="flex min-h-129 flex-col gap-2">
-        <BrochureDropzone onChange={handleUploadChange} onDrop={addFiles} />
+        <BrochureDropzone
+          onChange={handleUploadChange}
+          onDrop={addFiles}
+          isFull={pages.length >= MAX_PAGES}
+        />
 
         <BrochurePageStatus count={pages.length} />
 

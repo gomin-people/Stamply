@@ -1,6 +1,7 @@
 import Footer from "@/components/admin/common/Footer";
 import Header from "@/components/admin/common/Header";
 import Sidebar from "@/components/admin/common/Sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function AdminLayout({
   children,
@@ -15,6 +16,7 @@ export default function AdminLayout({
         <main className="flex-1">{children}</main>
         <Footer />
       </div>
+      <Toaster />
     </div>
   );
 }

@@ -2,16 +2,24 @@
 
 import { useRef, useState } from "react";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
 import { cn } from "@/utils";
 
 type DropzoneProps = {
   onChange: React.ComponentProps<"input">["onChange"];
   onDrop: (files: FileList) => void;
+  isFull?: boolean;
 };
 
-const BrochureDropzone = ({ onChange, onDrop }: DropzoneProps) => {
+const BrochureDropzone = ({
+  onChange,
+  onDrop,
+  isFull = false,
+}: DropzoneProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [shake, setShake] = useState(0);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -19,41 +27,56 @@ const BrochureDropzone = ({ onChange, onDrop }: DropzoneProps) => {
     if (e.dataTransfer.files) onDrop(e.dataTransfer.files);
   };
 
+  const handleClick = () => {
+    if (isFull) {
+      toast.warning("최대 10페이지까지 업로드할 수 있어요.");
+      setShake((s) => s + 1);
+      return;
+    }
+    inputRef.current?.click();
+  };
+
   return (
     <div className="pb-3">
-      <button
-        type="button"
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragOver(true);
-        }}
-        onDragLeave={() => setIsDragOver(false)}
-        onDrop={handleDrop}
-        className={cn(
-          "flex w-full items-center gap-4 rounded-2xl border border-dashed px-6 py-5 transition-colors",
-          isDragOver
-            ? "cursor-copy border-gomin-primary-700 bg-gomin-primary-100/50"
-            : "border-gomin-primary-300 bg-gomin-primary-100"
-        )}
+      <motion.div
+        key={shake}
+        animate={shake > 0 ? { x: [0, -6, 6, -4, 4, -2, 2, 0] } : {}}
+        transition={{ duration: 0.4 }}
       >
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-[0_2px_3px_rgba(84,53,235,0.1)]">
-          <Upload className="size-5 text-gomin-primary-700" />
-        </div>
-        <div className="flex flex-col gap-0.5 text-left">
-          <span className="text-[15px] font-medium text-gomin-primary-600">
-            여러 페이지를 한번에 업로드
-          </span>
-          <span className="text-[13px] font-medium text-gomin-primary-700">
-            JPG · PNG 파일을 드래그하거나 클릭해 업로드하세요
-          </span>
-        </div>
-        <div className="ml-auto shrink-0">
-          <span className="rounded-xl bg-white px-3.5 py-2 text-[13px] font-medium text-gomin-primary-700">
-            파일 선택
-          </span>
-        </div>
-      </button>
+        <button
+          type="button"
+          onClick={handleClick}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragOver(true);
+          }}
+          onDragLeave={() => setIsDragOver(false)}
+          onDrop={handleDrop}
+          className={cn(
+            "flex w-full items-center gap-4 rounded-2xl border border-dashed px-6 py-5 transition-colors",
+            isDragOver
+              ? "cursor-copy border-gomin-primary-700 bg-gomin-primary-100/50"
+              : "border-gomin-primary-300 bg-gomin-primary-100"
+          )}
+        >
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-[0_2px_3px_rgba(84,53,235,0.1)]">
+            <Upload className="size-5 text-gomin-primary-700" />
+          </div>
+          <div className="flex flex-col gap-0.5 text-left">
+            <span className="text-[15px] font-medium text-gomin-primary-600">
+              여러 페이지를 한번에 업로드
+            </span>
+            <span className="text-[13px] font-medium text-gomin-primary-700">
+              JPG · PNG 파일을 드래그하거나 클릭해 업로드하세요
+            </span>
+          </div>
+          <div className="ml-auto shrink-0">
+            <span className="rounded-xl bg-white px-3.5 py-2 text-[13px] font-medium text-gomin-primary-700">
+              파일 선택
+            </span>
+          </div>
+        </button>
+      </motion.div>
       <input
         ref={inputRef}
         type="file"
