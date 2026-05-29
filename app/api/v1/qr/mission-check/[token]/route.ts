@@ -13,6 +13,25 @@ import {
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
 
+const MISSION_UNAVAILABLE_PATH = "/mission-unavailable";
+const INACTIVE_MISSION_MESSAGE = "비활성화된 미션입니다.";
+const MISSION_NOT_FOUND_MESSAGE = "존재하지 않는 미션입니다.";
+
+type MissionCheckFailureReason = "inactiveMission" | "missionNotFound";
+
+const getMissionUnavailableUrl = (
+  request: NextRequest,
+  reason: MissionCheckFailureReason
+) => {
+  const url = new URL(MISSION_UNAVAILABLE_PATH, request.url);
+
+  if (reason === "missionNotFound") {
+    url.searchParams.set("reason", "not-found");
+  }
+
+  return url;
+};
+
 // 미션 완료 QR route parameter 타입
 type MissionCheckRouteContext = {
   params: Promise<{
@@ -22,8 +41,7 @@ type MissionCheckRouteContext = {
 
 const getMissionCheckData = async (
   token: string,
-  participant: ParticipantRow,
-  missionSelect: "id" | "*" = "id"
+  participant: ParticipantRow
 ) => {
   if (!token) {
     return { response: badRequest("QR 토큰이 필요합니다.") };
@@ -38,15 +56,28 @@ const getMissionCheckData = async (
     .maybeSingle();
 
   if (qrCodeError) {
+    if (getErrorCode(qrCodeError) === "22P02") {
+      return {
+        response: notFound(MISSION_NOT_FOUND_MESSAGE),
+        reason: "missionNotFound" as const,
+      };
+    }
+
     return { response: serverError("미션 QR 조회 실패", qrCodeError) };
   }
 
   if (!qrCode) {
-    return { response: notFound("미션 QR을 찾을 수 없습니다.") };
+    return {
+      response: notFound(MISSION_NOT_FOUND_MESSAGE),
+      reason: "missionNotFound" as const,
+    };
   }
 
   if (typeof qrCode.missions_id !== "number") {
-    return { response: badRequest("미션 QR에 연결된 미션이 없습니다.") };
+    return {
+      response: badRequest(MISSION_NOT_FOUND_MESSAGE),
+      reason: "missionNotFound" as const,
+    };
   }
 
   // 다른 행사에서 발급된 미션 QR을 현재 참여자가 사용할 수 없도록 차단
@@ -56,13 +87,12 @@ const getMissionCheckData = async (
     };
   }
 
-  // missions 테이블에서 QR의 missions_id, events_id, is_active 기준 미션 조회
+  // missions 테이블에서 QR의 missions_id, events_id 기준 미션 조회 후 활성 상태 확인
   const { data: mission, error: missionError } = await supabase
     .from("missions")
-    .select(missionSelect)
+    .select("*")
     .eq("id", qrCode.missions_id)
     .eq("events_id", qrCode.events_id)
-    .eq("is_active", true)
     .maybeSingle();
 
   if (missionError) {
@@ -70,7 +100,17 @@ const getMissionCheckData = async (
   }
 
   if (!mission) {
-    return { response: notFound("활성 미션을 찾을 수 없습니다.") };
+    return {
+      response: notFound(MISSION_NOT_FOUND_MESSAGE),
+      reason: "missionNotFound" as const,
+    };
+  }
+
+  if (mission.is_active !== true) {
+    return {
+      response: notFound(INACTIVE_MISSION_MESSAGE),
+      reason: "inactiveMission" as const,
+    };
   }
 
   return { qrCode, mission };
@@ -111,6 +151,15 @@ export async function GET(
     participantResult.participant
   );
   if ("response" in missionCheckData) {
+    if (
+      missionCheckData.reason === "inactiveMission" ||
+      missionCheckData.reason === "missionNotFound"
+    ) {
+      return NextResponse.redirect(
+        getMissionUnavailableUrl(request, missionCheckData.reason)
+      );
+    }
+
     return missionCheckData.response;
   }
 
@@ -153,8 +202,7 @@ export async function POST(
 
   const missionCheckData = await getMissionCheckData(
     token,
-    participantResult.participant,
-    "*"
+    participantResult.participant
   );
   if ("response" in missionCheckData) {
     return missionCheckData.response;
