@@ -57,7 +57,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(function EventBrochureForm(
         <input
           ref={uploadInputRef}
           type="file"
-          accept="image/jpeg,image/png,application/pdf"
+          accept="image/jpeg,image/png"
           multiple
           className="hidden"
           onChange={handleUploadChange}
@@ -121,7 +121,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(function EventBrochureForm(
       <input
         ref={addInputRef}
         type="file"
-        accept="image/jpeg,image/png,application/pdf"
+        accept="image/jpeg,image/png"
         multiple
         className="hidden"
         onChange={handleAddChange}
@@ -129,7 +129,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(function EventBrochureForm(
       <input
         ref={replaceInputRef}
         type="file"
-        accept="image/jpeg,image/png,application/pdf"
+        accept="image/jpeg,image/png"
         className="hidden"
         onChange={handleReplaceChange}
       />

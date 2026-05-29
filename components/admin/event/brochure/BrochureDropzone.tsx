@@ -38,7 +38,7 @@ const BrochureDropzone = ({
           여러 페이지를 한번에 업로드
         </span>
         <span className="text-[11px] font-medium text-gomin-primary-700">
-          PDF · JPG · PNG 파일을 드래그하거나 클릭해 업로드하세요
+          JPG · PNG 파일을 드래그하거나 클릭해 업로드하세요
         </span>
       </div>
       <div className="ml-auto shrink-0">

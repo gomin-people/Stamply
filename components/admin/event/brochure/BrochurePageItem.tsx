@@ -5,6 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, RefreshCw, Trash2 } from "lucide-react";
 import BrochureThumbnail from "./BrochureThumbnail";
 import type { UploadPage } from "@/hooks/usePageUpload";
+import { cn } from "@/utils";
 
 type ItemProps = {
   page: UploadPage;
@@ -29,6 +30,7 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
     isDragging,
   } = useSortable({ id: page.id });
 
+  // dnd-kit는 tailwind로 제어할 수 없어서 인라인으로 써야함.
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -38,9 +40,10 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`grid h-22 grid-cols-[24px_44px_1fr_70px] items-center gap-4 rounded-2xl border bg-white py-3 pl-2 pr-4 ${
-        isDragging ? "opacity-50" : ""
-      } border-gomin-neutral-100`}
+      className={cn(
+        "grid h-22 grid-cols-[24px_44px_1fr_70px] items-center gap-4 rounded-2xl border border-gomin-neutral-100 bg-white py-3 pl-2 pr-4",
+        isDragging && "opacity-50"
+      )}
     >
       <GripVertical
         className="size-3.5 cursor-grab touch-none text-gomin-neutral-400"
@@ -48,14 +51,10 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
         {...listeners}
       />
 
-      <BrochureThumbnail
-        file={page.file}
-        previewUrl={page.previewUrl}
-        index={index}
-      />
+      <BrochureThumbnail file={page.file} previewUrl={page.previewUrl} />
 
       <div className="flex flex-col gap-0.5 overflow-hidden">
-        <span className="text-[10px] font-medium uppercase tracking-widest text-gomin-primary-700">
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-gomin-primary-700">
           PAGE {String(index + 1).padStart(2, "0")}
         </span>
         <span className="truncate text-[13px] font-medium text-gomin-black">
@@ -70,7 +69,7 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
         <button
           type="button"
           onClick={onReplace}
-          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white"
+          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
           aria-label="교체"
         >
           <RefreshCw className="size-3.5 text-gomin-neutral-400" />
@@ -78,7 +77,7 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
         <button
           type="button"
           onClick={onDelete}
-          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white"
+          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
           aria-label="삭제"
         >
           <Trash2 className="size-3.5 text-gomin-neutral-400" />
