@@ -23,18 +23,18 @@ export default function CreateEventPage() {
 
   const handleNext = () => {
     const ref = stepRefs[currentStep - 1];
-    console.log("제출 데이터:", ref.current?.getData());
-
-    if (!ref.current?.validate()) return;
+    if (!ref.current?.validate()) return false;
     setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
+    return true;
   };
 
   const handleComplete = () => {
     const ref = stepRefs[currentStep - 1];
-    if (!ref.current?.validate()) return;
+    if (!ref.current?.validate()) return false;
     const allData = stepRefs.map((r) => r.current?.getData());
     console.log("제출 데이터:", allData);
     // TODO: submit API 호출
+    return true;
   };
 
   return (

@@ -90,7 +90,7 @@ const EventInfoForm = forwardRef<StepFormHandle>(
     return (
       <div>
         <form>
-          <div className="flex gap-8">
+          <div className="flex min-h-166 gap-8">
             <PosterImageField
               error={
                 !isPosterUploading ? fieldErrors.posterImageUrl?.[0] : undefined
@@ -100,7 +100,7 @@ const EventInfoForm = forwardRef<StepFormHandle>(
               onRemove={handlePosterRemove}
             />
 
-            <div className="flex flex-1 flex-col gap-5">
+            <div className="flex flex-1 flex-col gap-4">
               <EventTitleField
                 value={form.title}
                 error={fieldErrors.title?.[0]}
