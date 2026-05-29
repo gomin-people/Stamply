@@ -1,5 +1,5 @@
-import QrCheckClient from '@/components/user/QrCheckClient';
-import { getEntryEvent } from '@/features/qr/entry/api/entry';
+import QrCheckClient from "@/components/user/QrCheckClient";
+import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 type QrCheckPageProps = {
   params: Promise<{ eventId: string }>;

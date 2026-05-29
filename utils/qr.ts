@@ -94,7 +94,7 @@ export const getQrScanTarget = (
   const missionCheckPath = getMissionCheckPath(url);
   if (missionCheckPath) {
     return {
-      type: 'missionCheck',
+      type: "missionCheck",
       path: missionCheckPath,
     };
   }
@@ -102,7 +102,7 @@ export const getQrScanTarget = (
   const eventPath = getEventPath(url, currentEventId);
   if (eventPath) {
     return {
-      type: 'event',
+      type: "event",
       path: eventPath,
     };
   }
