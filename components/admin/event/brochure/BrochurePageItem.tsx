@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, RefreshCw, Trash2 } from 'lucide-react';
-import BrochureThumbnail from './BrochureThumbnail';
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical, RefreshCw, Trash2 } from "lucide-react";
+import BrochureThumbnail from "./BrochureThumbnail";
 
 type BrochurePage = {
   id: string;
@@ -23,12 +23,7 @@ function formatFileSize(bytes: number): string {
   return `${Math.round(bytes / 1024)} KB`;
 }
 
-const BrochurePageItem = ({
-  page,
-  index,
-  onReplace,
-  onDelete,
-}: Props) => {
+const BrochurePageItem = ({ page, index, onReplace, onDelete }: Props) => {
   const {
     attributes,
     listeners,
@@ -48,7 +43,7 @@ const BrochurePageItem = ({
       ref={setNodeRef}
       style={style}
       className={`grid h-22 grid-cols-[24px_44px_1fr_70px] items-center gap-4 rounded-2xl border bg-white py-3 pl-2 pr-4 ${
-        isDragging ? 'opacity-50' : ''
+        isDragging ? "opacity-50" : ""
       } border-gomin-neutral-100`}
     >
       <GripVertical
@@ -57,11 +52,15 @@ const BrochurePageItem = ({
         {...listeners}
       />
 
-      <BrochureThumbnail file={page.file} previewUrl={page.previewUrl} index={index} />
+      <BrochureThumbnail
+        file={page.file}
+        previewUrl={page.previewUrl}
+        index={index}
+      />
 
       <div className="flex flex-col gap-0.5 overflow-hidden">
         <span className="text-[10px] font-medium uppercase tracking-widest text-gomin-primary-700">
-          PAGE {String(index + 1).padStart(2, '0')}
+          PAGE {String(index + 1).padStart(2, "0")}
         </span>
         <span className="truncate text-[13px] font-medium text-gomin-black">
           {page.file.name}

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Upload } from 'lucide-react';
+import { Upload } from "lucide-react";
 
 type Props = {
   isDragOver: boolean;
@@ -26,8 +26,8 @@ const BrochureDropzone = ({
       onDrop={onDrop}
       className={`flex w-full items-center gap-4 rounded-2xl border border-dashed px-6 py-5 transition-colors ${
         isDragOver
-          ? 'border-gomin-primary-700 bg-gomin-primary-100/50'
-          : 'border-gomin-primary-300 bg-gomin-primary-100'
+          ? "border-gomin-primary-700 bg-gomin-primary-100/50"
+          : "border-gomin-primary-300 bg-gomin-primary-100"
       }`}
     >
       <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-[0_2px_3px_rgba(84,53,235,0.1)]">
