@@ -7,6 +7,7 @@ import ViewToggle from "./ViewToggle";
 import MissionStamp from "./MissionStamp";
 import MissionItem from "./MissionItem";
 import FloatingActionButton from "./FloatingActionButton";
+import SurveyModal from "./SurveyModal";
 import {
   useParticipantMissionsQuery,
   type ParticipantMission,
@@ -50,6 +51,7 @@ export default function MissionPageClient({
 }: MissionPageClientProps) {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
   const { data, isError } = useParticipantMissionsQuery();
@@ -81,10 +83,15 @@ export default function MissionPageClient({
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
     if (isAllCompleted) {
-      router.push(`/event/${eventId}/complete`);
+      setIsSurveyOpen(true);
     } else {
       router.push(`/event/${eventId}/qr-check`);
     }
+  };
+
+  const handleSurveySubmitSuccess = () => {
+    setIsSurveyOpen(false);
+    router.push(`/event/${eventId}/complete`);
   };
 
   // DB에서 불러온 title (또는 name)을 1순위로 사용하며 예외 처리 제공
@@ -186,6 +193,13 @@ export default function MissionPageClient({
           onClick={handleAction}
         />
       )}
+
+      {/* 설문조사 모달 */}
+      <SurveyModal
+        isOpen={isSurveyOpen}
+        onClose={() => setIsSurveyOpen(false)}
+        onSubmitSuccess={handleSurveySubmitSuccess}
+      />
     </div>
   );
 }
