@@ -1,9 +1,9 @@
 import { requestJson } from "@/features/shared/api/http";
 import { getRequestOrigin } from "@/utils/server-url";
 
-export async function getEventPrimaryColor(
+export const getEventPrimaryColor = async (
   eventId: string
-): Promise<string | null> {
+): Promise<string | null> => {
   try {
     const baseUrl = await getRequestOrigin();
     const data = await requestJson<{ primaryColor: string }>(
@@ -14,4 +14,4 @@ export async function getEventPrimaryColor(
   } catch {
     return null;
   }
-}
+};

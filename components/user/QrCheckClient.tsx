@@ -64,7 +64,7 @@ const getEventPath = (url: URL) => {
  * @param props - QR 스캔 화면에 필요한 현재 행사 정보
  * @returns QR 스캔 클라이언트 화면
  */
-export default function QrCheckClient({ eventId }: QrCheckClientProps) {
+const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasScannedRef = useRef(false);
@@ -171,4 +171,6 @@ export default function QrCheckClient({ eventId }: QrCheckClientProps) {
       </div>
     </div>
   );
-}
+};
+
+export default QrCheckClient;

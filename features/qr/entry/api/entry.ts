@@ -5,7 +5,7 @@ import { type StamplyEvent } from "@/features/shared/types/stamply";
 import { type ApiDataResponse } from "@/features/shared/api/http";
 import { getRequestOrigin } from "@/utils/server-url";
 
-export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
+export const getEntryEvent = async (eventId: string): Promise<StamplyEvent> => {
   const cookieStore = await cookies();
   const participantCookie = cookieStore.get(PARTICIPANT_COOKIE_NAME);
 
@@ -27,4 +27,4 @@ export async function getEntryEvent(eventId: string): Promise<StamplyEvent> {
 
   const { data: event } = (await res.json()) as ApiDataResponse<StamplyEvent>;
   return event;
-}
+};

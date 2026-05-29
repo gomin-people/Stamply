@@ -6,7 +6,7 @@ import { headers } from 'next/headers';
  *
  * @returns 현재 요청 host 기준 origin, 요청 헤더가 없으면 로컬 origin
  */
-export async function getRequestOrigin() {
+export const getRequestOrigin = async () => {
   const headersList = await headers();
   const host = headersList.get('x-forwarded-host') ?? headersList.get('host');
 
@@ -19,4 +19,4 @@ export async function getRequestOrigin() {
     (host.startsWith('localhost') ? 'http' : 'https');
 
   return `${protocol}://${host}`;
-}
+};

@@ -29,7 +29,7 @@ const shouldHideHeader = (pathname: string) => {
   return false;
 };
 
-export default function LayoutHeader() {
+const LayoutHeader = () => {
   const pathname = usePathname();
 
   // 헤더를 숨겨야 하는 페이지이면 아무것도 렌더링하지 않습니다.
@@ -38,4 +38,6 @@ export default function LayoutHeader() {
   }
 
   return <Header showBackButton={true} />;
-}
+};
+
+export default LayoutHeader;
