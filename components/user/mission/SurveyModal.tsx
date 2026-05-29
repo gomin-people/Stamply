@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useSubmitSurveyMutation } from "@/features/participant/survey/participantSurveyMutations";
 
 type GenderType = "MALE" | "FEMALE" | "UNKNOWN" | null;
 type AgeRangeType = "10대" | "20대" | "30대" | "40대" | "50대+" | null;
@@ -25,75 +26,49 @@ export default function SurveyModal({
 }: SurveyModalProps) {
   const [gender, setGender] = useState<GenderType>(null);
   const [ageRange, setAgeRange] = useState<AgeRangeType>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const { mutate: submitSurvey, isPending } = useSubmitSurveyMutation();
+
   const handleGenderSelect = (selectedGender: "MALE" | "FEMALE") => {
-    // 이미 선택된 성별을 다시 누르면 null로 토글 (미선택 상태)
-    if (gender === selectedGender) {
-      setGender(null);
-    } else {
-      setGender(selectedGender);
-    }
+    setGender(selectedGender);
   };
 
   const handleUnknownGenderSelect = () => {
-    // '선택안함'을 다시 누르면 null로 토글 (미선택 상태)
-    if (gender === "UNKNOWN") {
-      setGender(null);
-    } else {
-      setGender("UNKNOWN");
-    }
+    setGender("UNKNOWN");
   };
 
   const handleAgeSelect = (selectedAge: Exclude<AgeRangeType, null>) => {
-    // 이미 선택된 연령대를 다시 누르면 null로 토글
-    if (ageRange === selectedAge) {
-      setAgeRange(null);
-    } else {
-      setAgeRange(selectedAge);
-    }
+    setAgeRange(selectedAge);
   };
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
+  const handleSubmit = () => {
     setErrorMessage(null);
 
-    try {
-      const response = await fetch("/api/v1/participant/survey", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    submitSurvey(
+      {
+        gender: gender as "MALE" | "FEMALE" | "UNKNOWN",
+        ageRange: ageRange,
+        isRewardClaimed: true,
+      },
+      {
+        onSuccess: () => {
+          onSubmitSuccess();
         },
-        body: JSON.stringify({
-          gender,
-          age_range: ageRange,
-          is_reward_claimed: true,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "설문 제출에 실패했습니다.");
+        onError: (error: any) => {
+          setErrorMessage(
+            error.message || "설문 제출에 실패했습니다. 다시 시도해 주세요."
+          );
+        },
       }
-
-      onSubmitSuccess();
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "오류가 발생했습니다. 다시 시도해 주세요.";
-      setErrorMessage(message);
-    } finally {
-      setIsLoading(false);
-    }
+    );
   };
 
   return (
     <Dialog
       open={isOpen}
       onOpenChange={(open: boolean) => {
-        if (!open && !isLoading) onClose();
+        if (!open && !isPending) onClose();
       }}
     >
       <DialogContent
@@ -103,7 +78,7 @@ export default function SurveyModal({
         {/* 우측 상단 닫기 버튼 */}
         <button
           onClick={onClose}
-          disabled={isLoading}
+          disabled={isPending}
           className="absolute right-5 top-5 text-gomin-neutral-700 hover:text-gomin-black disabled:opacity-50 transition-colors"
           aria-label="닫기"
         >
@@ -196,10 +171,10 @@ export default function SurveyModal({
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isLoading || gender === null || ageRange === null}
+          disabled={isPending || gender === null || ageRange === null}
           className="w-full py-4 rounded-[18px] font-nanum font-bold text-[17px] bg-gomin-primary-700 hover:bg-gomin-primary-600 disabled:bg-gomin-neutral-200 disabled:text-gomin-neutral-400 disabled:cursor-not-allowed text-white transition-all shadow-md shadow-gomin-primary-700/10 active:scale-[0.98] flex items-center justify-center gap-2"
         >
-          {isLoading ? (
+          {isPending ? (
             <span className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
             "제출하기"
