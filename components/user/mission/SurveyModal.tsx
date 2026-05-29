@@ -9,8 +9,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useSubmitSurveyMutation } from "@/features/participant/survey/participantSurveyMutations";
+import { type Gender } from "@/features/shared/types/stamply";
 
-type GenderType = "MALE" | "FEMALE" | "UNKNOWN" | null;
+type GenderType = Gender | null;
 type AgeRangeType = "10대" | "20대" | "30대" | "40대" | "50대+" | null;
 
 type SurveyModalProps = {
@@ -43,12 +44,14 @@ export default function SurveyModal({
   };
 
   const handleSubmit = () => {
+    if (!gender || !ageRange) return;
+
     setErrorMessage(null);
 
     submitSurvey(
       {
-        gender: gender as "MALE" | "FEMALE" | "UNKNOWN",
-        ageRange: ageRange,
+        gender,
+        ageRange,
         isRewardClaimed: true,
       },
       {
