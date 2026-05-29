@@ -16,11 +16,11 @@ type Mission = {
   isStamped: boolean;
 };
 
-interface MissionDetailModalProps {
+type MissionDetailModalProps = {
   isOpen: boolean;
   onClose: () => void;
   mission: Mission;
-}
+};
 
 export default function MissionDetailModal({
   isOpen,

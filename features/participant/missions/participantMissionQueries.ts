@@ -7,7 +7,7 @@ import {
   type Participant,
 } from "@/features/shared/types/stamply";
 
-type ParticipantMission = Mission & {
+export type ParticipantMission = Mission & {
   isCompleted: boolean;
   completedAt: string | null;
   token?: string | null;

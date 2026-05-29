@@ -3,9 +3,9 @@
 import { useEffect, useMemo } from "react";
 import { generatePalette } from "@/utils";
 
-interface ThemeInitializerProps {
+type ThemeInitializerProps = {
   primaryColor: string;
-}
+};
 
 export function ThemeInitializer({ primaryColor }: ThemeInitializerProps) {
   const activeColor = primaryColor || "#5435EB";

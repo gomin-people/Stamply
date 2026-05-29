@@ -3,11 +3,10 @@
 import { ScanLine } from "lucide-react";
 import ThemedButton from "@/components/user/common/ThemedButton";
 
-interface FloatingActionButtonProps {
-  isAllCompleted?: boolean;
+type FloatingActionButtonProps = {
+  isAllCompleted: boolean;
   onClick: () => void;
-  label?: string;
-}
+};
 
 export default function FloatingActionButton({
   isAllCompleted,

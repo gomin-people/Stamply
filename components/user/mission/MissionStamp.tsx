@@ -11,10 +11,10 @@ type Mission = {
   isStamped: boolean;
 };
 
-interface MissionStampProps {
+type MissionStampProps = {
   mission: Mission;
   stampImageUrl?: string | null;
-}
+};
 
 export default function MissionStamp({
   mission,
