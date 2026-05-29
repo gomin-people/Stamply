@@ -1,51 +1,33 @@
-"use client";
-
-import * as React from "react";
-import { useRouter } from "next/navigation";
-import AnimatedIconStamply from "@/components/icons/AnimatedIconStamply";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import CompletePageClient from "@/components/user/mission/CompletePageClient";
+import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 type PageProps = {
   params: Promise<{ eventId: string }>;
 };
 
-export default function CompletePage({ params }: PageProps) {
-  const { eventId } = React.use(params);
-  const router = useRouter();
+export default async function CompletePage({ params }: PageProps) {
+  const { eventId: eventIdParam } = await params;
 
-  const handleStaffConfirm = () => {
-    const isConfirmed = window.confirm(
-      "리워드를 지급하시겠습니까? (스태프 확인용)"
-    );
-    if (isConfirmed) {
-      window.alert("리워드 지급이 완료되었습니다. 감사합니다!");
-      router.push("/");
-    }
-  };
+  // 1. getEntryEvent를 사용하여 유저 세션 검증 (실패 시 내부적으로 redirect)
+  await getEntryEvent(eventIdParam);
 
-  return (
-    <div className="fixed inset-0 w-full h-full bg-gomin-primary-700 flex flex-col items-center justify-center p-6 text-center select-none z-50">
-      <div className="max-w-md w-full flex flex-col items-center justify-center space-y-10">
-        {/* 1. 중앙 Stamply 대형 원형 도장 그래픽 */}
-        <div className="w-64 h-64 shrink-0 flex items-center justify-center relative select-none">
-          <AnimatedIconStamply className="w-full h-full text-white opacity-95 animate-fade-in scale-110" />
-        </div>
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-        {/* 2. 안내 안내 문구 */}
-        <p className="text-xl font-nanum font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line">
-          리워드 수령처에서 이 화면을{"\n"}스태프에게 보여주세요!
-        </p>
+  // 2. 참여자 세션 쿠키를 담아 API 요청을 전송하여 권한 유효성 엄격 검증
+  const missionsRes = await fetch(`${baseUrl}/api/v1/participant/missions`, {
+    headers: {
+      Cookie: cookieHeader,
+    },
+    next: { revalidate: 0 }, // 실시간 인증 상태 반영을 위해 캐시 방지
+  });
 
-        {/* 3. 하단 직원 확인 버튼 */}
-        <div className="w-full max-w-xs pt-4">
-          <button
-            type="button"
-            onClick={handleStaffConfirm}
-            className="w-full py-4.5 rounded-[22px] font-nanum font-extrabold text-[18px] bg-white text-gomin-primary-700 hover:bg-gomin-primary-100 transition-all shadow-lg active:scale-[0.98] cursor-pointer"
-          >
-            직원 확인 버튼
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  if (!missionsRes.ok) {
+    redirect("/qr-required");
+  }
+
+  return <CompletePageClient />;
 }
