@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { requestJson } from '@/features/shared/api/http';
+import { useQuery } from "@tanstack/react-query";
+import { requestJson } from "@/features/shared/api/http";
 import {
   type Mission,
   type Participant,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 type ParticipantMission = Mission & {
   isCompleted: boolean;
@@ -24,7 +24,7 @@ type ParticipantMissions = {
 };
 
 function getParticipantMissions() {
-  return requestJson<ParticipantMissions>('/api/v1/participant/missions');
+  return requestJson<ParticipantMissions>("/api/v1/participant/missions");
 }
 
 /**
@@ -34,7 +34,7 @@ function getParticipantMissions() {
  */
 export function useParticipantMissionsQuery() {
   return useQuery({
-    queryKey: ['participant', 'missions'],
+    queryKey: ["participant", "missions"],
     queryFn: getParticipantMissions,
   });
 }

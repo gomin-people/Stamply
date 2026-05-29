@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useMutation } from '@tanstack/react-query';
-import { requestJson } from '@/features/shared/api/http';
+import { useMutation } from "@tanstack/react-query";
+import { requestJson } from "@/features/shared/api/http";
 import {
   type Participant,
   type QrCode,
   type StamplyEvent,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 // 입장 QR 처리 응답 타입
 type EntryResult = {
@@ -25,7 +25,7 @@ function enterEventByToken(token: string, userId?: string) {
   const searchParams = new URLSearchParams();
 
   if (userId !== undefined) {
-    searchParams.set('userId', String(userId));
+    searchParams.set("userId", String(userId));
   }
 
   const queryString = searchParams.toString();

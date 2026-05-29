@@ -1,8 +1,8 @@
 // QR 코드 용도 enum 타입
-export type QrCodeType = 'MISSION' | 'ENTRY' | 'REWARD';
+export type QrCodeType = "MISSION" | "ENTRY" | "REWARD";
 
 // 참여자 설문 성별 enum 타입
-export type Gender = 'MALE' | 'FEMALE' | 'UNKNOWN';
+export type Gender = "MALE" | "FEMALE" | "UNKNOWN";
 
 // 행사 API 응답 타입
 export type StamplyEvent = {

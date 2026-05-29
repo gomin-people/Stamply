@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server";
 import {
   badRequest,
   getParticipantEventUserId,
@@ -6,8 +6,8 @@ import {
   parseOptionalNonEmptyString,
   serverError,
   setParticipantCookie,
-} from '@/utils/api';
-import { supabase } from '@/utils/supabase/server';
+} from "@/utils/api";
+import { supabase } from "@/utils/supabase/server";
 
 // 입장 QR route parameter 타입
 type EntryRouteContext = {
@@ -27,45 +27,45 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
   const { token } = await params;
 
   if (!token) {
-    return badRequest('QR 토큰이 필요합니다.');
+    return badRequest("QR 토큰이 필요합니다.");
   }
 
-  const requestedUserId = request.nextUrl.searchParams.get('userId');
+  const requestedUserId = request.nextUrl.searchParams.get("userId");
   const userId = parseOptionalNonEmptyString(requestedUserId);
 
   if (requestedUserId !== null && userId === null) {
-    return badRequest('올바른 userId가 필요합니다.');
+    return badRequest("올바른 userId가 필요합니다.");
   }
 
   // qr_codes 테이블에서 token과 type ENTRY 기준 QR 전체 컬럼 조회
   const { data: qrCode, error: qrCodeError } = await supabase
-    .from('qr_codes')
-    .select('*')
-    .eq('token', token)
-    .eq('type', 'ENTRY')
+    .from("qr_codes")
+    .select("*")
+    .eq("token", token)
+    .eq("type", "ENTRY")
     .maybeSingle();
 
   if (qrCodeError) {
-    return serverError('입장 QR 조회 실패', qrCodeError);
+    return serverError("입장 QR 조회 실패", qrCodeError);
   }
 
   if (!qrCode) {
-    return notFound('입장 QR을 찾을 수 없습니다.');
+    return notFound("입장 QR을 찾을 수 없습니다.");
   }
 
   // events 테이블에서 ENTRY QR의 events_id와 id가 일치하는 행사 전체 컬럼 조회
   const { data: event, error: eventError } = await supabase
-    .from('events')
-    .select('*')
-    .eq('id', qrCode.events_id)
+    .from("events")
+    .select("*")
+    .eq("id", qrCode.events_id)
     .maybeSingle();
 
   if (eventError) {
-    return serverError('입장 행사 조회 실패', eventError);
+    return serverError("입장 행사 조회 실패", eventError);
   }
 
   if (!event) {
-    return notFound('행사를 찾을 수 없습니다.');
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   const currentEventUserId = getParticipantEventUserId(request);
@@ -75,14 +75,14 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
     const { data: currentParticipant, error: currentParticipantError } =
       // participant_users 테이블에서 event_user_id와 events_id 기준 기존 참여자 조회
       await supabase
-        .from('participant_users')
-        .select('*')
-        .eq('event_user_id', currentEventUserId)
-        .eq('events_id', qrCode.events_id)
+        .from("participant_users")
+        .select("*")
+        .eq("event_user_id", currentEventUserId)
+        .eq("events_id", qrCode.events_id)
         .maybeSingle();
 
     if (currentParticipantError) {
-      return serverError('기존 참여자 조회 실패', currentParticipantError);
+      return serverError("기존 참여자 조회 실패", currentParticipantError);
     }
 
     if (currentParticipant) {
@@ -96,17 +96,17 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
 
   // participant_users 테이블에 ENTRY QR의 events_id와 user_id 기준 참여자 row 삽입 후 조회
   const { data: participant, error: participantError } = await supabase
-    .from('participant_users')
+    .from("participant_users")
     .insert({
       events_id: qrCode.events_id,
       user_id: userId,
       created_at: new Date().toISOString(),
     })
-    .select('*')
+    .select("*")
     .single();
 
   if (participantError) {
-    return serverError('참여자 생성 실패', participantError);
+    return serverError("참여자 생성 실패", participantError);
   }
 
   const response = NextResponse.redirect(

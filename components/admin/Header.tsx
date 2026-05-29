@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useParams, usePathname } from 'next/navigation';
-import { getAdminRouteConfig } from '@/constants/adminRoutes';
-import { getAdminEventTitle } from '@/constants/adminEventMocks';
+import { useParams, usePathname } from "next/navigation";
+import { getAdminRouteConfig } from "@/constants/adminRoutes";
+import { getAdminEventTitle } from "@/constants/adminEventMocks";
 
 const Header = () => {
   const pathname = usePathname();
@@ -20,7 +20,7 @@ const Header = () => {
       {route.description && (
         <p className="mt-2 text-sm text-gomin-neutral-500">
           {route.description.map((segment, index) => {
-            if (segment.type === 'eventTitle') {
+            if (segment.type === "eventTitle") {
               return (
                 <strong
                   key={`${segment.type}-${index}`}

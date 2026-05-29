@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { requestJson } from '@/features/shared/api/http';
-import { type StamplyEvent } from '@/features/shared/types/stamply';
+import { useQuery } from "@tanstack/react-query";
+import { requestJson } from "@/features/shared/api/http";
+import { type StamplyEvent } from "@/features/shared/types/stamply";
 
 function getParticipantEvent(eventId: number) {
   return requestJson<StamplyEvent>(`/api/v1/participant/events/${eventId}`);
@@ -14,12 +14,10 @@ function getParticipantEvent(eventId: number) {
  * @param eventId - 행사 ID
  * @returns React Query 참여자 행사
  */
-export function useParticipantEventQuery(
-  eventId: number | null | undefined
-) {
+export function useParticipantEventQuery(eventId: number | null | undefined) {
   return useQuery({
-    queryKey: ['participant', 'events', 'detail', eventId],
+    queryKey: ["participant", "events", "detail", eventId],
     queryFn: () => getParticipantEvent(eventId as number),
-    enabled: typeof eventId === 'number' && eventId > 0,
+    enabled: typeof eventId === "number" && eventId > 0,
   });
 }

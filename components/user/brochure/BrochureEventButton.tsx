@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const BrochureEventButton = () => {
-  const { eventId } = useParams<{ eventId: string }>()
+  const { eventId } = useParams<{ eventId: string }>();
   return (
     <Link
       // 행사 상세 페이지가 들어가야합니다. 우진님이 상세 페이지 생성 후 바꿔주시면 됩니다.
@@ -13,7 +13,7 @@ const BrochureEventButton = () => {
     >
       행사 상세 정보
     </Link>
-  )
-}
+  );
+};
 
-export default BrochureEventButton
+export default BrochureEventButton;

@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createSessionClient } from '@/utils/supabase/session-server';
+import { NextRequest, NextResponse } from "next/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
 
   // 카카오가 리디렉트 시 전달하는 일회용 인가 코드
   // ex) /api/v1/oauth/kakao?code=XXXXXX
-  const code = searchParams.get('code');
+  const code = searchParams.get("code");
 
   if (!code) {
     return NextResponse.redirect(`${origin}/admin?error=missing_code`);
@@ -14,11 +14,11 @@ export async function GET(request: NextRequest) {
 
   // 카카오 서버에 인가 코드를 보내 실제 토큰으로 교환
   // redirect_uri는 카카오 콘솔에 등록된 값과 정확히 일치해야 함
-  const tokenRes = await fetch('https://kauth.kakao.com/oauth/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  const tokenRes = await fetch("https://kauth.kakao.com/oauth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
-      grant_type: 'authorization_code',
+      grant_type: "authorization_code",
       client_id: process.env.KAKAO_CLIENT_ID!,
       client_secret: process.env.KAKAO_CLIENT_SECRET!,
       redirect_uri: process.env.KAKAO_REDIRECT_URI!,
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   // 2. 신규 유저면 auth.users 테이블에 자동 생성
   // 3. Access Token + Refresh Token 발급 후 쿠키에 저장 (createSessionClient의 setAll 호출)
   const { error } = await supabase.auth.signInWithIdToken({
-    provider: 'kakao',
+    provider: "kakao",
     token: id_token,
   });
 

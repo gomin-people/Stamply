@@ -1,5 +1,5 @@
-import { type NextRequest } from 'next/server';
-import { getCurrentParticipant, ok } from '@/utils/api';
+import { type NextRequest } from "next/server";
+import { getCurrentParticipant, ok } from "@/utils/api";
 
 /**
  * 쿠키 기준 현재 참여자를 조회합니다.
@@ -10,7 +10,7 @@ import { getCurrentParticipant, ok } from '@/utils/api';
 export async function GET(request: NextRequest) {
   const result = await getCurrentParticipant(request);
 
-  if ('response' in result) {
+  if ("response" in result) {
     return result.response;
   }
 

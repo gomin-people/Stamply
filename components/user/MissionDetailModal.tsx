@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,8 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import Button from '@/components/sample/Button';
+} from "@/components/ui/dialog";
+import Button from "@/components/sample/Button";
 
 type Mission = {
   id: number;
@@ -28,7 +28,12 @@ export default function MissionDetailModal({
   mission,
 }: MissionDetailModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-left">
           <span className="inline-block self-start px-2.5 py-0.5 text-xs font-semibold text-gomin-primary-700 bg-gomin-primary-100 rounded-full w-fit mb-1">
@@ -44,11 +49,11 @@ export default function MissionDetailModal({
 
         <div className="flex flex-col gap-2 p-1">
           <div className="flex items-center gap-2 mt-2 p-3 bg-gomin-neutral-100 rounded-xl">
-            <span className="text-lg">{mission.isStamped ? '🎉' : '🔒'}</span>
+            <span className="text-lg">{mission.isStamped ? "🎉" : "🔒"}</span>
             <span className="text-sm font-semibold text-gomin-neutral-700">
               {mission.isStamped
-                ? '이미 완료된 미션입니다!'
-                : '아직 미완료된 미션입니다. QR코드를 스캔해 보세요!'}
+                ? "이미 완료된 미션입니다!"
+                : "아직 미완료된 미션입니다. QR코드를 스캔해 보세요!"}
             </span>
           </div>
 

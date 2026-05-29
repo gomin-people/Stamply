@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useMutation } from '@tanstack/react-query';
-import { createJsonRequest, requestJson } from '@/features/shared/api/http';
+import { useMutation } from "@tanstack/react-query";
+import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import {
   type EventCreatePayload,
   type EventUpdatePayload,
   type QrCode,
   type StamplyEvent,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 // 행사 생성 응답 타입
 type CreatedEvent = StamplyEvent & {
@@ -22,25 +22,22 @@ type UpdateEventVariables = {
 
 function createAdminEvent(payload: EventCreatePayload) {
   return requestJson<CreatedEvent>(
-    '/api/v1/admin/events',
-    createJsonRequest('POST', payload)
+    "/api/v1/admin/events",
+    createJsonRequest("POST", payload)
   );
 }
 
-function updateAdminEvent(
-  eventId: number,
-  payload: EventUpdatePayload
-) {
+function updateAdminEvent(eventId: number, payload: EventUpdatePayload) {
   return requestJson<StamplyEvent>(
     `/api/v1/admin/events/${eventId}`,
-    createJsonRequest('PATCH', payload)
+    createJsonRequest("PATCH", payload)
   );
 }
 
 function deleteAdminEvent(eventId: number) {
   return requestJson<{ id: number }>(
     `/api/v1/admin/events/${eventId}`,
-    createJsonRequest('DELETE')
+    createJsonRequest("DELETE")
   );
 }
 

@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useMutation } from '@tanstack/react-query';
-import { createJsonRequest, requestJson } from '@/features/shared/api/http';
+import { useMutation } from "@tanstack/react-query";
+import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import {
   type Participant,
   type SurveyPayload,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 function submitParticipantSurvey(payload: SurveyPayload) {
   return requestJson<Participant>(
-    '/api/v1/participant/survey',
-    createJsonRequest('POST', payload)
+    "/api/v1/participant/survey",
+    createJsonRequest("POST", payload)
   );
 }
 

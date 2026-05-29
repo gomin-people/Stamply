@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { combine, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { combine, persist } from "zustand/middleware";
 
 export const adminStore = create(
   persist(
@@ -12,7 +12,7 @@ export const adminStore = create(
       })
     ),
     {
-      name: 'admin-store',
+      name: "admin-store",
       partialize: (state) => ({
         selectedEventId: state.selectedEventId,
       }),

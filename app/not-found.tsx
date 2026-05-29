@@ -1,4 +1,4 @@
-import IconStamply from '@/components/icons/IconStamply';
+import IconStamply from "@/components/icons/IconStamply";
 
 export default function NotFound() {
   return (

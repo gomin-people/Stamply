@@ -1,9 +1,9 @@
-'use client';
-import { useRef, useState } from 'react';
-import { ImageIcon, Link2, Mail, MapPin, Phone } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+"use client";
+import { useRef, useState } from "react";
+import { ImageIcon, Link2, Mail, MapPin, Phone } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormState = {
   title: string;
@@ -21,18 +21,18 @@ type FormState = {
 };
 
 const initialForm: FormState = {
-  title: '',
-  startDate: '',
-  endDate: '',
-  location: '',
-  locationUrl: '',
-  production: '',
-  contactPhone: '',
-  contactEmail: '',
-  startTime: '',
-  endTime: '',
-  operatingRemarks: '',
-  posterImageUrl: '',
+  title: "",
+  startDate: "",
+  endDate: "",
+  location: "",
+  locationUrl: "",
+  production: "",
+  contactPhone: "",
+  contactEmail: "",
+  startTime: "",
+  endTime: "",
+  operatingRemarks: "",
+  posterImageUrl: "",
 };
 
 export default function EventInfoForm() {
@@ -259,7 +259,6 @@ export default function EventInfoForm() {
                 maxLength={1000}
               />
             </div>
-
           </div>
         </div>
       </form>

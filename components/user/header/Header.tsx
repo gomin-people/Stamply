@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
+import { useRouter } from "next/navigation";
+import ChevronLeftIcon from "@/components/icons/ChevronLeftIcon";
 
 interface HeaderProps {
   showBackButton?: boolean;

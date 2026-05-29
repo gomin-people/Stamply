@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import type { LucideIcon } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 type SidebarNavItem = {
   label: string;
@@ -29,8 +29,8 @@ export default function SidebarNav({ items, pathname }: SidebarNavProps) {
             href={item.href}
             className={`flex items-center gap-2 rounded-lg px-3 py-3 text-sm transition-[background-color,color,box-shadow,transform] duration-150 ease-out ${
               isActive
-                ? ' bg-gomin-primary-700 text-gomin-white shadow-lg shadow-gomin-primary-700/30'
-                : 'text-gomin-neutral-700 hover:bg-gomin-neutral-100 hover:text-gomin-black'
+                ? " bg-gomin-primary-700 text-gomin-white shadow-lg shadow-gomin-primary-700/30"
+                : "text-gomin-neutral-700 hover:bg-gomin-neutral-100 hover:text-gomin-black"
             }`}
           >
             <Icon className="h-4 w-4" />

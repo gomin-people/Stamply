@@ -1,5 +1,5 @@
-import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   currentStep: number;
@@ -16,7 +16,7 @@ export default function EventFormFooter({
   onPrev,
   onNext,
   isLastStep = false,
-  completeLabel = '등록 완료',
+  completeLabel = "등록 완료",
 }: Props) {
   return (
     <div className="flex h-20 items-center gap-2 border-t border-gomin-neutral-100 pt-4">
@@ -28,7 +28,7 @@ export default function EventFormFooter({
       <Button
         variant="outline"
         className="h-auto! gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
-        style={{ visibility: currentStep === 1 ? 'hidden' : 'visible' }}
+        style={{ visibility: currentStep === 1 ? "hidden" : "visible" }}
         onClick={onPrev}
       >
         <ChevronLeft className="size-3.5" />

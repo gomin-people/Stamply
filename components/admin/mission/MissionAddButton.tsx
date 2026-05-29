@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
-import MissionDialog from '@/components/admin/mission/MissionDialog';
-import { Mission } from '@/types/mission';
-import { useCreateAdminMissionMutation } from '@/features/admin/missions/adminMissionMutations';
-import { useParams } from 'next/navigation';
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
+import MissionDialog from "@/components/admin/mission/MissionDialog";
+import { Mission } from "@/types/mission";
+import { useCreateAdminMissionMutation } from "@/features/admin/missions/adminMissionMutations";
+import { useParams } from "next/navigation";
 
 type Props = {
   disabled?: boolean;
@@ -24,7 +24,7 @@ export default function MissionAddButton({ disabled }: Props) {
     try {
       await createAdminMissionAsync({ eventId, payload });
       queryClient.invalidateQueries({
-        queryKey: ['admin', 'events', eventId, 'missions'],
+        queryKey: ["admin", "events", eventId, "missions"],
       });
     } catch (e) {
       console.error(e);
@@ -45,7 +45,7 @@ export default function MissionAddButton({ disabled }: Props) {
 
       <Dialog open={isAdding} onOpenChange={setIsAdding}>
         <MissionDialog
-          mission={{ title: '', description: '', isActive: false }}
+          mission={{ title: "", description: "", isActive: false }}
           onSave={handleSave}
         />
       </Dialog>

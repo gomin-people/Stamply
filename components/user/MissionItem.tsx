@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import IconStamply from '@/components/icons/IconStamply';
-import MissionDetailModal from '@/components/user/MissionDetailModal';
+import { useState } from "react";
+import IconStamply from "@/components/icons/IconStamply";
+import MissionDetailModal from "@/components/user/MissionDetailModal";
 
 type Mission = {
   id: number;
@@ -16,7 +16,10 @@ interface MissionItemProps {
   stampImageUrl?: string | null;
 }
 
-export default function MissionItem({ mission, stampImageUrl }: MissionItemProps) {
+export default function MissionItem({
+  mission,
+  stampImageUrl,
+}: MissionItemProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -24,7 +27,7 @@ export default function MissionItem({ mission, stampImageUrl }: MissionItemProps
       <div
         onClick={() => setIsOpen(true)}
         className={`flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none transition-all duration-300 hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent ${
-          mission.isStamped ? 'bg-gomin-primary-100' : 'bg-gomin-neutral-100'
+          mission.isStamped ? "bg-gomin-primary-100" : "bg-gomin-neutral-100"
         }`}
       >
         {/* 스탬프 도장 이미지 영역 (왼쪽) - 둥근 원 테두리를 제거하고 순수 이미지 노출 */}
@@ -34,15 +37,15 @@ export default function MissionItem({ mission, stampImageUrl }: MissionItemProps
               src={stampImageUrl}
               alt="Stamp"
               className={`w-full h-full object-contain ${
-                mission.isStamped ? 'opacity-100' : 'opacity-30 grayscale'
+                mission.isStamped ? "opacity-100" : "opacity-30 grayscale"
               }`}
             />
           ) : (
             <IconStamply
               className={`w-full h-full ${
                 mission.isStamped
-                  ? 'text-gomin-primary-700 opacity-100'
-                  : 'text-gomin-neutral-400 opacity-30'
+                  ? "text-gomin-primary-700 opacity-100"
+                  : "text-gomin-neutral-400 opacity-30"
               }`}
             />
           )}
@@ -53,8 +56,8 @@ export default function MissionItem({ mission, stampImageUrl }: MissionItemProps
           <span
             className={`text-[25px] font-sans font-black tracking-tight leading-none ${
               mission.isStamped
-                ? 'text-gomin-primary-700'
-                : 'text-gomin-neutral-600'
+                ? "text-gomin-primary-700"
+                : "text-gomin-neutral-600"
             }`}
           >
             {mission.title}
@@ -62,8 +65,8 @@ export default function MissionItem({ mission, stampImageUrl }: MissionItemProps
           <div
             className={`flex flex-col text-[16px] font-sans font-bold leading-tight tracking-tight whitespace-pre-line ${
               mission.isStamped
-                ? 'text-gomin-neutral-600'
-                : 'text-gomin-neutral-500'
+                ? "text-gomin-neutral-600"
+                : "text-gomin-neutral-500"
             }`}
           >
             {mission.description}

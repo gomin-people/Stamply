@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { Download, Printer, QrCode } from 'lucide-react';
-import { getMissionCheckUrl } from '@/utils/qr';
-import QRCode from 'react-qr-code';
+import { useRef } from "react";
+import { Download, Printer, QrCode } from "lucide-react";
+import { getMissionCheckUrl } from "@/utils/qr";
+import QRCode from "react-qr-code";
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   missionTitle: string;
@@ -26,26 +26,26 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
   const qrCodeUrl = getMissionCheckUrl(token);
 
   const handleDownload = () => {
-    const svgEl = svgRef.current?.querySelector('svg');
+    const svgEl = svgRef.current?.querySelector("svg");
     if (!svgEl) return;
 
     const svgStr = new XMLSerializer().serializeToString(svgEl);
-    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const img = new Image();
 
     img.onload = () => {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = QR_SIZE;
       canvas.height = QR_SIZE;
-      const ctx = canvas.getContext('2d')!;
-      ctx.fillStyle = '#ffffff';
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, QR_SIZE, QR_SIZE);
       ctx.drawImage(img, 0, 0, QR_SIZE, QR_SIZE);
       URL.revokeObjectURL(url);
 
-      const a = document.createElement('a');
-      a.href = canvas.toDataURL('image/png');
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
       a.download = `${missionTitle}_${qrId}.png`;
       a.click();
     };
@@ -54,11 +54,11 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
   };
 
   const handlePrint = () => {
-    const svgEl = svgRef.current?.querySelector('svg');
+    const svgEl = svgRef.current?.querySelector("svg");
     if (!svgEl) return;
 
     const svgStr = new XMLSerializer().serializeToString(svgEl);
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open("", "_blank");
     if (!printWindow) return;
 
     printWindow.document.write(`

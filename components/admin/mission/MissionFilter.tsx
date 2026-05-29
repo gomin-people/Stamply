@@ -1,6 +1,6 @@
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-export type MissionFilter = 'all' | 'active' | 'inactive';
+export type MissionFilter = "all" | "active" | "inactive";
 
 type Props = {
   defaultValue?: MissionFilter;
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function MissionFilter({
-  defaultValue = 'all',
+  defaultValue = "all",
   toggleValue,
 }: Props) {
   return (

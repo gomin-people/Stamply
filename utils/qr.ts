@@ -5,6 +5,6 @@
  * @returns 도메인이 포함된 전체 URL (서버 렌더링 시에는 빈 문자열)
  */
 export function getMissionCheckUrl(token: string): string {
-  if (typeof window === 'undefined') return '';
+  if (typeof window === "undefined") return "";
   return `${window.location.origin}/api/v1/qr/mission-check/${token}`;
 }

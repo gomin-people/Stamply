@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { requestJson } from '@/features/shared/api/http';
-import { type Participant } from '@/features/shared/types/stamply';
+import { useQuery } from "@tanstack/react-query";
+import { requestJson } from "@/features/shared/api/http";
+import { type Participant } from "@/features/shared/types/stamply";
 
 // 현재 참여자 조회 응답 타입
 type ParticipantState = {
@@ -10,7 +10,7 @@ type ParticipantState = {
 };
 
 function getParticipant() {
-  return requestJson<ParticipantState>('/api/v1/participant');
+  return requestJson<ParticipantState>("/api/v1/participant");
 }
 
 /**
@@ -20,7 +20,7 @@ function getParticipant() {
  */
 export function useParticipantQuery() {
   return useQuery({
-    queryKey: ['participant', 'state'],
+    queryKey: ["participant", "state"],
     queryFn: getParticipant,
   });
 }
