@@ -64,6 +64,7 @@ export default function MissionStamp({
         {mission.isStamped && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none transform -rotate-12 scale-[0.95] text-gomin-primary-700">
             {stampImageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={stampImageUrl}
                 alt="Stamp"

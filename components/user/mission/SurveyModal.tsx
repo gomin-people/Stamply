@@ -78,10 +78,12 @@ export default function SurveyModal({
       }
 
       onSubmitSuccess();
-    } catch (error: any) {
-      setErrorMessage(
-        error.message || "오류가 발생했습니다. 다시 시도해 주세요."
-      );
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "오류가 발생했습니다. 다시 시도해 주세요.";
+      setErrorMessage(message);
     } finally {
       setIsLoading(false);
     }

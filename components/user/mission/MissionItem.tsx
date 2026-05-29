@@ -33,6 +33,7 @@ export default function MissionItem({
         {/* 스탬프 도장 이미지 영역 (왼쪽) - 둥근 원 테두리를 제거하고 순수 이미지 노출 */}
         <div className="w-26 h-26 shrink-0 relative flex items-center justify-center select-none">
           {stampImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={stampImageUrl}
               alt="Stamp"
