@@ -9,7 +9,7 @@ import type { AdminMissionDetail } from "@/types/models/admin";
 import MissionDialog from "@/components/admin/mission/MissionDialog";
 import MissionDeleteDialog from "@/components/admin/mission/MissionDeleteDialog";
 import QRDialog from "@/components/admin/mission/QRDialog";
-import { Mission } from "@/types/mission";
+import { Mission } from "@/types";
 import {
   useDeleteAdminMissionMutation,
   useUpdateAdminMissionMutation,

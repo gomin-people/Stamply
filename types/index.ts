@@ -4,3 +4,8 @@ export interface Mission {
   description: string | null;
   isActive: boolean;
 }
+
+export interface StepFormHandle {
+  validate: () => boolean;
+  getData: () => unknown;
+}

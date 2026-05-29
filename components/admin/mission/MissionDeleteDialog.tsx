@@ -7,7 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Mission } from "@/types/mission";
+import { Mission } from "@/types";
 import { useState } from "react";
 
 type Props = {
