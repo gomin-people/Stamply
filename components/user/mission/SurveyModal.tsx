@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-type GenderType = "MALE" | "FEMALE" | "UNKNOWN";
+type GenderType = "MALE" | "FEMALE" | "UNKNOWN" | null;
 type AgeRangeType = "10대" | "20대" | "30대" | "40대" | "50대+" | null;
 
 type SurveyModalProps = {
@@ -23,17 +23,26 @@ export default function SurveyModal({
   onClose,
   onSubmitSuccess,
 }: SurveyModalProps) {
-  const [gender, setGender] = useState<GenderType>("UNKNOWN");
+  const [gender, setGender] = useState<GenderType>(null);
   const [ageRange, setAgeRange] = useState<AgeRangeType>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleGenderSelect = (selectedGender: "MALE" | "FEMALE") => {
-    // 이미 선택된 성별을 다시 누르면 UNKNOWN으로 토글
+    // 이미 선택된 성별을 다시 누르면 null로 토글 (미선택 상태)
     if (gender === selectedGender) {
-      setGender("UNKNOWN");
+      setGender(null);
     } else {
       setGender(selectedGender);
+    }
+  };
+
+  const handleUnknownGenderSelect = () => {
+    // '선택안함'을 다시 누르면 null로 토글 (미선택 상태)
+    if (gender === "UNKNOWN") {
+      setGender(null);
+    } else {
+      setGender("UNKNOWN");
     }
   };
 
@@ -140,7 +149,7 @@ export default function SurveyModal({
           </div>
           <button
             type="button"
-            onClick={() => setGender("UNKNOWN")}
+            onClick={handleUnknownGenderSelect}
             className={`mt-2 text-xs font-semibold underline cursor-pointer hover:text-gomin-neutral-600 self-start transition-colors ${
               gender === "UNKNOWN"
                 ? "text-gomin-primary-700 font-bold"
@@ -185,8 +194,8 @@ export default function SurveyModal({
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isLoading}
-          className="w-full py-4 rounded-[18px] font-nanum font-bold text-[17px] bg-gomin-primary-700 hover:bg-gomin-primary-600 disabled:bg-gomin-neutral-300 text-white transition-all shadow-md shadow-gomin-primary-700/10 active:scale-[0.98] flex items-center justify-center gap-2"
+          disabled={isLoading || gender === null || ageRange === null}
+          className="w-full py-4 rounded-[18px] font-nanum font-bold text-[17px] bg-gomin-primary-700 hover:bg-gomin-primary-600 disabled:bg-gomin-neutral-200 disabled:text-gomin-neutral-400 disabled:cursor-not-allowed text-white transition-all shadow-md shadow-gomin-primary-700/10 active:scale-[0.98] flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <span className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
