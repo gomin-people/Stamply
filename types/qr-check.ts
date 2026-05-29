@@ -22,14 +22,8 @@ export type QrScanTarget =
     };
 
 /**
- * 지원하지 않는 QR 토스트가 DOM에 남아 있는 동안의 애니메이션 단계입니다.
+ * QR 스캔 안내 말풍선에 일시 표시할 안내 메시지입니다.
  */
-export type UnsupportedQrToastAnimationState =
-  | 'entering'
-  | 'visible'
-  | 'exiting';
-
-export type UnsupportedQrToastState = {
-  animationState: UnsupportedQrToastAnimationState;
+export type QrGuideMessageState = {
   message: string;
 };

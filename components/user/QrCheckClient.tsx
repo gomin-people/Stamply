@@ -3,11 +3,10 @@
 import QrScanner from 'qr-scanner';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUnsupportedQrToast } from '@/hooks/useUnsupportedQrToast';
+import { useQrGuideMessage } from '@/hooks/useQrGuideMessage';
 import {
   type CameraStatus,
-  type UnsupportedQrToastAnimationState,
-  type UnsupportedQrToastState,
+  type QrGuideMessageState,
 } from '@/types/qr-check';
 import { getQrScanTarget } from '@/utils/qr';
 
@@ -27,23 +26,18 @@ type HandleQrScanResultParams = {
   currentEventId: string;
   markScanned: () => void;
   navigateToEvent: (path: string) => void;
-  showUnsupportedQrToast: () => void;
+  showUnsupportedQrMessage: () => void;
 };
 
-type CameraStatusOverlayProps = {
+type ScanGuideBubbleProps = {
   cameraStatus: CameraStatus;
   loadingDotCount: number;
+  guideMessage: QrGuideMessageState | null;
 };
 
-type UnsupportedQrToastProps = {
-  toast: UnsupportedQrToastState | null;
+const PRIMARY_700_BACKGROUND_STYLE = {
+  backgroundColor: 'var(--primary-700)',
 };
-
-/**
- * 카메라 상태 안내 문구 클래스
- */
-const CAMERA_STATUS_MESSAGE_CLASS_NAME =
-  'absolute inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] px-6 text-center text-base font-bold text-gomin-white';
 
 /**
  * QR 스캐너가 QR을 찾지 못한 정상 대기 상태인지 확인합니다.
@@ -127,13 +121,13 @@ const handleQrScanResult = ({
   currentEventId,
   markScanned,
   navigateToEvent,
-  showUnsupportedQrToast,
+  showUnsupportedQrMessage,
 }: HandleQrScanResultParams) => {
   if (hasScanned || !scanner) return;
 
   const scanTarget = getQrScanTarget(result.data, { currentEventId });
   if (!scanTarget) {
-    showUnsupportedQrToast();
+    showUnsupportedQrMessage();
     return;
   }
 
@@ -150,68 +144,50 @@ const handleQrScanResult = ({
 };
 
 /**
- * 카메라 준비/권한/사용 불가 상태를 스캐너 화면 상단에 표시합니다.
+ * 카메라/스캔 상태 안내를 QR 프레임 위 말풍선에 표시합니다.
  */
-const CameraStatusOverlay = ({
+const ScanGuideBubble = ({
   cameraStatus,
   loadingDotCount,
-}: CameraStatusOverlayProps) => {
-  if (cameraStatus === 'active') return null;
+  guideMessage,
+}: ScanGuideBubbleProps) => {
+  let guideContent: React.ReactNode = 'QR 코드를 스캔하세요';
 
-  if (cameraStatus === 'loading') {
-    return (
-      <p className={CAMERA_STATUS_MESSAGE_CLASS_NAME}>
+  if (guideMessage) {
+    guideContent = guideMessage.message;
+  } else if (cameraStatus === 'loading') {
+    guideContent = (
+      <>
         카메라가 준비 중입니다
         <span className="inline-block w-[1.5em] text-left">
           {'.'.repeat(loadingDotCount)}
         </span>
-      </p>
+      </>
     );
+  } else if (cameraStatus === 'denied') {
+    guideContent = '카메라 권한을 허용해주세요';
+  } else if (cameraStatus === 'unavailable') {
+    guideContent = '카메라를 사용할 수 없습니다';
   }
-
-  return (
-    <p className={CAMERA_STATUS_MESSAGE_CLASS_NAME}>
-      {cameraStatus === 'denied'
-        ? '카메라 권한을 허용해주세요'
-        : '카메라를 사용할 수 없습니다'}
-    </p>
-  );
-};
-
-/**
- * 토스트 애니메이션 상태를 실제 CSS keyframes 클래스 이름으로 변환합니다.
- *
- * @param animationState - 현재 토스트 애니메이션 단계
- * @returns 단계에 대응하는 CSS 클래스 이름
- */
-const getUnsupportedQrToastAnimationClassName = (
-  animationState: UnsupportedQrToastAnimationState
-) => {
-  if (animationState === 'entering') return 'unsupported-qr-toast-enter';
-  if (animationState === 'exiting') return 'unsupported-qr-toast-exit';
-
-  return 'unsupported-qr-toast-visible';
-};
-
-/**
- * 지원하지 않는 QR 안내 토스트를 스캔 사각형 중앙에 표시합니다.
- */
-const UnsupportedQrToast = ({ toast }: UnsupportedQrToastProps) => {
-  if (!toast) return null;
 
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-4"
+      aria-atomic="true"
+      className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-8 w-full -translate-x-1/2"
       role="status"
     >
-      <p
-        className={`max-w-full rounded-lg bg-gomin-neutral-700/90 px-4 py-3 text-center text-sm font-bold text-gomin-white shadow-card backdrop-blur ${getUnsupportedQrToastAnimationClassName(
-          toast.animationState
-        )}`}
+      <div
+        className="relative flex h-14 items-center justify-center rounded-[20px] px-5 text-center text-lg font-extrabold leading-tight text-gomin-white shadow-card"
+        style={PRIMARY_700_BACKGROUND_STYLE}
       >
-        {toast.message}
-      </p>
+        <span className="relative z-10">{guideContent}</span>
+        <span
+          aria-hidden="true"
+          className="absolute bottom-[-0.55rem] left-1/2 h-5 w-5 -translate-x-1/2 rotate-45"
+          style={PRIMARY_700_BACKGROUND_STYLE}
+        />
+      </div>
     </div>
   );
 };
@@ -228,7 +204,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const hasScannedRef = useRef(false);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>('loading');
   const [loadingDotCount, setLoadingDotCount] = useState(1);
-  const { toast, showUnsupportedQrToast } = useUnsupportedQrToast();
+  const { guideMessage, showUnsupportedQrMessage } = useQrGuideMessage();
   const isCameraActive = cameraStatus === 'active';
 
   /**
@@ -270,7 +246,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
           navigateToEvent: (eventPath) => {
             router.push(eventPath);
           },
-          showUnsupportedQrToast,
+          showUnsupportedQrMessage,
         });
       },
     });
@@ -303,7 +279,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       scanner?.stop();
       scanner?.destroy();
     };
-  }, [eventId, router, showUnsupportedQrToast]);
+  }, [eventId, router, showUnsupportedQrMessage]);
 
   useEffect(() => {
     if (cameraStatus !== 'loading') return;
@@ -331,20 +307,15 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
         onLoadedMetadata={handleVideoLoadedMetadata}
         onPlaying={handleVideoPlaying}
       />
-      {/* 카메라 준비/권한/사용 불가 상태 문구 */}
-      <CameraStatusOverlay
-        cameraStatus={cameraStatus}
-        loadingDotCount={loadingDotCount}
-      />
       {/* QR 스캔 기준 사각형 */}
-      <div className="absolute left-1/2 top-1/2 w-72 max-w-[78vw] -translate-x-1/2 -translate-y-1/2 [--scan-frame-size:min(18rem,78vw)]">
+      <div className="absolute left-1/2 top-1/2 w-72 max-w-[78vw] -translate-x-1/2 -translate-y-1/2">
+        {/* 스캔/카메라 상태 안내 말풍선 */}
+        <ScanGuideBubble
+          cameraStatus={cameraStatus}
+          loadingDotCount={loadingDotCount}
+          guideMessage={guideMessage}
+        />
         <div className="aspect-square rounded-lg border-4 border-gomin-primary-700" />
-        {/* 지원하지 않는 QR 안내 토스트 */}
-        <UnsupportedQrToast toast={toast} />
-        {/* 스캔 안내 문구 */}
-        <h2 className="absolute left-0 top-full mt-4 w-full text-center text-base font-bold leading-snug">
-          미션 QR 코드를 화면 중앙에 맞춰주세요
-        </h2>
       </div>
       {/* 미션 페이지로 돌아가는 하단 버튼 */}
       <div className="absolute inset-x-0 bottom-[calc(3rem+env(safe-area-inset-bottom))] px-6">
@@ -352,9 +323,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
           <button
             className="max-w-none w-full h-14 rounded-[20px] text-white font-sans font-extrabold text-lg transition-all duration-300 active:scale-[0.97] hover:scale-[1.01] flex items-center justify-center gap-2"
             onClick={handleBack}
-            style={{
-              backgroundColor: 'var(--primary-700)',
-            }}
+            style={PRIMARY_700_BACKGROUND_STYLE}
           >
             돌아가기
           </button>
