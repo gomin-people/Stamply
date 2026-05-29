@@ -1,7 +1,7 @@
 'use client';
 
 import QrScanner from 'qr-scanner';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type QrCheckClientProps = {
@@ -140,6 +140,8 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasScannedRef = useRef(false);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const [readyDotCount, setReadyDotCount] = useState(1);
 
   /**
    * 현재 행사 미션 페이지로 명시적으로 이동합니다.
@@ -152,6 +154,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
     if (!videoRef.current) return;
 
     let scanner: QrScanner | null = null;
+    let isMounted = true;
 
     /**
      * 잘못된 QR 또는 처리 실패 후 다시 스캔할 수 있도록 스캐너를 재시작합니다.
@@ -182,23 +185,51 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
     });
 
     scanner.start().catch((error) => {
+      if (isMounted) {
+        setIsCameraReady(false);
+      }
       console.error('QR scanner start failed:', error);
     });
 
     return () => {
+      isMounted = false;
       scanner?.stop();
       scanner?.destroy();
     };
   }, [router]);
 
+  useEffect(() => {
+    if (isCameraReady) return;
+
+    // 카메라 준비 중 메시지의 점 개수를 0.3초마다 1, 2, 3, 1, ... 순으로 변경
+    const intervalId = window.setInterval(() => {
+      setReadyDotCount((currentCount) =>
+        currentCount === 3 ? 1 : currentCount + 1
+      );
+    }, 300);
+
+    return () => window.clearInterval(intervalId);
+  }, [isCameraReady]);
+
   return (
     <div className="fixed inset-0 overflow-hidden bg-gomin-black text-gomin-white">
       <video
         ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={`absolute inset-0 h-full w-full bg-gomin-black object-cover transition-opacity duration-200 ${
+          isCameraReady ? 'opacity-100' : 'opacity-0'
+        }`}
         muted
         playsInline
+        onPlaying={() => setIsCameraReady(true)}
       />
+      {!isCameraReady && (
+        <p className="absolute inset-x-0 top-[calc(4rem+env(safe-area-inset-top))] px-6 text-center text-base font-bold text-gomin-white">
+          카메라가 준비 중입니다
+          <span className="inline-block w-[1.5em] text-left">
+            {'.'.repeat(readyDotCount)}
+          </span>
+        </p>
+      )}
       <div className="absolute left-1/2 top-1/2 w-72 max-w-[78vw] -translate-x-1/2 -translate-y-1/2">
         <div className="aspect-square rounded-lg border-4 border-gomin-primary-700" />
         <h2 className="absolute left-0 top-full mt-4 w-full text-center text-base font-bold leading-snug">
