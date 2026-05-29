@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Header from "./Header";
+import Header from "@/components/user/header/Header";
 
 const shouldHideHeader = (pathname: string) => {
   // 1. 최상위 루트(/)인 경우 숨김
