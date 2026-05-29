@@ -7,8 +7,10 @@ import {
   readJsonObject,
   serverError,
   toInteger,
+  unauthorized,
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 // 행사 하위 단일 미션 route parameter 타입
 type AdminEventMissionRouteContext = {
@@ -42,6 +44,31 @@ export async function GET(
 
   if ("response" in parsedParams) {
     return parsedParams.response;
+  }
+
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
+    .from("events")
+    .select("id")
+    .eq("id", parsedParams.eventId)
+    .maybeSingle();
+
+  if (eventError) {
+    return serverError("행사 권한 확인 실패", eventError);
+  }
+
+  if (!event) {
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   // missions 테이블에서 id가 missionId이고 events_id가 eventId인 미션 전체 컬럼 조회
@@ -94,6 +121,31 @@ export async function PATCH(
 
   if ("response" in parsedParams) {
     return parsedParams.response;
+  }
+
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
+    .from("events")
+    .select("id")
+    .eq("id", parsedParams.eventId)
+    .maybeSingle();
+
+  if (eventError) {
+    return serverError("행사 권한 확인 실패", eventError);
+  }
+
+  if (!event) {
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   const result = await readJsonObject(request);
@@ -176,6 +228,31 @@ export async function DELETE(
 
   if ("response" in parsedParams) {
     return parsedParams.response;
+  }
+
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
+    .from("events")
+    .select("id")
+    .eq("id", parsedParams.eventId)
+    .maybeSingle();
+
+  if (eventError) {
+    return serverError("행사 권한 확인 실패", eventError);
+  }
+
+  if (!event) {
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   // missions 테이블에서 id가 missionId이고 events_id가 eventId인 삭제 대상 row 조회

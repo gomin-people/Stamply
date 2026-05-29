@@ -4,8 +4,10 @@ import {
   ok,
   parsePositiveInteger,
   serverError,
+  unauthorized,
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 // 어드민 대시보드 route parameter 타입
 type AdminEventDashboardRouteContext = {
@@ -33,8 +35,18 @@ export async function GET(
     return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
-  // events 테이블에서 id가 eventId인 대시보드 대상 행사 전체 컬럼 조회
-  const { data: event, error: eventError } = await supabase
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
     .from("events")
     .select("*")
     .eq("id", eventId)
@@ -101,23 +113,8 @@ export async function GET(
 
   const completionCounts = new Map<number, number>();
 
-  // 현재 존재하는 활성(is_active = true) 미션 ID 목록 생성 (삭제/비활성화 제외)
-  const activeMissionIds = new Set(
-    missions
-      ?.filter((mission) => mission.is_active)
-      .map((mission) => mission.id) ?? []
-  );
-
-  // 완료 기록 중 실제로 활성화되어 있는 미션의 완료 기록만 필터링
-  const filteredCompletions =
-    completions?.filter(
-      (completion) =>
-        completion.missions_id !== null &&
-        activeMissionIds.has(completion.missions_id)
-    ) ?? [];
-
-  // 미션별 완료 수는 필터링된 완료 기록을 기준으로 계산
-  for (const completion of filteredCompletions) {
+  // 미션별 완료 수는 mission_completions를 missions_id 기준으로 묶어 계산
+  for (const completion of completions ?? []) {
     const missionId = completion.missions_id;
 
     if (typeof missionId === "number") {
@@ -128,10 +125,11 @@ export async function GET(
     }
   }
 
-  const activeMissionCount = activeMissionIds.size;
+  const activeMissionCount =
+    missions?.filter((mission) => mission.is_active).length ?? 0;
   // 완료율 분모는 참여자 수와 활성 미션 수를 기준으로 계산
   const totalPossibleCompletions = (participantCount ?? 0) * activeMissionCount;
-  const totalCompletions = filteredCompletions.length;
+  const totalCompletions = completions?.length ?? 0;
 
   return ok({
     event,

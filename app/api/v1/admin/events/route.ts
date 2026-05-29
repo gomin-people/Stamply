@@ -1,21 +1,19 @@
-import { type NextRequest } from "next/server";
 import {
   badRequest,
   created,
   getMissingFields,
   ok,
-  parseOptionalNonEmptyString,
   pickBodyFields,
   readJsonObject,
   serverError,
   toInteger,
-  toNonEmptyString,
+  unauthorized,
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 // 행사 생성 시 요청 본문에서 허용하는 필드 목록
 const EVENT_INSERT_FIELDS = [
-  "user_id",
   "title",
   "start_date",
   "end_date",
@@ -37,7 +35,6 @@ const EVENT_INSERT_FIELDS = [
 
 // DB not null 컬럼과 MVP 생성 플로우 기준의 필수 행사 필드
 const EVENT_REQUIRED_FIELDS = [
-  "user_id",
   "title",
   "start_date",
   "end_date",
@@ -51,29 +48,25 @@ const EVENT_REQUIRED_FIELDS = [
 /**
  * 어드민 행사 목록을 조회합니다.
  *
- * @param request - userId query parameter를 포함할 수 있는 요청 객체
- * @returns userId가 있으면 해당 운영자의 행사 목록, 없으면 전체 행사 목록
+ * @returns 현재 로그인한 운영자의 행사 목록
  */
-export async function GET(request: NextRequest) {
-  const requestedUserId = request.nextUrl.searchParams.get("userId");
-  const userId = parseOptionalNonEmptyString(requestedUserId);
+export async function GET() {
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
 
-  if (requestedUserId !== null && userId === null) {
-    return badRequest("올바른 userId가 필요합니다.");
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
   }
 
-  // events 테이블에서 user_id 조건을 선택적으로 적용해 생성일, id 내림차순으로 목록 조회
-  let query = supabase
+  // events 테이블은 RLS(auth.uid() = user_id)로 현재 운영자 소유 row만 조회됩니다.
+  const { data, error } = await sessionSupabase
     .from("events")
     .select("*")
     .order("created_at", { ascending: false })
     .order("id", { ascending: false });
-
-  if (userId !== null) {
-    query = query.eq("user_id", userId);
-  }
-
-  const { data, error } = await query;
 
   if (error) {
     return serverError("어드민 행사 목록 조회 실패", error);
@@ -89,6 +82,16 @@ export async function GET(request: NextRequest) {
  * @returns 생성된 행사와 입장 QR 코드 목록
  */
 export async function POST(request: Request) {
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
   const result = await readJsonObject(request);
 
   if ("response" in result) {
@@ -103,12 +106,6 @@ export async function POST(request: Request) {
     });
   }
 
-  const userId = toNonEmptyString(result.body.user_id);
-
-  if (userId === null) {
-    return badRequest("userId는 비어 있지 않은 문자열이어야 합니다.");
-  }
-
   const rewardStock = toInteger(result.body.reward_stock);
 
   if (
@@ -121,14 +118,14 @@ export async function POST(request: Request) {
   const now = new Date().toISOString();
   const eventPayload = {
     ...pickBodyFields(result.body, EVENT_INSERT_FIELDS),
-    user_id: userId,
+    user_id: user.id,
     ...(rewardStock === null ? {} : { reward_stock: rewardStock }),
     created_at: now,
     updated_at: now,
   };
 
-  // events 테이블에 요청 본문 기반 행사 row 삽입 후 전체 컬럼 조회
-  const { data: event, error: eventError } = await supabase
+  // events 테이블은 RLS with check(auth.uid() = user_id)를 통과해야 생성됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
     .from("events")
     .insert(eventPayload)
     .select("*")
@@ -152,7 +149,7 @@ export async function POST(request: Request) {
   if (qrCodeError) {
     // QR 생성 실패 시 고아 행사가 남지 않도록 생성된 행사를 정리
     // events 테이블에서 생성된 행사 id 기준으로 row 삭제
-    await supabase.from("events").delete().eq("id", event.id);
+    await sessionSupabase.from("events").delete().eq("id", event.id);
     return serverError("행사 QR 생성 실패", qrCodeError);
   }
 

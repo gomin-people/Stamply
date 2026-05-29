@@ -102,8 +102,23 @@ const openApiDocument = {
       name: "Mission 완료",
       description: "MISSION QR 기반 완료 처리 API입니다.",
     },
+    { name: "테스트", description: "개발 검증용 API입니다." },
   ],
   paths: {
+    "/api/v1/test/rls/events": {
+      get: {
+        tags: ["테스트"],
+        summary: "RLS 테스트용 Events 목록 조회",
+        description:
+          "service role이 아닌 현재 Supabase 세션 쿠키로 events를 조회합니다. user_id 필터를 직접 걸지 않으므로 RLS 적용 여부를 확인할 수 있습니다. 추후 삭제 예정입니다.",
+        operationId: "testRlsEvents",
+        responses: {
+          "200": okResponse,
+          "401": unauthorizedResponse,
+          "500": errorResponse,
+        },
+      },
+    },
     "/api/v1/admin/events": {
       get: {
         tags: ["관리자 Events"],

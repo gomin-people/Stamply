@@ -33,20 +33,8 @@ type EventDashboard = {
   >;
 };
 
-function getAdminEvents(userId?: string) {
-  const searchParams = new URLSearchParams();
-
-  if (userId !== undefined) {
-    searchParams.set("userId", String(userId));
-  }
-
-  const queryString = searchParams.toString();
-  const path =
-    queryString.length > 0
-      ? `/api/v1/admin/events?${queryString}`
-      : "/api/v1/admin/events";
-
-  return requestJson<StamplyEvent[]>(path);
+function getAdminEvents() {
+  return requestJson<StamplyEvent[]>("/api/v1/admin/events");
 }
 
 function getAdminEvent(eventId: number) {
@@ -62,13 +50,12 @@ function getEventDashboard(eventId: number) {
 /**
  * 어드민 행사 목록을 조회합니다.
  *
- * @param userId - 선택적으로 필터링할 운영자 ID
  * @returns React Query 어드민 행사 목록
  */
-export function useAdminEventsQuery(userId?: string) {
+export function useAdminEventsQuery() {
   return useQuery({
-    queryKey: ["admin", "events", "list", userId],
-    queryFn: () => getAdminEvents(userId),
+    queryKey: ["admin", "events", "list"],
+    queryFn: getAdminEvents,
   });
 }
 

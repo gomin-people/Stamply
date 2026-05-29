@@ -8,7 +8,9 @@ import {
   pickBodyFields,
   readJsonObject,
   serverError,
+  unauthorized,
 } from "@/utils/api";
+import { supabase } from "@/utils/supabase/server";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
 // 행사 하위 미션 목록 route parameter 타입
@@ -41,12 +43,36 @@ export async function GET(
   { params }: AdminEventMissionsRouteContext
 ) {
   void request;
-  const supabase = await createSessionClient();
   const { eventId: eventIdParam } = await params;
   const eventId = parsePositiveInteger(eventIdParam);
 
   if (eventId === null) {
     return badRequest("올바른 행사 ID가 필요합니다.");
+  }
+
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
+    .from("events")
+    .select("id")
+    .eq("id", eventId)
+    .maybeSingle();
+
+  if (eventError) {
+    return serverError("행사 권한 확인 실패", eventError);
+  }
+
+  if (!event) {
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   // missions 테이블에서 events_id가 eventId인 미션 목록을 sort_order 오름차순 조회
@@ -80,12 +106,36 @@ export async function POST(
   request: Request,
   { params }: AdminEventMissionsRouteContext
 ) {
-  const supabase = await createSessionClient();
   const { eventId: eventIdParam } = await params;
   const eventId = parsePositiveInteger(eventIdParam);
 
   if (eventId === null) {
     return badRequest("올바른 행사 ID가 필요합니다.");
+  }
+
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
+    .from("events")
+    .select("id")
+    .eq("id", eventId)
+    .maybeSingle();
+
+  if (eventError) {
+    return serverError("행사 권한 확인 실패", eventError);
+  }
+
+  if (!event) {
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   const result = await readJsonObject(request);
@@ -107,21 +157,6 @@ export async function POST(
     return badRequest("필수 미션 필드가 누락되었습니다.", {
       fields: missingFields,
     });
-  }
-
-  // events 테이블에서 id가 eventId인 미션 생성 대상 행사 존재 여부 조회
-  const { data: event, error: eventError } = await supabase
-    .from("events")
-    .select("id")
-    .eq("id", eventId)
-    .maybeSingle();
-
-  if (eventError) {
-    return serverError("행사 조회 실패", eventError);
-  }
-
-  if (!event) {
-    return notFound("행사를 찾을 수 없습니다.");
   }
 
   const payload = pickBodyFields(body, MISSION_INSERT_FIELDS);

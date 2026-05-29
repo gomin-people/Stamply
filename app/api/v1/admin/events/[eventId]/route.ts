@@ -7,9 +7,10 @@ import {
   readJsonObject,
   serverError,
   toInteger,
-  toNonEmptyString,
+  unauthorized,
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 // 어드민 행사 상세 route parameter 타입
 type AdminEventRouteContext = {
@@ -20,7 +21,6 @@ type AdminEventRouteContext = {
 
 // 행사 수정 시 요청 본문에서 허용하는 필드 목록
 const EVENT_UPDATE_FIELDS = [
-  "user_id",
   "title",
   "start_date",
   "end_date",
@@ -59,8 +59,18 @@ export async function GET(
     return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
-  // events 테이블에서 id가 eventId인 행사 전체 컬럼 조회
-  const { data: event, error: eventError } = await supabase
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
+  const { data: event, error: eventError } = await sessionSupabase
     .from("events")
     .select("*")
     .eq("id", eventId)
@@ -138,6 +148,16 @@ export async function PATCH(
     return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
   const result = await readJsonObject(request);
 
   if ("response" in result) {
@@ -150,16 +170,6 @@ export async function PATCH(
     return badRequest("수정할 행사 필드가 필요합니다.");
   }
 
-  if (Object.prototype.hasOwnProperty.call(payload, "user_id")) {
-    const userId = toNonEmptyString(payload.user_id);
-
-    if (userId === null) {
-      return badRequest("userId는 비어 있지 않은 문자열이어야 합니다.");
-    }
-
-    payload.user_id = userId;
-  }
-
   if (Object.prototype.hasOwnProperty.call(payload, "reward_stock")) {
     const rewardStock = toInteger(payload.reward_stock);
 
@@ -170,8 +180,8 @@ export async function PATCH(
     payload.reward_stock = rewardStock;
   }
 
-  // events 테이블에서 id가 eventId인 row를 요청 본문 필드와 updated_at으로 수정 후 조회
-  const { data, error } = await supabase
+  // events 테이블은 RLS로 현재 운영자 소유 row만 수정됩니다.
+  const { data, error } = await sessionSupabase
     .from("events")
     .update({
       ...payload,
@@ -211,8 +221,18 @@ export async function DELETE(
     return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
-  // events 테이블에서 id가 eventId인 삭제 대상 row 존재 여부 조회
-  const { data: event, error: eventError } = await supabase
+  const sessionSupabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await sessionSupabase.auth.getUser();
+
+  if (userError || !user) {
+    return unauthorized("인증되지 않은 사용자입니다.");
+  }
+
+  // 하위 데이터 삭제 전에 RLS로 현재 운영자가 소유한 event인지 확인합니다.
+  const { data: event, error: eventError } = await sessionSupabase
     .from("events")
     .select("id")
     .eq("id", eventId)
@@ -246,8 +266,8 @@ export async function DELETE(
     }
   }
 
-  // events 테이블에서 id가 eventId인 행사 row 삭제
-  const { error: deleteEventError } = await supabase
+  // events 테이블은 RLS로 현재 운영자 소유 row만 삭제됩니다.
+  const { error: deleteEventError } = await sessionSupabase
     .from("events")
     .delete()
     .eq("id", eventId);
