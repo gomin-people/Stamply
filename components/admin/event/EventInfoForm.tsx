@@ -70,11 +70,11 @@ const EventInfoForm = forwardRef<StepFormHandle>(
       setForm((prev) => ({ ...prev, posterImageUrl: "" }));
     };
 
-    const validate = () => {
+    const validate = useCallback(() => {
       const result = eventInfoSchema.safeParse(form);
       setZodError(result.error ?? null);
       return !result.error;
-    };
+    }, [form]);
 
     useImperativeHandle(
       ref,
@@ -82,7 +82,7 @@ const EventInfoForm = forwardRef<StepFormHandle>(
         validate,
         getData: () => form,
       }),
-      [form]
+      [form, validate]
     );
 
     const fieldErrors = zodError ? z.flattenError(zodError).fieldErrors : {};

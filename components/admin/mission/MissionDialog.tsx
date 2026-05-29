@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { Mission } from "@/types/mission";
+import type { Mission } from "@/types";
 
 type Props = {
   mission: Mission;
