@@ -24,6 +24,7 @@ type HandleQrScanResultParams = {
   result: QrScanner.ScanResult;
   scanner: QrScanner | null;
   hasScanned: boolean;
+  currentEventId: string;
   markScanned: () => void;
   navigateToEvent: (path: string) => void;
   showUnsupportedQrToast: () => void;
@@ -123,13 +124,14 @@ const handleQrScanResult = ({
   result,
   scanner,
   hasScanned,
+  currentEventId,
   markScanned,
   navigateToEvent,
   showUnsupportedQrToast,
 }: HandleQrScanResultParams) => {
   if (hasScanned || !scanner) return;
 
-  const scanTarget = getQrScanTarget(result.data);
+  const scanTarget = getQrScanTarget(result.data, { currentEventId });
   if (!scanTarget) {
     showUnsupportedQrToast();
     return;
@@ -261,6 +263,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
           result,
           scanner,
           hasScanned: hasScannedRef.current,
+          currentEventId: eventId,
           markScanned: () => {
             hasScannedRef.current = true;
           },
@@ -300,7 +303,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       scanner?.stop();
       scanner?.destroy();
     };
-  }, [router, showUnsupportedQrToast]);
+  }, [eventId, router, showUnsupportedQrToast]);
 
   useEffect(() => {
     if (cameraStatus !== 'loading') return;

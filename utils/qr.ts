@@ -1,5 +1,9 @@
 import { type QrScanTarget } from "@/types/qr-check";
 
+type GetQrScanTargetOptions = {
+  currentEventId?: string;
+};
+
 /**
  * 미션 검증을 위한 QR 코드 URL을 생성합니다.
  * @param token QR 토큰 값
@@ -22,12 +26,7 @@ export function getMissionCheckUrl(token: string): string {
 const toQrUrl = (value: string) => {
   try {
     if (value.startsWith("/")) {
-      const baseUrl =
-        typeof window === "undefined"
-          ? "http://localhost"
-          : window.location.origin;
-
-      return new URL(value, baseUrl);
+      return new URL(value, getCurrentOrigin());
     }
 
     return new URL(value);
@@ -35,6 +34,14 @@ const toQrUrl = (value: string) => {
     return null;
   }
 };
+
+/**
+ * 현재 앱의 origin을 가져옵니다.
+ *
+ * @returns 브라우저에서는 현재 origin, 서버/테스트 환경에서는 기본 origin
+ */
+const getCurrentOrigin = () =>
+  typeof window === "undefined" ? "http://localhost" : window.location.origin;
 
 /**
  * 미션 체크 API URL에서 앱 내부 이동 경로를 만듭니다.
@@ -52,20 +59,35 @@ const getMissionCheckPath = (url: URL) => {
  * 행사 페이지 URL에서 앱 내부 이동 경로를 만듭니다.
  *
  * @param url - QR 코드에서 파싱한 URL
+ * @param currentEventId - 현재 QR 스캔 화면의 행사 ID
  * @returns 행사 URL이면 내부 이동 path, 아니면 null
  */
-const getEventPath = (url: URL) => {
-  if (!url.pathname.startsWith("/event/")) return null;
-  return `${url.pathname}${url.search}${url.hash}`;
+const getEventPath = (url: URL, currentEventId?: string) => {
+  if (!currentEventId) return null;
+  if (url.origin !== getCurrentOrigin()) return null;
+  if (url.search || url.hash) return null;
+
+  const eventPath = `/event/${currentEventId}`;
+  const normalizedPathname = url.pathname.endsWith("/")
+    ? url.pathname.slice(0, -1)
+    : url.pathname;
+
+  if (normalizedPathname !== eventPath) return null;
+
+  return eventPath;
 };
 
 /**
  * QR 원본 문자열에서 실제로 처리 가능한 앱 내부 이동 대상을 찾습니다.
  *
  * @param value - QR 코드에서 읽은 원본 문자열
+ * @param options - QR 해석에 필요한 현재 화면 정보
  * @returns 지원하는 QR이면 이동 대상, 아니면 null
  */
-export const getQrScanTarget = (value: string): QrScanTarget | null => {
+export const getQrScanTarget = (
+  value: string,
+  { currentEventId }: GetQrScanTargetOptions = {}
+): QrScanTarget | null => {
   const url = toQrUrl(value.trim());
   if (!url) return null;
 
@@ -77,7 +99,7 @@ export const getQrScanTarget = (value: string): QrScanTarget | null => {
     };
   }
 
-  const eventPath = getEventPath(url);
+  const eventPath = getEventPath(url, currentEventId);
   if (eventPath) {
     return {
       type: 'event',
