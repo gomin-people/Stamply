@@ -1,39 +1,49 @@
-import Link from "next/link";
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import AnimatedIconStamply from "@/components/icons/AnimatedIconStamply";
 
 type PageProps = {
   params: Promise<{ eventId: string }>;
 };
 
-export default async function CompletePage({ params }: PageProps) {
-  const { eventId } = await params;
+export default function CompletePage({ params }: PageProps) {
+  const { eventId } = React.use(params);
+  const router = useRouter();
+
+  const handleStaffConfirm = () => {
+    const isConfirmed = window.confirm(
+      "리워드를 지급하시겠습니까? (스태프 확인용)"
+    );
+    if (isConfirmed) {
+      window.alert("리워드 지급이 완료되었습니다. 감사합니다!");
+      router.push("/");
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-56px)] bg-gomin-white">
-      <div className="max-w-md w-full space-y-6">
-        <div className="space-y-2">
-          <div className="mx-auto w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mb-4">
-            🎉
-          </div>
-          <span className="inline-block px-3 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 rounded-full">
-            축하합니다! 챌린지 성공
-          </span>
-          <h2 className="text-2xl font-black text-gomin-black">
-            챌린지 최종 완료!
-          </h2>
-          <p className="text-sm text-gomin-neutral-500">
-            {eventId.toUpperCase()} 스탬프 투어를 무사히 마치셨습니다.
-            <br />
-            아래 버튼을 눌러 발급된 리워드 쿠폰을 확인해 보세요.
-          </p>
+    <div className="fixed inset-0 w-full h-full bg-gomin-primary-700 flex flex-col items-center justify-center p-6 text-center select-none z-50">
+      <div className="max-w-md w-full flex flex-col items-center justify-center space-y-10">
+        {/* 1. 중앙 Stamply 대형 원형 도장 그래픽 */}
+        <div className="w-64 h-64 shrink-0 flex items-center justify-center relative select-none">
+          <AnimatedIconStamply className="w-full h-full text-white opacity-95 animate-fade-in scale-110" />
         </div>
 
-        <div className="pt-4 space-y-3">
-          <Link
-            href="/"
-            className="inline-flex w-full items-center justify-center h-12 px-6 font-bold text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-xl transition-all duration-200 shadow-md shadow-gomin-primary-700/20 active:scale-[0.98]"
+        {/* 2. 안내 안내 문구 */}
+        <p className="text-xl font-nanum font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line">
+          리워드 수령처에서 이 화면을{"\n"}스태프에게 보여주세요!
+        </p>
+
+        {/* 3. 하단 직원 확인 버튼 */}
+        <div className="w-full max-w-xs pt-4">
+          <button
+            type="button"
+            onClick={handleStaffConfirm}
+            className="w-full py-4.5 rounded-[22px] font-nanum font-extrabold text-[18px] bg-white text-gomin-primary-700 hover:bg-gomin-primary-100 transition-all shadow-lg active:scale-[0.98] cursor-pointer"
           >
-            홈으로 돌아가기
-          </Link>
+            직원 확인 버튼
+          </button>
         </div>
       </div>
     </div>
