@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { GripVertical, Pencil, Trash2, QrCode } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import type { AdminMissionDetail } from "@/types/models/admin";
+import MissionItem from "@/components/admin/mission/MissionItem";
 import MissionDialog from "@/components/admin/mission/MissionDialog";
 import MissionDeleteDialog from "@/components/admin/mission/MissionDeleteDialog";
 import QRDialog from "@/components/admin/mission/QRDialog";
@@ -94,70 +92,15 @@ export default function MissionList({ missions }: Props) {
   return (
     <>
       {missions.map((mission, index) => (
-        <div
+        <MissionItem
           key={mission.id}
-          className="grid items-center px-6 py-5 border-b border-gomin-neutral-100 last:border-b-0 hover:bg-gomin-neutral-100/30"
-          style={{ gridTemplateColumns: "40px 60px 1fr 2fr 110px 72px 90px" }}
-        >
-          <div className="cursor-grab text-gomin-neutral-300">
-            <GripVertical className="w-4 h-4" />
-          </div>
-          <div className="text-sm text-gomin-neutral-600 ">{index + 1}</div>
-
-          <div className="text-sm font-medium text-gomin-black">
-            {mission.title}
-          </div>
-          <div className="text-sm text-gomin-neutral-500">
-            {mission.description}
-          </div>
-
-          <div className="flex justify-center">
-            <Switch
-              defaultChecked={mission.isActive}
-              className="data-checked:bg-gomin-primary-600"
-              onCheckedChange={(checked) =>
-                handleToggleActive(mission.id, checked)
-              }
-            />
-          </div>
-
-          <div className="flex justify-center">
-            {mission.qrCodes?.map((qrCode: { id: number; token: string }) => (
-              <Button
-                key={qrCode.id}
-                variant="outline"
-                size="icon-sm"
-                onClick={() =>
-                  setViewingQR({
-                    title: mission.title,
-                    token: qrCode.token,
-                    id: qrCode.id,
-                  })
-                }
-              >
-                <QrCode />
-              </Button>
-            ))}
-          </div>
-
-          <div className="flex justify-center gap-1">
-            <Button
-              variant="outline"
-              size="icon-sm"
-              onClick={() => setEditingMission(mission)}
-            >
-              <Pencil />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              className="hover:text-destructive"
-              onClick={() => setDeletingMission(mission)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-        </div>
+          mission={mission}
+          index={index}
+          onToggleActive={handleToggleActive}
+          onViewQR={setViewingQR}
+          onEdit={setEditingMission}
+          onDelete={setDeletingMission}
+        />
       ))}
 
       <Dialog

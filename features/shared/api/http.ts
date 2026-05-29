@@ -4,6 +4,33 @@ export type ApiDataResponse<T> = {
 };
 
 /**
+ * 클라이언트/서버 환경을 감지해 fetch에 필요한 URL과 RequestInit을 반환합니다.
+ * 서버 환경에서는 next/headers를 동적으로 임포트해 절대 URL과 쿠키를 자동으로 설정합니다.
+ */
+export async function resolveRequest(
+  path: string,
+  extraInit?: RequestInit
+): Promise<{ url: string; init: RequestInit }> {
+  if (typeof window !== "undefined") {
+    return { url: path, init: { credentials: "include", ...extraInit } };
+  }
+
+  const { cookies, headers } = await import("next/headers");
+  const [cookieStore, headersList] = await Promise.all([cookies(), headers()]);
+  const cookieHeader = cookieStore
+    .getAll()
+    .map(({ name, value }) => `${name}=${value}`)
+    .join("; ");
+  const host = headersList.get("host") ?? "localhost:3000";
+  const baseUrl = `${host.startsWith("localhost") ? "http" : "https"}://${host}`;
+
+  return {
+    url: `${baseUrl}${path}`,
+    init: { headers: { Cookie: cookieHeader }, ...extraInit },
+  };
+}
+
+/**
  * API 응답 실패를 status와 함께 표현하는 에러입니다.
  */
 export class ApiError extends Error {
