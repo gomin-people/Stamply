@@ -1,8 +1,7 @@
-"use client";
-
 import { Upload } from "lucide-react";
+import { cn } from "@/utils";
 
-type Props = {
+type DropzoneProps = {
   isDragOver: boolean;
   onClick: () => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -16,7 +15,7 @@ const BrochureDropzone = ({
   onDragOver,
   onDragLeave,
   onDrop,
-}: Props) => {
+}: DropzoneProps) => {
   return (
     <button
       type="button"
@@ -24,11 +23,12 @@ const BrochureDropzone = ({
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      className={`flex w-full items-center gap-4 rounded-2xl border border-dashed px-6 py-5 transition-colors ${
+      className={cn(
+        "flex w-full items-center gap-4 rounded-2xl border border-dashed px-6 py-5 transition-colors",
         isDragOver
-          ? "border-gomin-primary-700 bg-gomin-primary-100/50"
+          ? "cursor-copy border-gomin-primary-700 bg-gomin-primary-100/50"
           : "border-gomin-primary-300 bg-gomin-primary-100"
-      }`}
+      )}
     >
       <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-[0_2px_3px_rgba(84,53,235,0.1)]">
         <Upload className="size-5 text-gomin-primary-700" />

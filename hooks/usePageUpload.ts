@@ -1,17 +1,17 @@
-import { useRef, useState } from 'react';
-import { arrayMove } from '@dnd-kit/sortable';
-import { DragEndEvent } from '@dnd-kit/core';
+import { useRef, useState } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
+import { DragEndEvent } from "@dnd-kit/core";
 
 const MAX_PAGES = 10;
 
-export type BrochurePage = {
+export type UploadPage = {
   id: string;
   file: File;
   previewUrl: string;
 };
 
-const useBrochurePages = () => {
-  const [pages, setPages] = useState<BrochurePage[]>([]);
+const usePageUpload = () => {
+  const [pages, setPages] = useState<UploadPage[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -32,12 +32,12 @@ const useBrochurePages = () => {
 
   const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) addFiles(e.target.files);
-    e.target.value = '';
+    e.target.value = "";
   };
 
   const handleAddChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) addFiles(e.target.files);
-    e.target.value = '';
+    e.target.value = "";
   };
 
   const handleReplaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,10 +51,11 @@ const useBrochurePages = () => {
       )
     );
     replacingId.current = null;
-    e.target.value = '';
+    e.target.value = "";
   };
 
-  const handleDelete = (id: string) => setPages((prev) => prev.filter((p) => p.id !== id));
+  const handleDelete = (id: string) =>
+    setPages((prev) => prev.filter((p) => p.id !== id));
 
   const handleReplace = (id: string) => {
     replacingId.current = id;
@@ -96,4 +97,4 @@ const useBrochurePages = () => {
 };
 
 export { MAX_PAGES };
-export default useBrochurePages;
+export default usePageUpload;

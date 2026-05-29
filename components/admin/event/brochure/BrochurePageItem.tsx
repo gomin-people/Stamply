@@ -4,26 +4,22 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, RefreshCw, Trash2 } from "lucide-react";
 import BrochureThumbnail from "./BrochureThumbnail";
+import type { UploadPage } from "@/hooks/usePageUpload";
 
-type BrochurePage = {
-  id: string;
-  file: File;
-  previewUrl: string;
-};
-
-type Props = {
-  page: BrochurePage;
+type ItemProps = {
+  page: UploadPage;
   index: number;
   onReplace: () => void;
   onDelete: () => void;
 };
 
+// 파일 크기(bytes)를 읽기 좋게 변환하는 함수
 function formatFileSize(bytes: number): string {
   if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${Math.round(bytes / 1024)} KB`;
 }
 
-const BrochurePageItem = ({ page, index, onReplace, onDelete }: Props) => {
+const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
   const {
     attributes,
     listeners,

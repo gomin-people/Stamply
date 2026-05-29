@@ -15,7 +15,7 @@ import {
 import { GripVertical, Plus } from "lucide-react";
 import BrochureDropzone from "./brochure/BrochureDropzone";
 import BrochurePageItem from "./brochure/BrochurePageItem";
-import useBrochurePages, { MAX_PAGES } from "@/hooks/useBrochurePages";
+import usePageUpload, { MAX_PAGES } from "@/hooks/usePageUpload";
 import { type StepFormHandle } from "@/types";
 
 const EventBrochureForm = forwardRef<StepFormHandle>(function EventBrochureForm(_, ref) {
@@ -37,7 +37,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(function EventBrochureForm(
     handleDropzoneDrop,
     handleDragEnd,
     setIsDragOver,
-  } = useBrochurePages();
+  } = usePageUpload();
 
   const sensors = useSensors(useSensor(PointerSensor));
 
