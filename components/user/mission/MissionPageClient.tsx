@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrochureButton from "@/components/user/BrochureButton";
-import ViewToggle from "@/components/user/ViewToggle";
-import MissionStamp from "@/components/user/MissionStamp";
-import MissionItem from "@/components/user/MissionItem";
-import FloatingActionButton from "@/components/user/FloatingActionButton";
+import BrochureButton from "./BrochureButton";
+import ViewToggle from "./ViewToggle";
+import MissionStamp from "./MissionStamp";
+import MissionItem from "./MissionItem";
+import FloatingActionButton from "./FloatingActionButton";
 import {
   useParticipantMissionsQuery,
   type ParticipantMission,

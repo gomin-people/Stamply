@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import ChevronLeftIcon from "@/components/icons/ChevronLeftIcon";
 
-interface HeaderProps {
+type HeaderProps = {
   showBackButton?: boolean;
   onBackClick?: () => void;
-}
+};
 
 const Header = ({ showBackButton = true, onBackClick }: HeaderProps) => {
   const router = useRouter();

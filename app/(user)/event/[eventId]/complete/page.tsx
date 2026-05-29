@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-interface PageProps {
+type PageProps = {
   params: Promise<{ eventId: string }>;
-}
+};
 
 export default async function CompletePage({ params }: PageProps) {
   const { eventId } = await params;
