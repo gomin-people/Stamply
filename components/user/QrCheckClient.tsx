@@ -8,6 +8,20 @@ type QrCheckClientProps = {
   eventId: string;
 };
 
+type CreateQrScannerParams = {
+  video: HTMLVideoElement;
+  onDecode: (result: QrScanner.ScanResult) => void;
+};
+
+type HandleQrScanResultParams = {
+  result: QrScanner.ScanResult;
+  scanner: QrScanner | null;
+  hasScanned: boolean;
+  markScanned: () => void;
+  navigateToEvent: (path: string) => void;
+  restartScanner: () => void;
+};
+
 /**
  * QR 스캐너가 QR을 찾지 못한 정상 대기 상태인지 확인합니다.
  *
@@ -59,6 +73,64 @@ const getEventPath = (url: URL) => {
 };
 
 /**
+ * QR 스캐너 인스턴스를 생성합니다.
+ *
+ * @param params - 스캔 대상 video 요소와 디코딩 성공 콜백
+ * @returns qr-scanner 인스턴스
+ */
+const createQrScanner = ({ video, onDecode }: CreateQrScannerParams) =>
+  new QrScanner(video, onDecode, {
+    preferredCamera: 'environment',
+    highlightScanRegion: false,
+    highlightCodeOutline: false,
+    onDecodeError: (error) => {
+      if (isQrNotFoundError(error)) return;
+      console.error('QR scanner error:', error);
+    },
+  });
+
+/**
+ * QR 스캔 결과를 해석해 미션 완료 API 또는 행사 페이지로 이동합니다.
+ *
+ * @param params - 스캔 결과 처리에 필요한 스캐너 상태와 라우터
+ */
+const handleQrScanResult = ({
+  result,
+  scanner,
+  hasScanned,
+  markScanned,
+  navigateToEvent,
+  restartScanner,
+}: HandleQrScanResultParams) => {
+  if (hasScanned || !scanner) return;
+
+  markScanned();
+  scanner.stop();
+
+  const url = toQrUrl(result.data.trim());
+  if (!url) {
+    console.error('Invalid QR data:', result.data);
+    restartScanner();
+    return;
+  }
+
+  const missionCheckPath = getMissionCheckPath(url);
+  if (missionCheckPath) {
+    window.location.assign(missionCheckPath);
+    return;
+  }
+
+  const eventPath = getEventPath(url);
+  if (eventPath) {
+    navigateToEvent(eventPath);
+    return;
+  }
+
+  console.error('Unsupported QR data:', result.data);
+  restartScanner();
+};
+
+/**
  * 미션 QR을 스캔하고 QR 종류에 따라 미션 완료 또는 페이지 이동을 처리하는 화면입니다.
  *
  * @param props - QR 스캔 화면에 필요한 현재 행사 정보
@@ -91,46 +163,23 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       });
     };
 
-    scanner = new QrScanner(
-      videoRef.current,
-      (result) => {
-        if (hasScannedRef.current || !scanner) return;
-
-        hasScannedRef.current = true;
-        scanner.stop();
-
-        const url = toQrUrl(result.data.trim());
-        if (!url) {
-          console.error('Invalid QR data:', result.data);
-          restartScanner();
-          return;
-        }
-
-        const missionCheckPath = getMissionCheckPath(url);
-        if (missionCheckPath) {
-          window.location.assign(missionCheckPath);
-          return;
-        }
-
-        const eventPath = getEventPath(url);
-        if (eventPath) {
-          router.push(eventPath);
-          return;
-        }
-
-        console.error('Unsupported QR data:', result.data);
-        restartScanner();
+    scanner = createQrScanner({
+      video: videoRef.current,
+      onDecode: (result) => {
+        handleQrScanResult({
+          result,
+          scanner,
+          hasScanned: hasScannedRef.current,
+          markScanned: () => {
+            hasScannedRef.current = true;
+          },
+          navigateToEvent: (eventPath) => {
+            router.push(eventPath);
+          },
+          restartScanner,
+        });
       },
-      {
-        preferredCamera: 'environment',
-        highlightScanRegion: false,
-        highlightCodeOutline: false,
-        onDecodeError: (error) => {
-          if (isQrNotFoundError(error)) return;
-          console.error('QR scanner error:', error);
-        },
-      }
-    );
+    });
 
     scanner.start().catch((error) => {
       console.error('QR scanner start failed:', error);
