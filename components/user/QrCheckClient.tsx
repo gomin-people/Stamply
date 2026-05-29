@@ -3,11 +3,10 @@
 import QrScanner from 'qr-scanner';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import ThemedButton from '@/components/user/common/ThemedButton';
 
-interface QrCheckClientProps {
+type QrCheckClientProps = {
   eventId: string;
-}
+};
 
 /**
  * QR 스캐너가 QR을 찾지 못한 정상 대기 상태인지 확인합니다.
