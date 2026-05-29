@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useMutation } from '@tanstack/react-query';
-import { createJsonRequest, requestJson } from '@/features/shared/api/http';
+import { useMutation } from "@tanstack/react-query";
+import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import {
   type Mission,
   type MissionCreatePayload,
   type MissionUpdatePayload,
   type QrCode,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 // 미션 생성 응답 타입
 type CreatedAdminMission = Mission & {
@@ -39,7 +39,7 @@ function createAdminEventMission(
 ) {
   return requestJson<CreatedAdminMission>(
     `/api/v1/admin/events/${eventId}/missions`,
-    createJsonRequest('POST', payload)
+    createJsonRequest("POST", payload)
   );
 }
 
@@ -50,14 +50,14 @@ function updateAdminEventMission(
 ) {
   return requestJson<Mission>(
     `/api/v1/admin/events/${eventId}/missions/${missionId}`,
-    createJsonRequest('PATCH', payload)
+    createJsonRequest("PATCH", payload)
   );
 }
 
 function deleteAdminEventMission(eventId: number, missionId: number) {
   return requestJson<{ id: number }>(
     `/api/v1/admin/events/${eventId}/missions/${missionId}`,
-    createJsonRequest('DELETE')
+    createJsonRequest("DELETE")
   );
 }
 

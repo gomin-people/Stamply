@@ -1,5 +1,5 @@
-import LoadingSpinner from '@/components/ui/loading-spinner'
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function UserLoading() {
-  return <LoadingSpinner />
+  return <LoadingSpinner />;
 }

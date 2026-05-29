@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useTransition } from 'react';
-import { Check } from 'lucide-react';
+import { useState, useTransition } from "react";
+import { Check } from "lucide-react";
 import {
   DialogContent,
   DialogHeader,
@@ -9,17 +9,17 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   FieldGroup,
   Field,
   FieldTitle,
   FieldError,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import type { Mission } from '@/types/mission';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import type { Mission } from "@/types/mission";
 
 type Props = {
   mission: Mission;
@@ -28,7 +28,7 @@ type Props = {
 
 export default function MissionDialog({ mission, onSave }: Props) {
   const [title, setTitle] = useState(mission.title);
-  const [description, setDescription] = useState(mission.description ?? '');
+  const [description, setDescription] = useState(mission.description ?? "");
   const [titleError, setTitleError] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -39,8 +39,8 @@ export default function MissionDialog({ mission, onSave }: Props) {
     }
     startTransition(async () => {
       await onSave?.({ ...mission, title, description });
-      setTitle('');
-      setDescription('');
+      setTitle("");
+      setDescription("");
     });
   };
 
@@ -55,15 +55,15 @@ export default function MissionDialog({ mission, onSave }: Props) {
           )}
           <div>
             <p className="mb-1 text-xs font-medium text-gomin-primary-600">
-              {mission.id !== undefined ? '미션 수정' : '미션 추가'}
+              {mission.id !== undefined ? "미션 수정" : "미션 추가"}
             </p>
             <DialogTitle className="text-xl font-bold text-gomin-black">
-              {mission.id !== undefined ? mission.title : '새 미션'}
+              {mission.id !== undefined ? mission.title : "새 미션"}
             </DialogTitle>
             <DialogDescription className="mt-1">
               {mission.id !== undefined
-                ? '미션명과 설명을 수정할 수 있습니다.'
-                : '미션명과 설명을 입력해 주세요.'}
+                ? "미션명과 설명을 수정할 수 있습니다."
+                : "미션명과 설명을 입력해 주세요."}
             </DialogDescription>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
               if (titleError) setTitleError(false);
             }}
           />
-          <FieldError>{titleError && '미션명을 입력해 주세요.'}</FieldError>
+          <FieldError>{titleError && "미션명을 입력해 주세요."}</FieldError>
         </Field>
 
         <Field>

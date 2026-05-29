@@ -1,4 +1,4 @@
-import { requestJson } from '@/features/shared/api/http';
+import { requestJson } from "@/features/shared/api/http";
 
 export async function getEventPrimaryColor(
   eventId: string

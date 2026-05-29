@@ -19,7 +19,7 @@ export function snakeToCamel(value: string) {
  * @returns snake_case 문자열
  */
 export function camelToSnake(value: string) {
-  return value.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
+  return value.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
 }
 
 /**
@@ -60,7 +60,7 @@ function transformKeys(value: unknown, transformKey: KeyTransformer): unknown {
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null) {
+  if (typeof value !== "object" || value === null) {
     return false;
   }
 

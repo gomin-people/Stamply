@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 export function useAdminUserQuery() {
   return useQuery({
-    queryKey: ['adminUser'],
+    queryKey: ["adminUser"],
     queryFn: async () => {
-      const res = await fetch('/api/v1/admin/user');
+      const res = await fetch("/api/v1/admin/user");
       if (!res.ok) {
         throw new Error(`${res.status} ${res.statusText}`);
       }

@@ -1,6 +1,6 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from "@/components/ui/skeleton";
 
-const GRID = '40px 60px 1fr 2fr 110px 72px 90px';
+const GRID = "40px 60px 1fr 2fr 110px 72px 90px";
 
 export default function MissionListSkeleton() {
   return (

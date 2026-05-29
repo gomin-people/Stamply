@@ -1,14 +1,16 @@
-import { Suspense } from 'react'
-import Button from '@/components/sample/Button'
-import MissionList from '@/components/user/MissionList'
-import Skeleton from '@/components/sample/Skeleton'
+import { Suspense } from "react";
+import Button from "@/components/sample/Button";
+import MissionList from "@/components/user/MissionList";
+import Skeleton from "@/components/sample/Skeleton";
 
 const Home = () => {
   return (
     <div className="flex flex-col min-h-screen max-w-sm mx-auto px-4">
       {/* 헤더 */}
       <div className="flex items-center justify-between py-4">
-        <span className="text-2xl font-bold text-gomin-primary-700">Stamply</span>
+        <span className="text-2xl font-bold text-gomin-primary-700">
+          Stamply
+        </span>
         <button className="p-2 rounded-lg border border-gray-200">
           <span className="text-gray-500">☰</span>
         </button>
@@ -21,13 +23,15 @@ const Home = () => {
       </div>
 
       {/* 미션 리스트 */}
-      <Suspense fallback={
-        <div className="flex flex-col gap-3 flex-1">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="w-75 h-26" />
-          ))}
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="flex flex-col gap-3 flex-1">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="w-75 h-26" />
+            ))}
+          </div>
+        }
+      >
         <MissionList />
       </Suspense>
 
@@ -38,7 +42,7 @@ const Home = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useParams, usePathname } from 'next/navigation';
+import { useParams, usePathname } from "next/navigation";
 import {
   getAdminRouteConfig,
   getAdminSidebarItems,
-} from '@/constants/adminRoutes';
-import EventSelector from './EventSelector';
-import SidebarNav from './SidebarNav';
-import AdminUserInfo from '@/components/admin/AdminUserInfo';
+} from "@/constants/adminRoutes";
+import EventSelector from "./EventSelector";
+import SidebarNav from "./SidebarNav";
+import AdminUserInfo from "@/components/admin/AdminUserInfo";
 
 const Sidebar = () => {
   const pathname = usePathname();

@@ -1,6 +1,11 @@
-'use client';
+"use client";
 
-export default function UserError({ reset }: { error: Error; reset: () => void }) {
+export default function UserError({
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
   return (
     <div>
       <p>문제가 발생했습니다.</p>

@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import EventPoster from '@/components/user/common/EventPoster';
-import ThemedButton from '@/components/user/common/ThemedButton';
-import { getEntryEvent } from '@/features/qr/entry/api/entry';
+import Link from "next/link";
+import EventPoster from "@/components/user/common/EventPoster";
+import ThemedButton from "@/components/user/common/ThemedButton";
+import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 type EventEntryPageProps = {
   params: Promise<{ eventId: string }>;

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import BrochureButton from '@/components/user/BrochureButton';
-import ViewToggle from '@/components/user/ViewToggle';
-import MissionStamp from '@/components/user/MissionStamp';
-import MissionItem from '@/components/user/MissionItem';
-import FloatingActionButton from '@/components/user/FloatingActionButton';
-import { useParticipantMissionsQuery } from '@/features/participant/missions/participantMissionQueries';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import BrochureButton from "@/components/user/BrochureButton";
+import ViewToggle from "@/components/user/ViewToggle";
+import MissionStamp from "@/components/user/MissionStamp";
+import MissionItem from "@/components/user/MissionItem";
+import FloatingActionButton from "@/components/user/FloatingActionButton";
+import { useParticipantMissionsQuery } from "@/features/participant/missions/participantMissionQueries";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
 interface EventData {
@@ -31,7 +31,7 @@ interface MissionPageClientProps {
   initialMissions: InitialMission[];
 }
 
-type ViewMode = 'list' | 'grid';
+type ViewMode = "list" | "grid";
 
 export default function MissionPageClient({
   event,
@@ -39,7 +39,7 @@ export default function MissionPageClient({
   initialMissions,
 }: MissionPageClientProps) {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
   const { data, isError } = useParticipantMissionsQuery();
@@ -50,13 +50,13 @@ export default function MissionPageClient({
     ? data.missions.map((m) => ({
         id: m.id,
         title: m.title,
-        description: m.description ?? '',
+        description: m.description ?? "",
         isStamped: m.isCompleted,
       }))
     : initialMissions.map((m) => ({
         id: m.id,
         title: m.title,
-        description: m.description ?? '',
+        description: m.description ?? "",
         isStamped: !!m.isCompleted,
       }));
 
@@ -143,7 +143,7 @@ export default function MissionPageClient({
                 관리자에게 문의해 주세요.
               </p>
             </div>
-          ) : viewMode === 'grid' ? (
+          ) : viewMode === "grid" ? (
             /* 스탬프 뷰: 격자형 정사각형 카드 */
             <div className="grid grid-cols-2 gap-4">
               {missions.map((mission) => (

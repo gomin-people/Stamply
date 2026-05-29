@@ -1,4 +1,4 @@
-import IconStamply from '@/components/icons/IconStamply';
+import IconStamply from "@/components/icons/IconStamply";
 
 export default function LoadingSpinner() {
   return (
@@ -7,7 +7,7 @@ export default function LoadingSpinner() {
         className="text-gomin-neutral-300 animate-spin"
         width={40}
         height={40}
-        style={{ animationDuration: '1.5s', overflow: 'visible' }}
+        style={{ animationDuration: "1.5s", overflow: "visible" }}
       />
     </div>
   );

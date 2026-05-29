@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { GripVertical, Pencil, Trash2, QrCode } from 'lucide-react';
-import { Dialog } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import type { AdminMissionDetail } from '@/types/models/admin';
-import MissionDialog from '@/components/admin/mission/MissionDialog';
-import MissionDeleteDialog from '@/components/admin/mission/MissionDeleteDialog';
-import QRDialog from '@/components/admin/mission/QRDialog';
-import { Mission } from '@/types/mission';
+import { useState } from "react";
+import { GripVertical, Pencil, Trash2, QrCode } from "lucide-react";
+import { Dialog } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import type { AdminMissionDetail } from "@/types/models/admin";
+import MissionDialog from "@/components/admin/mission/MissionDialog";
+import MissionDeleteDialog from "@/components/admin/mission/MissionDeleteDialog";
+import QRDialog from "@/components/admin/mission/QRDialog";
+import { Mission } from "@/types/mission";
 import {
   useDeleteAdminMissionMutation,
   useUpdateAdminMissionMutation,
-} from '@/features/admin/missions/adminMissionMutations';
-import { useParams } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
+} from "@/features/admin/missions/adminMissionMutations";
+import { useParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   missions: AdminMissionDetail[];
@@ -39,7 +39,7 @@ export default function MissionList({ missions }: Props) {
 
   const invalidateMissions = () => {
     queryClient.invalidateQueries({
-      queryKey: ['admin', 'events', eventId, 'missions'],
+      queryKey: ["admin", "events", eventId, "missions"],
     });
   };
 
@@ -97,7 +97,7 @@ export default function MissionList({ missions }: Props) {
         <div
           key={mission.id}
           className="grid items-center px-6 py-5 border-b border-gomin-neutral-100 last:border-b-0 hover:bg-gomin-neutral-100/30"
-          style={{ gridTemplateColumns: '40px 60px 1fr 2fr 110px 72px 90px' }}
+          style={{ gridTemplateColumns: "40px 60px 1fr 2fr 110px 72px 90px" }}
         >
           <div className="cursor-grab text-gomin-neutral-300">
             <GripVertical className="w-4 h-4" />

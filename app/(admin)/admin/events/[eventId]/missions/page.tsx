@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useMemo, useState } from 'react';
-import MissionFilter from '@/components/admin/mission/MissionFilter';
-import QRDownloadButton from '@/components/admin/mission/QRDownloadButton';
-import MissionAddButton from '@/components/admin/mission/MissionAddButton';
-import MissionList from '@/components/admin/mission/MissionList';
-import { useAdminMissionsQuery } from '@/features/admin/missions/adminMissionQueries';
-import { useParams } from 'next/navigation';
-import MissionListSkeleton from '@/components/admin/mission/MissionListSkeleton';
-import { Button } from '@/components/ui/button';
+import { useMemo, useState } from "react";
+import MissionFilter from "@/components/admin/mission/MissionFilter";
+import QRDownloadButton from "@/components/admin/mission/QRDownloadButton";
+import MissionAddButton from "@/components/admin/mission/MissionAddButton";
+import MissionList from "@/components/admin/mission/MissionList";
+import { useAdminMissionsQuery } from "@/features/admin/missions/adminMissionQueries";
+import { useParams } from "next/navigation";
+import MissionListSkeleton from "@/components/admin/mission/MissionListSkeleton";
+import { Button } from "@/components/ui/button";
 
 export default function MissionPage() {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
   const eventId = Number(useParams().eventId);
   const {
     data: missions,
@@ -22,9 +22,9 @@ export default function MissionPage() {
   const filteredMissions = useMemo(() => {
     if (!missions) return [];
     return missions.filter((mission) => {
-      if (filter === 'all') return true;
-      if (filter === 'active') return mission.isActive;
-      if (filter === 'inactive') return !mission.isActive;
+      if (filter === "all") return true;
+      if (filter === "active") return mission.isActive;
+      if (filter === "inactive") return !mission.isActive;
       return true;
     });
   }, [missions, filter]);
@@ -47,7 +47,7 @@ export default function MissionPage() {
 
         <div
           className="grid items-center px-6 py-3 text-sm font-medium border-b bg-gomin-primary-100 text-gomin-primary-700 border-gomin-neutral-100"
-          style={{ gridTemplateColumns: '40px 60px 1fr 2fr 110px 72px 90px' }}
+          style={{ gridTemplateColumns: "40px 60px 1fr 2fr 110px 72px 90px" }}
         >
           <div />
           <div>#</div>

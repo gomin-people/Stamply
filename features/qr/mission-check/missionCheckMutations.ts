@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useMutation } from '@tanstack/react-query';
-import { createJsonRequest, requestJson } from '@/features/shared/api/http';
+import { useMutation } from "@tanstack/react-query";
+import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import {
   type Mission,
   type MissionCompletion,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 // 미션 완료 응답 타입
 type CompletedMission = {
@@ -16,7 +16,7 @@ type CompletedMission = {
 function completeMissionByToken(token: string) {
   return requestJson<CompletedMission>(
     `/api/v1/qr/mission-check/${token}`,
-    createJsonRequest('POST')
+    createJsonRequest("POST")
   );
 }
 

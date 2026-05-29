@@ -1,7 +1,7 @@
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import MissionPageClient from '@/components/user/MissionPageClient';
-import { getEntryEvent } from '@/features/qr/entry/api/entry';
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import MissionPageClient from "@/components/user/MissionPageClient";
+import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 interface PageProps {
   params: Promise<{ eventId: string }>;
@@ -15,7 +15,7 @@ export default async function MissionPage({ params }: PageProps) {
 
   const cookieStore = await cookies();
   const cookieHeader = cookieStore.toString();
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   // 2. 미션 데이터 조회
   const missionsRes = await fetch(`${baseUrl}/api/v1/participant/missions`, {
@@ -26,23 +26,25 @@ export default async function MissionPage({ params }: PageProps) {
   });
 
   if (!missionsRes.ok) {
-    redirect('/qr-required');
+    redirect("/qr-required");
   }
 
   const { data: missionsData } = await missionsRes.json();
 
   // API가 ok() 함수에 의해 snake_case -> camelCase로 자동 정규화된 값을 그대로 바인딩합니다.
-  const initialMissions = (missionsData.missions ?? []).map((m: {
-    id: number;
-    title: string;
-    description: string | null;
-    isCompleted: boolean;
-  }) => ({
-    id: m.id,
-    title: m.title,
-    description: m.description,
-    isCompleted: m.isCompleted,
-  }));
+  const initialMissions = (missionsData.missions ?? []).map(
+    (m: {
+      id: number;
+      title: string;
+      description: string | null;
+      isCompleted: boolean;
+    }) => ({
+      id: m.id,
+      title: m.title,
+      description: m.description,
+      isCompleted: m.isCompleted,
+    })
+  );
 
   return (
     <MissionPageClient

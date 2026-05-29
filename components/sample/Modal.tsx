@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -31,11 +31,11 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
-            className={`fixed inset-0 bg-black transition-opacity duration-250 ${isOpen ? 'opacity-50' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-black transition-opacity duration-250 ${isOpen ? "opacity-50" : "opacity-0"}`}
             onClick={onClose}
           />
           <div
-            className={`relative z-10 w-full max-w-sm mx-3 rounded-xl bg-white p-6 shadow-lg transition-all duration-250 ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+            className={`relative z-10 w-full max-w-sm mx-3 rounded-xl bg-white p-6 shadow-lg transition-all duration-250 ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
           >
             {children}
           </div>

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Newspaper } from 'lucide-react';
+import Link from "next/link";
+import { Newspaper } from "lucide-react";
 
 interface BrochureButtonProps {
   eventId: string;

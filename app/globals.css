@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -152,7 +152,7 @@
   /* body[data-scroll-locked] {
     padding-right: 0px !important;
   } */
-  
+
   /* 중앙 정렬된 fixed 요소가 스크롤 잠금 시 뷰포트 확대 및 중심점 이동으로 인해 오른쪽으로 밀리는 현상 해결 */
   body[data-scroll-locked] .fixed.left-1\/2 {
     margin-left: calc(var(--removed-body-scroll-bar-size, 0px) / -2) !important;

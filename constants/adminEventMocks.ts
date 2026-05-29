@@ -1,4 +1,4 @@
-export type AdminEventStatus = '진행중' | '예정' | '종료';
+export type AdminEventStatus = "진행중" | "예정" | "종료";
 
 export type AdminEventOption = {
   id: string;
@@ -9,19 +9,19 @@ export type AdminEventOption = {
 // 관리자 행사 선택 임시 목록
 export const adminEventOptions: AdminEventOption[] = [
   {
-    id: '1',
-    title: '2026 성수 팝업 페스타',
-    status: '진행중',
+    id: "1",
+    title: "2026 성수 팝업 페스타",
+    status: "진행중",
   },
   {
-    id: '2',
-    title: '2027 성수 팝업 페스타',
-    status: '예정',
+    id: "2",
+    title: "2027 성수 팝업 페스타",
+    status: "예정",
   },
   {
-    id: '3',
-    title: '2028 성수 팝업 페스타',
-    status: '종료',
+    id: "3",
+    title: "2028 성수 팝업 페스타",
+    status: "종료",
   },
 ];
 

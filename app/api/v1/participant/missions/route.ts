@@ -1,6 +1,6 @@
-import { type NextRequest } from 'next/server';
-import { getCurrentParticipant, ok, serverError } from '@/utils/api';
-import { supabase } from '@/utils/supabase/server';
+import { type NextRequest } from "next/server";
+import { getCurrentParticipant, ok, serverError } from "@/utils/api";
+import { supabase } from "@/utils/supabase/server";
 
 /**
  * 현재 참여자의 활성 미션 목록과 완료 상태를 조회합니다.
@@ -11,7 +11,7 @@ import { supabase } from '@/utils/supabase/server';
 export async function GET(request: NextRequest) {
   const result = await getCurrentParticipant(request);
 
-  if ('response' in result) {
+  if ("response" in result) {
     return result.response;
   }
 
@@ -21,26 +21,26 @@ export async function GET(request: NextRequest) {
   ] = await Promise.all([
     // missions 테이블에서 현재 참여자의 events_id와 is_active 기준 미션 목록 조회
     supabase
-      .from('missions')
-      .select('*')
-      .eq('events_id', result.participant.events_id)
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true })
-      .order('id', { ascending: true }),
+      .from("missions")
+      .select("*")
+      .eq("events_id", result.participant.events_id)
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .order("id", { ascending: true }),
     // mission_completions 테이블에서 events_id와 participant_users_id 기준 완료 기록 조회
     supabase
-      .from('mission_completions')
-      .select('missions_id,completed_at')
-      .eq('events_id', result.participant.events_id)
-      .eq('participant_users_id', result.participant.id),
+      .from("mission_completions")
+      .select("missions_id,completed_at")
+      .eq("events_id", result.participant.events_id)
+      .eq("participant_users_id", result.participant.id),
   ]);
 
   if (missionsError) {
-    return serverError('참여자 미션 조회 실패', missionsError);
+    return serverError("참여자 미션 조회 실패", missionsError);
   }
 
   if (completionsError) {
-    return serverError('참여자 완료 미션 조회 실패', completionsError);
+    return serverError("참여자 완료 미션 조회 실패", completionsError);
   }
 
   const completionMap = new Map<number, string>();
@@ -49,8 +49,8 @@ export async function GET(request: NextRequest) {
   const activeMissionIds = new Set(missions?.map((m) => m.id) ?? []);
   for (const completion of completions ?? []) {
     if (
-      typeof completion.missions_id === 'number' &&
-      typeof completion.completed_at === 'string' &&
+      typeof completion.missions_id === "number" &&
+      typeof completion.completed_at === "string" &&
       activeMissionIds.has(completion.missions_id)
     ) {
       completionMap.set(completion.missions_id, completion.completed_at);

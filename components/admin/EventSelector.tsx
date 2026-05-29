@@ -1,27 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { Plus } from 'lucide-react';
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 import {
   adminEventOptions,
   getAdminEventOption,
   type AdminEventStatus,
-} from '@/constants/adminEventMocks';
-import { cn } from '@/utils';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from "@/constants/adminEventMocks";
+import { cn } from "@/utils";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  useSelectedEventId,
-  useSetSelectedEventId,
-} from '@/stores/admin';
+} from "@/components/ui/dropdown-menu";
+import { useSelectedEventId, useSetSelectedEventId } from "@/stores/admin";
 
 interface EventSelectorProps {
   eventId: string;
@@ -29,9 +26,9 @@ interface EventSelectorProps {
 
 const getStatusBadgeClassName = (status: AdminEventStatus) =>
   cn(
-    status === '진행중'
-      ? 'bg-gomin-primary-200 text-gomin-primary-600'
-      : 'bg-gomin-neutral-100 text-gomin-neutral-500'
+    status === "진행중"
+      ? "bg-gomin-primary-200 text-gomin-primary-600"
+      : "bg-gomin-neutral-100 text-gomin-neutral-500"
   );
 
 export default function EventSelector({ eventId }: EventSelectorProps) {
@@ -42,7 +39,7 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
   const routeEvent = getAdminEventOption(eventId);
   const selectedEvent =
     routeEvent ??
-    getAdminEventOption(selectedEventId ?? '') ??
+    getAdminEventOption(selectedEventId ?? "") ??
     adminEventOptions[0];
 
   useEffect(() => {
@@ -97,8 +94,8 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
               >
                 <span
                   className={cn(
-                    'min-w-0 truncate font-semibold',
-                    isSelected ? 'text-gomin-black' : 'text-gomin-neutral-500'
+                    "min-w-0 truncate font-semibold",
+                    isSelected ? "text-gomin-black" : "text-gomin-neutral-500"
                   )}
                 >
                   {event.title}

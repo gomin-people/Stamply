@@ -12,7 +12,7 @@ export class ApiError extends Error {
 
   constructor(message: string, status: number, details?: unknown) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = status;
     this.details = details;
   }
@@ -31,14 +31,14 @@ export async function requestJson<T>(
 ): Promise<T> {
   const headers = new Headers(init.headers);
 
-  if (init.body !== undefined && !headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json');
+  if (init.body !== undefined && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
   }
 
   const response = await fetch(path, {
     ...init,
     headers,
-    credentials: init.credentials ?? 'include',
+    credentials: init.credentials ?? "include",
   });
   const body = await parseJsonResponse(response);
 
@@ -46,7 +46,7 @@ export async function requestJson<T>(
     throw new ApiError(getErrorMessage(body), response.status, body);
   }
 
-  if (isRecord(body) && 'data' in body) {
+  if (isRecord(body) && "data" in body) {
     return body.data as T;
   }
 
@@ -94,11 +94,11 @@ async function parseJsonResponse(response: Response) {
  * @returns 에러 메시지
  */
 function getErrorMessage(body: unknown) {
-  if (isRecord(body) && typeof body.message === 'string') {
+  if (isRecord(body) && typeof body.message === "string") {
     return body.message;
   }
 
-  return 'API 요청 실패';
+  return "API 요청 실패";
 }
 
 /**
@@ -108,5 +108,5 @@ function getErrorMessage(body: unknown) {
  * @returns 일반 객체이면 true
  */
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

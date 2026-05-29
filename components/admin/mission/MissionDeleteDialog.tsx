@@ -5,10 +5,10 @@ import {
   DialogFooter,
   DialogClose,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Mission } from '@/types/mission';
-import { useState } from 'react';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Mission } from "@/types/mission";
+import { useState } from "react";
 
 type Props = {
   mission: Mission;

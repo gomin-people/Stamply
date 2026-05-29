@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { cn } from '@/utils';
+import Image from "next/image";
+import { cn } from "@/utils";
 
 type BrochureSliderProps = {
   images: string[];
@@ -22,8 +22,8 @@ const BrochureSlider = ({
         <div
           key={src}
           className={cn(
-            'absolute inset-0 transition-opacity duration-300',
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
+            "absolute inset-0 transition-opacity duration-300",
+            index === currentIndex ? "opacity-100" : "opacity-0"
           )}
         >
           <Image
@@ -32,7 +32,7 @@ const BrochureSlider = ({
             fill
             sizes="312px"
             className="object-cover"
-            loading={index === 0 ? 'eager' : 'lazy'}
+            loading={index === 0 ? "eager" : "lazy"}
           />
         </div>
       ))}

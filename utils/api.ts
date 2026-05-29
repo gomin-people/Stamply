@@ -1,9 +1,9 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { snakeToCamel, toCamelKeys, toSnakeKeys } from '@/utils/case';
-import { supabase } from '@/utils/supabase/server';
+import { type NextRequest, NextResponse } from "next/server";
+import { snakeToCamel, toCamelKeys, toSnakeKeys } from "@/utils/case";
+import { supabase } from "@/utils/supabase/server";
 
 // 참여자 식별에 사용하는 HttpOnly 쿠키의 키 이름
-export const PARTICIPANT_COOKIE_NAME = 'event_user_id';
+export const PARTICIPANT_COOKIE_NAME = "event_user_id";
 
 // JSON 객체 형태의 요청/응답 데이터
 export type JsonObject = Record<string, unknown>;
@@ -14,7 +14,7 @@ export type ParticipantRow = JsonObject & {
   events_id: number;
   user_id: string | null;
   event_user_id: string;
-  gender: 'MALE' | 'FEMALE' | 'UNKNOWN' | null;
+  gender: "MALE" | "FEMALE" | "UNKNOWN" | null;
   age_range: string | null;
   is_reward_claimed: boolean;
 };
@@ -62,7 +62,7 @@ export function badRequest(message: string, details?: unknown) {
  * @param message - 클라이언트에 전달할 에러 메시지
  * @returns 401 Unauthorized JSON 응답
  */
-export function unauthorized(message = '참여자 정보가 없습니다.') {
+export function unauthorized(message = "참여자 정보가 없습니다.") {
   return NextResponse.json({ message }, { status: 401 });
 }
 
@@ -72,7 +72,7 @@ export function unauthorized(message = '참여자 정보가 없습니다.') {
  * @param message - 클라이언트에 전달할 에러 메시지
  * @returns 403 Forbidden JSON 응답
  */
-export function forbidden(message = '요청 권한이 없습니다.') {
+export function forbidden(message = "요청 권한이 없습니다.") {
   return NextResponse.json({ message }, { status: 403 });
 }
 
@@ -126,7 +126,7 @@ export function serverError(message: string, error: unknown) {
  * @returns 에러 코드가 있으면 문자열, 없으면 null
  */
 export function getErrorCode(error: unknown) {
-  if (isRecord(error) && typeof error.code === 'string') {
+  if (isRecord(error) && typeof error.code === "string") {
     return error.code;
   }
 
@@ -156,7 +156,7 @@ export function parsePositiveInteger(value: string) {
  * @returns 값이 비어 있으면 null, 양의 정수이면 number, 유효하지 않으면 null
  */
 export function parseOptionalPositiveInteger(value: string | null) {
-  if (value === null || value.trim() === '') {
+  if (value === null || value.trim() === "") {
     return null;
   }
 
@@ -170,7 +170,7 @@ export function parseOptionalPositiveInteger(value: string | null) {
  * @returns 공백이 아닌 문자열이면 trim된 문자열, 아니면 null
  */
 export function toNonEmptyString(value: unknown) {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return null;
   }
 
@@ -206,12 +206,12 @@ export async function readJsonObject(
     const body: unknown = await request.json();
 
     if (!isRecord(body)) {
-      return { response: badRequest('JSON 객체 본문이 필요합니다.') };
+      return { response: badRequest("JSON 객체 본문이 필요합니다.") };
     }
 
     return { body: toSnakeKeys(body) as JsonObject };
   } catch {
-    return { response: badRequest('올바른 JSON 본문이 필요합니다.') };
+    return { response: badRequest("올바른 JSON 본문이 필요합니다.") };
   }
 }
 
@@ -229,7 +229,7 @@ export function getMissingFields(body: JsonObject, fields: readonly string[]) {
       return (
         value === undefined ||
         value === null ||
-        (typeof value === 'string' && value.trim() === '')
+        (typeof value === "string" && value.trim() === "")
       );
     })
     .map(snakeToCamel);
@@ -261,7 +261,7 @@ export function pickBodyFields(body: JsonObject, fields: readonly string[]) {
  * @returns 정수이면 number, 아니면 null
  */
 export function toInteger(value: unknown) {
-  if (typeof value !== 'number' && typeof value !== 'string') {
+  if (typeof value !== "number" && typeof value !== "string") {
     return null;
   }
 
@@ -298,9 +298,9 @@ export function setParticipantCookie(
     name: PARTICIPANT_COOKIE_NAME,
     value: eventUserId,
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
 }
@@ -335,17 +335,17 @@ export async function getCurrentParticipant(request: NextRequest): Promise<
 
   // participant_users 테이블에서 쿠키의 event_user_id 기준 참여자 전체 컬럼 조회
   const { data, error } = await supabase
-    .from('participant_users')
-    .select('*')
-    .eq('event_user_id', eventUserId)
+    .from("participant_users")
+    .select("*")
+    .eq("event_user_id", eventUserId)
     .maybeSingle();
 
   if (error) {
-    return { response: serverError('참여자 조회 실패', error) };
+    return { response: serverError("참여자 조회 실패", error) };
   }
 
   if (!data) {
-    const response = notFound('참여자를 찾을 수 없습니다.');
+    const response = notFound("참여자를 찾을 수 없습니다.");
     clearParticipantCookie(response);
     return { response };
   }
@@ -363,7 +363,7 @@ export async function getCurrentParticipant(request: NextRequest): Promise<
  * @returns 일반 객체이면 true
  */
 export function isRecord(value: unknown): value is JsonObject {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /**
@@ -373,11 +373,11 @@ export function isRecord(value: unknown): value is JsonObject {
  * @returns 에러 메시지 또는 기본 메시지
  */
 function getErrorMessage(error: unknown) {
-  if (isRecord(error) && typeof error.message === 'string') {
+  if (isRecord(error) && typeof error.message === "string") {
     return error.message;
   }
 
-  return 'Unknown error';
+  return "Unknown error";
 }
 
 /**
@@ -394,9 +394,9 @@ export async function validateEvent(eventIdParam: string): Promise<boolean> {
 
   try {
     const { data, error } = await supabase
-      .from('events')
-      .select('id')
-      .eq('id', eventId)
+      .from("events")
+      .select("id")
+      .eq("id", eventId)
       .maybeSingle();
 
     if (error || !data) {
@@ -404,7 +404,7 @@ export async function validateEvent(eventIdParam: string): Promise<boolean> {
     }
     return true;
   } catch (err) {
-    console.error('validateEvent error:', err);
+    console.error("validateEvent error:", err);
     return false;
   }
 }

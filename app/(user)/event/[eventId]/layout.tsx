@@ -1,6 +1,6 @@
-import { notFound } from 'next/navigation';
-import { getEventPrimaryColor } from '@/features/participant/events/participantEventTheme';
-import { ThemeInitializer } from '@/components/user/common/ThemeInitializer';
+import { notFound } from "next/navigation";
+import { getEventPrimaryColor } from "@/features/participant/events/participantEventTheme";
+import { ThemeInitializer } from "@/components/user/common/ThemeInitializer";
 
 interface LayoutProps {
   children: React.ReactNode;
