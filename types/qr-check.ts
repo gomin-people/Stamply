@@ -6,18 +6,18 @@
  * - denied: 사용자가 카메라 권한을 거부했거나 브라우저가 차단한 상태
  * - unavailable: 권한 문제 외의 이유로 카메라를 시작할 수 없는 상태
  */
-export type CameraStatus = 'loading' | 'active' | 'denied' | 'unavailable';
+export type CameraStatus = "loading" | "active" | "denied" | "unavailable";
 
 /**
  * QR 원본 문자열에서 해석한 앱 내부 처리 대상입니다.
  */
 export type QrScanTarget =
   | {
-      type: 'missionCheck';
+      type: "missionCheck";
       path: string;
     }
   | {
-      type: 'event';
+      type: "event";
       path: string;
     };
 

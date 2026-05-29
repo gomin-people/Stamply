@@ -1,14 +1,11 @@
-'use client';
+"use client";
 
-import QrScanner from 'qr-scanner';
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useQrGuideMessage } from '@/hooks/useQrGuideMessage';
-import {
-  type CameraStatus,
-  type QrGuideMessageState,
-} from '@/types/qr-check';
-import { getQrScanTarget } from '@/utils/qr';
+import QrScanner from "qr-scanner";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useQrGuideMessage } from "@/hooks/useQrGuideMessage";
+import { type CameraStatus, type QrGuideMessageState } from "@/types/qr-check";
+import { getQrScanTarget } from "@/utils/qr";
 
 type CreateQrScannerParams = {
   video: HTMLVideoElement;
@@ -36,7 +33,7 @@ type ScanGuideBubbleProps = {
 };
 
 const PRIMARY_700_BACKGROUND_STYLE = {
-  backgroundColor: 'var(--primary-700)',
+  backgroundColor: "var(--primary-700)",
 };
 
 /**
@@ -57,13 +54,13 @@ const isQrNotFoundError = (error: Error | string) => {
  * @returns 권한 거부로 볼 수 있으면 true
  */
 const isCameraPermissionDeniedError = (error: unknown) => {
-  const name = error instanceof Error ? error.name : '';
+  const name = error instanceof Error ? error.name : "";
   const message = error instanceof Error ? error.message : String(error);
 
   return (
-    name === 'NotAllowedError' ||
-    name === 'PermissionDeniedError' ||
-    name === 'SecurityError' ||
+    name === "NotAllowedError" ||
+    name === "PermissionDeniedError" ||
+    name === "SecurityError" ||
     /permission|denied|not allowed/i.test(message)
   );
 };
@@ -75,20 +72,20 @@ const isCameraPermissionDeniedError = (error: unknown) => {
  */
 const getInitialCameraStatus = async (): Promise<CameraStatus> => {
   if (!navigator.permissions?.query) {
-    return 'loading';
+    return "loading";
   }
 
   try {
     const permissionStatus = await navigator.permissions.query({
-      name: 'camera' as PermissionName,
+      name: "camera" as PermissionName,
     });
 
-    if (permissionStatus.state === 'denied') return 'denied';
-    if (permissionStatus.state === 'granted') return 'loading';
+    if (permissionStatus.state === "denied") return "denied";
+    if (permissionStatus.state === "granted") return "loading";
 
-    return 'loading';
+    return "loading";
   } catch {
-    return 'loading';
+    return "loading";
   }
 };
 
@@ -100,12 +97,12 @@ const getInitialCameraStatus = async (): Promise<CameraStatus> => {
  */
 const createQrScanner = ({ video, onDecode }: CreateQrScannerParams) =>
   new QrScanner(video, onDecode, {
-    preferredCamera: 'environment',
+    preferredCamera: "environment",
     highlightScanRegion: false,
     highlightCodeOutline: false,
     onDecodeError: (error) => {
       if (isQrNotFoundError(error)) return;
-      console.error('QR scanner error:', error);
+      console.error("QR scanner error:", error);
     },
   });
 
@@ -135,7 +132,7 @@ const handleQrScanResult = ({
   markScanned();
   scanner.stop();
 
-  if (scanTarget.type === 'missionCheck') {
+  if (scanTarget.type === "missionCheck") {
     window.location.assign(scanTarget.path);
     return;
   }
@@ -151,23 +148,23 @@ const ScanGuideBubble = ({
   loadingDotCount,
   guideMessage,
 }: ScanGuideBubbleProps) => {
-  let guideContent: React.ReactNode = 'QR 코드를 스캔하세요';
+  let guideContent: React.ReactNode = "QR 코드를 스캔하세요";
 
   if (guideMessage) {
     guideContent = guideMessage.message;
-  } else if (cameraStatus === 'loading') {
+  } else if (cameraStatus === "loading") {
     guideContent = (
       <>
         카메라가 준비 중입니다
         <span className="inline-block w-[1.5em] text-left">
-          {'.'.repeat(loadingDotCount)}
+          {".".repeat(loadingDotCount)}
         </span>
       </>
     );
-  } else if (cameraStatus === 'denied') {
-    guideContent = '카메라 권한을 허용해주세요';
-  } else if (cameraStatus === 'unavailable') {
-    guideContent = '카메라를 사용할 수 없습니다';
+  } else if (cameraStatus === "denied") {
+    guideContent = "카메라 권한을 허용해주세요";
+  } else if (cameraStatus === "unavailable") {
+    guideContent = "카메라를 사용할 수 없습니다";
   }
 
   return (
@@ -202,10 +199,10 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasScannedRef = useRef(false);
-  const [cameraStatus, setCameraStatus] = useState<CameraStatus>('loading');
+  const [cameraStatus, setCameraStatus] = useState<CameraStatus>("loading");
   const [loadingDotCount, setLoadingDotCount] = useState(1);
   const { guideMessage, showUnsupportedQrMessage } = useQrGuideMessage();
-  const isCameraActive = cameraStatus === 'active';
+  const isCameraActive = cameraStatus === "active";
 
   /**
    * 현재 행사 미션 페이지 이동
@@ -217,12 +214,12 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const handleVideoLoadedMetadata = () => {
     // 실제 프레임 표시 전까지 준비 상태 유지
     setCameraStatus((currentStatus) =>
-      currentStatus === 'active' ? currentStatus : 'loading'
+      currentStatus === "active" ? currentStatus : "loading"
     );
   };
 
   const handleVideoPlaying = () => {
-    setCameraStatus('active');
+    setCameraStatus("active");
   };
 
   // 페이지가 마운트된 동안에만 스캐너 인스턴스와 카메라 스트림 유지
@@ -258,17 +255,17 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       if (!isMounted) return;
 
       setCameraStatus(initialCameraStatus);
-      if (initialCameraStatus === 'denied') return;
+      if (initialCameraStatus === "denied") return;
 
       // 2. start()에서 권한 요청과 실제 카메라 스트림 연결이 일어납니다.
       scanner?.start().catch((error) => {
         // 3. 시작 실패 원인에 따라 권한 거부와 사용 불가 상태를 구분합니다.
         if (isMounted) {
           setCameraStatus(
-            isCameraPermissionDeniedError(error) ? 'denied' : 'unavailable'
+            isCameraPermissionDeniedError(error) ? "denied" : "unavailable"
           );
         }
-        console.error('QR scanner start failed:', error);
+        console.error("QR scanner start failed:", error);
       });
     };
 
@@ -282,7 +279,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   }, [eventId, router, showUnsupportedQrMessage]);
 
   useEffect(() => {
-    if (cameraStatus !== 'loading') return;
+    if (cameraStatus !== "loading") return;
 
     // 카메라 준비 중 메시지의 점 개수를 0.3초마다 1, 2, 3, 1, ... 순으로 변경
     const intervalId = window.setInterval(() => {
@@ -300,7 +297,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       <video
         ref={videoRef}
         className={`absolute inset-0 h-full w-full bg-gomin-black object-cover transition-opacity duration-200 ${
-          isCameraActive ? 'opacity-100' : 'opacity-0'
+          isCameraActive ? "opacity-100" : "opacity-0"
         }`}
         muted
         playsInline

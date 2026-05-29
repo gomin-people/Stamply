@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { type QrGuideMessageState } from '@/types/qr-check';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { type QrGuideMessageState } from "@/types/qr-check";
 
 /**
  * QR 스캔 안내 말풍선에 일시 표시할 메시지와 자동 닫힘 타이머를 관리합니다.
@@ -11,8 +11,9 @@ export const useQrGuideMessage = () => {
   const hideTimeoutRef = useRef<number | null>(null);
   const isGuideMessageVisibleRef = useRef(false);
   const nextGuideMessageAllowedAtRef = useRef(0);
-  const [guideMessage, setGuideMessage] =
-    useState<QrGuideMessageState | null>(null);
+  const [guideMessage, setGuideMessage] = useState<QrGuideMessageState | null>(
+    null
+  );
 
   const clearGuideMessageTimers = useCallback(() => {
     // 언마운트나 재시작 전에 예약된 안내 메시지 타이머를 정리합니다.
@@ -36,7 +37,7 @@ export const useQrGuideMessage = () => {
     isGuideMessageVisibleRef.current = true;
     clearGuideMessageTimers();
     setGuideMessage({
-      message: '지원하지 않는 QR입니다',
+      message: "지원하지 않는 QR입니다",
     });
 
     hideTimeoutRef.current = window.setTimeout(() => {
