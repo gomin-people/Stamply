@@ -1,5 +1,5 @@
-import KakaoLogin from "@/components/admin/KakaoLogin";
-import StamplyLogo from "@/components/admin/StamplyLogo";
+import KakaoLogin from "@/components/admin/auth/KakaoLogin";
+import StamplyLogo from "@/components/admin/common/StamplyLogo";
 
 export default function AdminHomePage() {
   return (

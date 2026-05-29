@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrochureButton from "@/components/user/BrochureButton";
-import ViewToggle from "@/components/user/ViewToggle";
-import MissionStamp from "@/components/user/MissionStamp";
-import MissionItem from "@/components/user/MissionItem";
-import FloatingActionButton from "@/components/user/FloatingActionButton";
+import BrochureButton from "@/components/user/mission/BrochureButton";
+import ViewToggle from "@/components/user/mission/ViewToggle";
+import MissionStamp from "@/components/user/mission/MissionStamp";
+import MissionItem from "@/components/user/mission/MissionItem";
+import FloatingActionButton from "@/components/user/mission/FloatingActionButton";
 import { useParticipantMissionsQuery } from "@/features/participant/missions/participantMissionQueries";
 
 // Supabase의 event 테이블 타입 인터페이스 정의

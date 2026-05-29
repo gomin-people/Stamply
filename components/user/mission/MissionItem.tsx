@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import IconStamply from "@/components/icons/IconStamply";
-import MissionDetailModal from "@/components/user/MissionDetailModal";
+import MissionDetailModal from "@/components/user/mission/MissionDetailModal";
 
 type Mission = {
   id: number;

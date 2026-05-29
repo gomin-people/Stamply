@@ -7,7 +7,7 @@ import {
 } from "@/constants/adminRoutes";
 import EventSelector from "./EventSelector";
 import SidebarNav from "./SidebarNav";
-import AdminUserInfo from "@/components/admin/AdminUserInfo";
+import AdminUserInfo from "@/components/admin/common/AdminUserInfo";
 
 const Sidebar = () => {
   const pathname = usePathname();

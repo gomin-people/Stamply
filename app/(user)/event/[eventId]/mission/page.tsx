@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import MissionPageClient from "@/components/user/MissionPageClient";
+import MissionPageClient from "@/components/user/mission/MissionPageClient";
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 interface PageProps {

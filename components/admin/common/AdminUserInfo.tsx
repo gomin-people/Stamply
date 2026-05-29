@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useAdminUserQuery } from "@/features/admin/user/adminUserQueries";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import LogoutButton from "@/components/admin/LogoutButton";
+import LogoutButton from "@/components/admin/common/LogoutButton";
 
 export default function AdminUserInfo() {
   const router = useRouter();
