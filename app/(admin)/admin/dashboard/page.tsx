@@ -1,4 +1,4 @@
-import AdminUserInfo from "@/components/admin/AdminUserInfo";
+import AdminUserInfo from "@/components/admin/common/AdminUserInfo";
 export default function DashboardPage() {
   return (
     <div>
