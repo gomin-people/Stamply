@@ -37,12 +37,12 @@ const BrochureSlider = ({
         </div>
       ))}
       <button
-        className="absolute left-0 top-0 w-1/2 h-full z-10"
+        className="absolute left-0 top-0 w-1/2 h-full z-10 touch-pan-y"
         onClick={onPrev}
         aria-label="이전 페이지"
       />
       <button
-        className="absolute right-0 top-0 w-1/2 h-full z-10"
+        className="absolute right-0 top-0 w-1/2 h-full z-10 touch-pan-y"
         onClick={onNext}
         aria-label="다음 페이지"
       />

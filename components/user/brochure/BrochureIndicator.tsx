@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn } from '@/utils';
 
 type BrochureIndicatorProps = {
   total: number;
@@ -14,10 +14,10 @@ const BrochureIndicator = ({ total, currentIndex }: BrochureIndicatorProps) => {
         <div
           key={index}
           className={cn(
-            "flex-1 h-1.5 rounded-[10px] transition-colors duration-300",
+            'flex-1 h-1.5 rounded-[10px] transition-colors duration-300',
             index === currentIndex
-              ? "bg-(--primary-color)"
-              : "bg-gomin-neutral-300"
+              ? 'bg-(--primary-color)'
+              : 'bg-gomin-neutral-300'
           )}
         />
       ))}
