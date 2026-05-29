@@ -31,12 +31,8 @@ export default function SurveyModal({
 
   const { mutate: submitSurvey, isPending } = useSubmitSurveyMutation();
 
-  const handleGenderSelect = (selectedGender: "MALE" | "FEMALE") => {
+  const handleGenderSelect = (selectedGender: Gender) => {
     setGender(selectedGender);
-  };
-
-  const handleUnknownGenderSelect = () => {
-    setGender("UNKNOWN");
   };
 
   const handleAgeSelect = (selectedAge: Exclude<AgeRangeType, null>) => {
@@ -129,7 +125,7 @@ export default function SurveyModal({
           </div>
           <button
             type="button"
-            onClick={handleUnknownGenderSelect}
+            onClick={() => handleGenderSelect("UNKNOWN")}
             className={`mt-2 text-xs font-semibold underline cursor-pointer hover:text-gomin-neutral-600 self-start transition-colors ${
               gender === "UNKNOWN"
                 ? "text-gomin-primary-700 font-bold"
