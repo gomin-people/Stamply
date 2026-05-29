@@ -4,10 +4,10 @@ import { Menu, LayoutGrid } from "lucide-react";
 
 type ViewMode = "list" | "grid";
 
-interface ViewToggleProps {
+type ViewToggleProps = {
   viewMode: ViewMode;
   onChange: (mode: ViewMode) => void;
-}
+};
 
 export default function ViewToggle({ viewMode, onChange }: ViewToggleProps) {
   return (

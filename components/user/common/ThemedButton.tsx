@@ -1,19 +1,15 @@
 import { type ComponentProps } from "react";
 import { cn } from "@/utils";
 
-type ThemedButtonProps = ComponentProps<'button'>;
+type ThemedButtonProps = ComponentProps<"button">;
 
 const ThemedButton = ({ children, className, ...rest }: ThemedButtonProps) => {
   return (
     <button
       className={cn(
-        'w-full max-w-76 h-14 rounded-[20px] text-white font-sans font-extrabold text-lg transition-all duration-300 active:scale-[0.97] hover:scale-[1.01] flex items-center justify-center gap-2',
+        "w-full max-w-76 h-14 rounded-[20px] text-white font-sans font-extrabold text-lg transition-all duration-300 active:scale-[0.97] hover:scale-[1.01] flex items-center justify-center gap-2 bg-gomin-primary-700 shadow-[0_8px_30px] shadow-gomin-primary-200",
         className
       )}
-      style={{
-        backgroundColor: 'var(--primary-700)',
-        boxShadow: '0 8px 30px var(--primary-200)',
-      }}
       {...rest}
     >
       {children}

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { Newspaper } from "lucide-react";
 
-interface BrochureButtonProps {
+type BrochureButtonProps = {
   eventId: string;
-}
+};
 
 export default function BrochureButton({ eventId }: BrochureButtonProps) {
   return (

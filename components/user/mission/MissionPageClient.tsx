@@ -2,36 +2,46 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrochureButton from "@/components/user/mission/BrochureButton";
-import ViewToggle from "@/components/user/mission/ViewToggle";
-import MissionStamp from "@/components/user/mission/MissionStamp";
-import MissionItem from "@/components/user/mission/MissionItem";
-import FloatingActionButton from "@/components/user/mission/FloatingActionButton";
-import { useParticipantMissionsQuery } from "@/features/participant/missions/participantMissionQueries";
+import BrochureButton from "./BrochureButton";
+import ViewToggle from "./ViewToggle";
+import MissionStamp from "./MissionStamp";
+import MissionItem from "./MissionItem";
+import FloatingActionButton from "./FloatingActionButton";
+import {
+  useParticipantMissionsQuery,
+  type ParticipantMission,
+} from "@/features/participant/missions/participantMissionQueries";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
-interface EventData {
+type EventData = {
   id: number;
   title?: string;
   name?: string;
   description?: string;
   stampImageUrl?: string | null;
-}
+};
 
-interface InitialMission {
+type InitialMission = {
   id: number;
   title: string;
   description: string | null;
   isCompleted: boolean;
-}
+};
 
-interface MissionPageClientProps {
+type MissionPageClientProps = {
   event: EventData;
   eventId: string;
   initialMissions: InitialMission[];
-}
+};
 
 type ViewMode = "list" | "grid";
+
+type ClientMission = {
+  id: number;
+  title: string;
+  description: string;
+  isStamped: boolean;
+};
 
 export default function MissionPageClient({
   event,
@@ -46,14 +56,14 @@ export default function MissionPageClient({
 
   // 1순위: 로그인/참여 완료 세션 정보가 반영된 React Query 실시간 데이터
   // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
-  const missions = data
-    ? data.missions.map((m) => ({
+  const missions: ClientMission[] = data
+    ? (data.missions as ParticipantMission[]).map((m: ParticipantMission) => ({
         id: m.id,
         title: m.title,
         description: m.description ?? "",
         isStamped: m.isCompleted,
       }))
-    : initialMissions.map((m) => ({
+    : initialMissions.map((m: InitialMission) => ({
         id: m.id,
         title: m.title,
         description: m.description ?? "",

@@ -3,9 +3,9 @@ import { cookies } from "next/headers";
 import MissionPageClient from "@/components/user/mission/MissionPageClient";
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
-interface PageProps {
+type PageProps = {
   params: Promise<{ eventId: string }>;
-}
+};
 
 export default async function MissionPage({ params }: PageProps) {
   const { eventId: eventIdParam } = await params;

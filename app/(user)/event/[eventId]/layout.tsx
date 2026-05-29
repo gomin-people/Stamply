@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import { getEventPrimaryColor } from "@/features/participant/events/participantEventTheme";
 import { ThemeInitializer } from "@/components/user/common/ThemeInitializer";
 
-interface LayoutProps {
+type LayoutProps = {
   children: React.ReactNode;
   params: Promise<{ eventId: string }>;
-}
+};
 
 export default async function EventLayout({ children, params }: LayoutProps) {
   const { eventId: eventIdParam } = await params;

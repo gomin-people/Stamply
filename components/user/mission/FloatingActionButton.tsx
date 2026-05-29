@@ -3,14 +3,14 @@
 import { ScanLine } from "lucide-react";
 import ThemedButton from "@/components/user/common/ThemedButton";
 
-interface FloatingActionButtonProps {
+type FloatingActionButtonProps = {
   isAllCompleted?: boolean;
   onClick: () => void;
   label?: string;
-}
+};
 
 export default function FloatingActionButton({
-  isAllCompleted,
+  isAllCompleted = false,
   onClick,
   label,
 }: FloatingActionButtonProps) {

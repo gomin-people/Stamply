@@ -16,11 +16,11 @@ type Mission = {
   isStamped: boolean;
 };
 
-interface MissionDetailModalProps {
+type MissionDetailModalProps = {
   isOpen: boolean;
   onClose: () => void;
   mission: Mission;
-}
+};
 
 export default function MissionDetailModal({
   isOpen,
@@ -30,7 +30,7 @@ export default function MissionDetailModal({
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(open) => {
+      onOpenChange={(open: boolean) => {
         if (!open) onClose();
       }}
     >
