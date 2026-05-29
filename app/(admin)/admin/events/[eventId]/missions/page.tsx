@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { fetchAdminMissions } from "@/features/admin/missions/adminMissionApi";
-import MissionWrapper from "@/components/admin/mission/MissionWrapper";
+import MissionClient from "@/components/admin/mission/MissionClient";
 
 export default async function MissionsPage({
   params,
@@ -22,7 +22,7 @@ export default async function MissionsPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MissionWrapper eventId={eventId} />
+      <MissionClient eventId={eventId} />
     </HydrationBoundary>
   );
 }

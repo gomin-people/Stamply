@@ -13,7 +13,7 @@ type Props = {
   eventId: number;
 };
 
-export default function MissionWrapper({ eventId }: Props) {
+export default function MissionClient({ eventId }: Props) {
   const [filter, setFilter] = useState("all");
   const { data: missions, isError, refetch } = useAdminMissionsQuery(eventId);
 
