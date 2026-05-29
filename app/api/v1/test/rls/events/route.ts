@@ -1,5 +1,5 @@
-import { ok, serverError, unauthorized } from '@/utils/api';
-import { createSessionClient } from '@/utils/supabase/session-server';
+import { ok, serverError, unauthorized } from "@/utils/api";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 /**
  * RLS 검증 전용 Events 목록 API입니다.
@@ -18,23 +18,23 @@ export async function GET() {
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    return unauthorized('카카오 로그인 후 다시 시도해주세요.');
+    return unauthorized("카카오 로그인 후 다시 시도해주세요.");
   }
 
   const { data: events, error: eventsError } = await supabase
-    .from('events')
-    .select('id,title,user_id,created_at')
-    .order('created_at', { ascending: false });
+    .from("events")
+    .select("id,title,user_id,created_at")
+    .order("created_at", { ascending: false });
 
   if (eventsError) {
-    return serverError('RLS 테스트 Events 목록 조회 실패', eventsError);
+    return serverError("RLS 테스트 Events 목록 조회 실패", eventsError);
   }
 
   const returnedUserIds = [
     ...new Set(
       events
         ?.map((event) => event.user_id)
-        .filter((userId): userId is string => typeof userId === 'string') ?? []
+        .filter((userId): userId is string => typeof userId === "string") ?? []
     ),
   ];
 

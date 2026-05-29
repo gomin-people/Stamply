@@ -8,9 +8,9 @@ import {
   serverError,
   toInteger,
   unauthorized,
-} from '@/utils/api';
-import { supabase } from '@/utils/supabase/server';
-import { createSessionClient } from '@/utils/supabase/session-server';
+} from "@/utils/api";
+import { supabase } from "@/utils/supabase/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 // 어드민 행사 상세 route parameter 타입
 type AdminEventRouteContext = {
@@ -21,23 +21,23 @@ type AdminEventRouteContext = {
 
 // 행사 수정 시 요청 본문에서 허용하는 필드 목록
 const EVENT_UPDATE_FIELDS = [
-  'title',
-  'start_date',
-  'end_date',
-  'start_time',
-  'end_time',
-  'operating_remarks',
-  'location',
-  'location_url',
-  'notice',
-  'contact_phone',
-  'contact_email',
-  'production',
-  'poster_image_url',
-  'brochure_image_url',
-  'stamp_image_url',
-  'primary_color',
-  'reward_stock',
+  "title",
+  "start_date",
+  "end_date",
+  "start_time",
+  "end_time",
+  "operating_remarks",
+  "location",
+  "location_url",
+  "notice",
+  "contact_phone",
+  "contact_email",
+  "production",
+  "poster_image_url",
+  "brochure_image_url",
+  "stamp_image_url",
+  "primary_color",
+  "reward_stock",
 ] as const;
 
 /**
@@ -56,7 +56,7 @@ export async function GET(
   const eventId = parsePositiveInteger(eventIdParam);
 
   if (eventId === null) {
-    return badRequest('올바른 행사 ID가 필요합니다.');
+    return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
   const sessionSupabase = await createSessionClient();
@@ -66,22 +66,22 @@ export async function GET(
   } = await sessionSupabase.auth.getUser();
 
   if (userError || !user) {
-    return unauthorized('인증되지 않은 사용자입니다.');
+    return unauthorized("인증되지 않은 사용자입니다.");
   }
 
   // events 테이블은 RLS로 현재 운영자 소유 row만 조회됩니다.
   const { data: event, error: eventError } = await sessionSupabase
-    .from('events')
-    .select('*')
-    .eq('id', eventId)
+    .from("events")
+    .select("*")
+    .eq("id", eventId)
     .maybeSingle();
 
   if (eventError) {
-    return serverError('어드민 행사 상세 조회 실패', eventError);
+    return serverError("어드민 행사 상세 조회 실패", eventError);
   }
 
   if (!event) {
-    return notFound('행사를 찾을 수 없습니다.');
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   // 관리자 상세 화면에서 바로 쓰는 연관 데이터는 병렬로 조회
@@ -92,34 +92,34 @@ export async function GET(
   ] = await Promise.all([
     // missions 테이블에서 events_id가 eventId인 미션 목록을 sort_order, id 오름차순 조회
     supabase
-      .from('missions')
-      .select('*')
-      .eq('events_id', eventId)
-      .order('sort_order', { ascending: true })
-      .order('id', { ascending: true }),
+      .from("missions")
+      .select("*")
+      .eq("events_id", eventId)
+      .order("sort_order", { ascending: true })
+      .order("id", { ascending: true }),
     // qr_codes 테이블에서 events_id가 eventId인 QR 목록을 created_at 오름차순 조회
     supabase
-      .from('qr_codes')
-      .select('*')
-      .eq('events_id', eventId)
-      .order('created_at', { ascending: true }),
+      .from("qr_codes")
+      .select("*")
+      .eq("events_id", eventId)
+      .order("created_at", { ascending: true }),
     // participant_users 테이블에서 events_id가 eventId인 참여자 수 조회
     supabase
-      .from('participant_users')
-      .select('id', { count: 'exact', head: true })
-      .eq('events_id', eventId),
+      .from("participant_users")
+      .select("id", { count: "exact", head: true })
+      .eq("events_id", eventId),
   ]);
 
   if (missionsError) {
-    return serverError('행사 미션 조회 실패', missionsError);
+    return serverError("행사 미션 조회 실패", missionsError);
   }
 
   if (qrCodesError) {
-    return serverError('행사 QR 조회 실패', qrCodesError);
+    return serverError("행사 QR 조회 실패", qrCodesError);
   }
 
   if (participantCountError) {
-    return serverError('행사 참여자 수 조회 실패', participantCountError);
+    return serverError("행사 참여자 수 조회 실패", participantCountError);
   }
 
   return ok({
@@ -145,7 +145,7 @@ export async function PATCH(
   const eventId = parsePositiveInteger(eventIdParam);
 
   if (eventId === null) {
-    return badRequest('올바른 행사 ID가 필요합니다.');
+    return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
   const sessionSupabase = await createSessionClient();
@@ -155,26 +155,26 @@ export async function PATCH(
   } = await sessionSupabase.auth.getUser();
 
   if (userError || !user) {
-    return unauthorized('인증되지 않은 사용자입니다.');
+    return unauthorized("인증되지 않은 사용자입니다.");
   }
 
   const result = await readJsonObject(request);
 
-  if ('response' in result) {
+  if ("response" in result) {
     return result.response;
   }
 
   const payload = pickBodyFields(result.body, EVENT_UPDATE_FIELDS);
 
   if (Object.keys(payload).length === 0) {
-    return badRequest('수정할 행사 필드가 필요합니다.');
+    return badRequest("수정할 행사 필드가 필요합니다.");
   }
 
-  if (Object.prototype.hasOwnProperty.call(payload, 'reward_stock')) {
+  if (Object.prototype.hasOwnProperty.call(payload, "reward_stock")) {
     const rewardStock = toInteger(payload.reward_stock);
 
     if (rewardStock === null || rewardStock < 0) {
-      return badRequest('rewardStock은 0 이상의 정수여야 합니다.');
+      return badRequest("rewardStock은 0 이상의 정수여야 합니다.");
     }
 
     payload.reward_stock = rewardStock;
@@ -182,21 +182,21 @@ export async function PATCH(
 
   // events 테이블은 RLS로 현재 운영자 소유 row만 수정됩니다.
   const { data, error } = await sessionSupabase
-    .from('events')
+    .from("events")
     .update({
       ...payload,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', eventId)
-    .select('*')
+    .eq("id", eventId)
+    .select("*")
     .maybeSingle();
 
   if (error) {
-    return serverError('행사 수정 실패', error);
+    return serverError("행사 수정 실패", error);
   }
 
   if (!data) {
-    return notFound('행사를 찾을 수 없습니다.');
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   return ok(data);
@@ -218,7 +218,7 @@ export async function DELETE(
   const eventId = parsePositiveInteger(eventIdParam);
 
   if (eventId === null) {
-    return badRequest('올바른 행사 ID가 필요합니다.');
+    return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
   const sessionSupabase = await createSessionClient();
@@ -228,52 +228,52 @@ export async function DELETE(
   } = await sessionSupabase.auth.getUser();
 
   if (userError || !user) {
-    return unauthorized('인증되지 않은 사용자입니다.');
+    return unauthorized("인증되지 않은 사용자입니다.");
   }
 
   // 하위 데이터 삭제 전에 RLS로 현재 운영자가 소유한 event인지 확인합니다.
   const { data: event, error: eventError } = await sessionSupabase
-    .from('events')
-    .select('id')
-    .eq('id', eventId)
+    .from("events")
+    .select("id")
+    .eq("id", eventId)
     .maybeSingle();
 
   if (eventError) {
-    return serverError('행사 삭제 대상 조회 실패', eventError);
+    return serverError("행사 삭제 대상 조회 실패", eventError);
   }
 
   if (!event) {
-    return notFound('행사를 찾을 수 없습니다.');
+    return notFound("행사를 찾을 수 없습니다.");
   }
 
   // FK 제약을 고려해 하위 데이터부터 삭제
   const cleanupSteps = [
     // mission_completions 테이블에서 events_id가 eventId인 완료 기록 삭제
-    supabase.from('mission_completions').delete().eq('events_id', eventId),
+    supabase.from("mission_completions").delete().eq("events_id", eventId),
     // qr_codes 테이블에서 events_id가 eventId인 QR 코드 삭제
-    supabase.from('qr_codes').delete().eq('events_id', eventId),
+    supabase.from("qr_codes").delete().eq("events_id", eventId),
     // missions 테이블에서 events_id가 eventId인 미션 삭제
-    supabase.from('missions').delete().eq('events_id', eventId),
+    supabase.from("missions").delete().eq("events_id", eventId),
     // participant_users 테이블에서 events_id가 eventId인 참여자 삭제
-    supabase.from('participant_users').delete().eq('events_id', eventId),
+    supabase.from("participant_users").delete().eq("events_id", eventId),
   ];
 
   for (const step of cleanupSteps) {
     const { error } = await step;
 
     if (error) {
-      return serverError('행사 연관 데이터 삭제 실패', error);
+      return serverError("행사 연관 데이터 삭제 실패", error);
     }
   }
 
   // events 테이블은 RLS로 현재 운영자 소유 row만 삭제됩니다.
   const { error: deleteEventError } = await sessionSupabase
-    .from('events')
+    .from("events")
     .delete()
-    .eq('id', eventId);
+    .eq("id", eventId);
 
   if (deleteEventError) {
-    return serverError('행사 삭제 실패', deleteEventError);
+    return serverError("행사 삭제 실패", deleteEventError);
   }
 
   return ok({ id: eventId });

@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { requestJson } from '@/features/shared/api/http';
+import { useQuery } from "@tanstack/react-query";
+import { requestJson } from "@/features/shared/api/http";
 import {
   type Mission,
   type QrCode,
   type StamplyEvent,
-} from '@/features/shared/types/stamply';
+} from "@/features/shared/types/stamply";
 
 // 어드민 행사 상세 응답 타입
 type AdminEventDetail = StamplyEvent & {
@@ -27,14 +27,14 @@ type EventDashboard = {
     completionRate: number;
   };
   missions: Array<
-    Pick<Mission, 'id' | 'title' | 'sortOrder' | 'isActive'> & {
+    Pick<Mission, "id" | "title" | "sortOrder" | "isActive"> & {
       completedCount: number;
     }
   >;
 };
 
 function getAdminEvents() {
-  return requestJson<StamplyEvent[]>('/api/v1/admin/events');
+  return requestJson<StamplyEvent[]>("/api/v1/admin/events");
 }
 
 function getAdminEvent(eventId: number) {
@@ -54,7 +54,7 @@ function getEventDashboard(eventId: number) {
  */
 export function useAdminEventsQuery() {
   return useQuery({
-    queryKey: ['admin', 'events', 'list'],
+    queryKey: ["admin", "events", "list"],
     queryFn: getAdminEvents,
   });
 }
@@ -67,9 +67,9 @@ export function useAdminEventsQuery() {
  */
 export function useAdminEventQuery(eventId: number | null | undefined) {
   return useQuery({
-    queryKey: ['admin', 'events', 'detail', eventId],
+    queryKey: ["admin", "events", "detail", eventId],
     queryFn: () => getAdminEvent(eventId as number),
-    enabled: typeof eventId === 'number' && eventId > 0,
+    enabled: typeof eventId === "number" && eventId > 0,
   });
 }
 
@@ -79,12 +79,10 @@ export function useAdminEventQuery(eventId: number | null | undefined) {
  * @param eventId - 행사 ID
  * @returns React Query 대시보드
  */
-export function useEventDashboardQuery(
-  eventId: number | null | undefined
-) {
+export function useEventDashboardQuery(eventId: number | null | undefined) {
   return useQuery({
-    queryKey: ['admin', 'events', 'dashboard', eventId],
+    queryKey: ["admin", "events", "dashboard", eventId],
     queryFn: () => getEventDashboard(eventId as number),
-    enabled: typeof eventId === 'number' && eventId > 0,
+    enabled: typeof eventId === "number" && eventId > 0,
   });
 }
