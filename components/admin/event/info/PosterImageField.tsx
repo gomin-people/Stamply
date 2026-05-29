@@ -7,11 +7,17 @@ import {
 } from "@/features/admin/upload/adminUploadMutations";
 
 import { cn } from "@/utils/index";
+import { imageSchema } from "@/utils/schemas";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldTitle } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldTitle,
+} from "@/components/ui/field";
 
 type Props = {
-  error?: boolean;
+  error?: string;
   onUploadStart: () => void;
   onUploadSuccess: (url: string) => void;
   onRemove: () => void;
@@ -25,6 +31,7 @@ const PosterImageField = memo(function PosterImageField({
 }: Props) {
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [posterPath, setPosterPath] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | undefined>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate: uploadImage, isPending: isUploading } =
     useUploadAdminImageMutation();
@@ -33,6 +40,15 @@ const PosterImageField = memo(function PosterImageField({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const result = imageSchema.safeParse(file);
+    if (!result.success) {
+      setFileError(result.error.issues[0]?.message);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    setFileError(undefined);
     setPosterPreview(URL.createObjectURL(file));
     onUploadStart();
     uploadImage(file, {
@@ -53,7 +69,7 @@ const PosterImageField = memo(function PosterImageField({
   };
 
   return (
-    <Field className="w-64 shrink-0" data-invalid={error}>
+    <Field className="w-64 shrink-0" data-invalid={!!error}>
       <FieldTitle className="gap-1">
         포스터 이미지
         <span className="text-destructive">*</span>
@@ -102,6 +118,9 @@ const PosterImageField = memo(function PosterImageField({
       <FieldDescription className="text-xs">
         2 : 3 비율 · 1080 × 1620 권장
       </FieldDescription>
+      <div className="h-3">
+        <FieldError>{fileError ?? error}</FieldError>
+      </div>
     </Field>
   );
 });

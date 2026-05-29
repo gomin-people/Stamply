@@ -1,13 +1,13 @@
 "use client";
 import { memo } from "react";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 type Props = {
   startDate: string;
   endDate: string;
-  startDateError?: boolean;
-  endDateError?: boolean;
+  startDateError?: string;
+  endDateError?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -20,7 +20,7 @@ const EventDateRangeField = memo(function EventDateRangeField({
 }: Props) {
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Field data-invalid={startDateError}>
+      <Field data-invalid={!!startDateError}>
         <FieldLabel htmlFor="startDate">
           시작일 <span className="text-destructive">*</span>
         </FieldLabel>
@@ -30,10 +30,13 @@ const EventDateRangeField = memo(function EventDateRangeField({
           type="date"
           value={startDate}
           onChange={onChange}
-          aria-invalid={startDateError}
+          aria-invalid={!!startDateError}
         />
+        <div className="h-3">
+          <FieldError>{startDateError}</FieldError>
+        </div>
       </Field>
-      <Field data-invalid={endDateError}>
+      <Field data-invalid={!!endDateError}>
         <FieldLabel htmlFor="endDate">
           종료일 <span className="text-destructive">*</span>
         </FieldLabel>
@@ -43,8 +46,11 @@ const EventDateRangeField = memo(function EventDateRangeField({
           type="date"
           value={endDate}
           onChange={onChange}
-          aria-invalid={endDateError}
+          aria-invalid={!!endDateError}
         />
+        <div className="h-3">
+          <FieldError>{endDateError}</FieldError>
+        </div>
       </Field>
     </div>
   );

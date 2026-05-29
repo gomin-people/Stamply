@@ -1,6 +1,7 @@
 "use client";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 
+import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import { z } from "zod";
 import { type StepFormHandle } from "@/types";
 import PosterImageField from "@/components/admin/event/info/PosterImageField";
 import EventTitleField from "@/components/admin/event/info/EventTitleField";
@@ -12,27 +13,10 @@ import EventContactPhoneField from "@/components/admin/event/info/EventContactPh
 import EventContactEmailField from "@/components/admin/event/info/EventContactEmailField";
 import EventOperatingHoursField from "@/components/admin/event/info/EventOperatingHoursField";
 import EventRemarksField from "@/components/admin/event/info/EventRemarksField";
-import {
-  formatPhoneNumber,
-  isValidEmail,
-  isValidPhone,
-  isValidUrl,
-} from "@/utils";
+import { formatPhoneNumber } from "@/utils";
+import { eventInfoSchema } from "@/utils/schemas";
 
-type FormState = {
-  title: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  locationUrl: string;
-  production: string;
-  contactPhone: string;
-  contactEmail: string;
-  startTime: string;
-  endTime: string;
-  operatingRemarks: string;
-  posterImageUrl: string;
-};
+type FormState = z.infer<typeof eventInfoSchema>;
 
 const initialForm: FormState = {
   title: "",
@@ -49,71 +33,28 @@ const initialForm: FormState = {
   posterImageUrl: "",
 };
 
-type FormErrors = {
-  poster: boolean;
-  title: boolean;
-  startDate: boolean;
-  endDate: boolean;
-  location: boolean;
-  locationUrl: boolean;
-  contactPhone: boolean;
-  contactEmail: boolean;
-};
-
-const initialErrors: FormErrors = {
-  poster: false,
-  title: false,
-  startDate: false,
-  endDate: false,
-  location: false,
-  locationUrl: false,
-  contactPhone: false,
-  contactEmail: false,
-};
-
 const EventInfoForm = forwardRef<StepFormHandle>(
   function EventInfoForm(_, ref) {
     const [form, setForm] = useState<FormState>(initialForm);
     const [isPosterUploading, setIsPosterUploading] = useState(false);
-    const [errors, setErrors] = useState<FormErrors>(initialErrors);
-
-    const clearError = useCallback((key: keyof FormErrors) => {
-      setErrors((prev) => ({ ...prev, [key]: false }));
-    }, []);
+    const [zodError, setZodError] = useState<z.ZodError<FormState> | null>(
+      null
+    );
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         const targetValue =
           name === "contactPhone" ? formatPhoneNumber(value) : value;
-        setForm((prev) => ({ ...prev, [name]: targetValue }));
-        if (name === "title" && value.trim()) clearError("title");
-        if (name === "startDate" && value) {
-          clearError("startDate");
-          if (form.endDate) {
-            if (value > form.endDate)
-              setErrors((prev) => ({ ...prev, endDate: true }));
-            else clearError("endDate");
-          }
+        const nextForm = { ...form, [name]: targetValue };
+        setForm(nextForm);
+
+        if (zodError) {
+          const result = eventInfoSchema.safeParse(nextForm);
+          setZodError(result.error ?? null);
         }
-        if (
-          name === "endDate" &&
-          value &&
-          (!form.startDate || value >= form.startDate)
-        )
-          clearError("endDate");
-        if (name === "location" && value.trim()) clearError("location");
-        if (name === "locationUrl" && (!value || isValidUrl(value)))
-          clearError("locationUrl");
-        if (
-          name === "contactPhone" &&
-          (!targetValue || isValidPhone(targetValue))
-        )
-          clearError("contactPhone");
-        if (name === "contactEmail" && (!value || isValidEmail(value)))
-          clearError("contactEmail");
       },
-      [clearError, form.startDate, form.endDate]
+      [form, zodError]
     );
 
     const handlePosterUploadStart = () => {
@@ -123,7 +64,6 @@ const EventInfoForm = forwardRef<StepFormHandle>(
     const handlePosterUploadSuccess = (url: string) => {
       setIsPosterUploading(false);
       setForm((prev) => ({ ...prev, posterImageUrl: url }));
-      clearError("poster");
     };
 
     const handlePosterRemove = () => {
@@ -131,19 +71,9 @@ const EventInfoForm = forwardRef<StepFormHandle>(
     };
 
     const validate = () => {
-      const next: FormErrors = {
-        poster: !form.posterImageUrl && !isPosterUploading,
-        title: !form.title.trim(),
-        startDate: !form.startDate,
-        endDate:
-          !form.endDate || (!!form.startDate && form.endDate < form.startDate),
-        location: !form.location.trim(),
-        locationUrl: !!form.locationUrl && !isValidUrl(form.locationUrl),
-        contactPhone: !!form.contactPhone && !isValidPhone(form.contactPhone),
-        contactEmail: !!form.contactEmail && !isValidEmail(form.contactEmail),
-      };
-      setErrors(next);
-      return Object.values(next).every((v) => !v);
+      const result = eventInfoSchema.safeParse(form);
+      setZodError(result.error ?? null);
+      return !result.error;
     };
 
     useImperativeHandle(
@@ -155,12 +85,16 @@ const EventInfoForm = forwardRef<StepFormHandle>(
       [form]
     );
 
+    const fieldErrors = zodError ? z.flattenError(zodError).fieldErrors : {};
+
     return (
       <div>
         <form>
           <div className="flex gap-8">
             <PosterImageField
-              error={errors.poster}
+              error={
+                !isPosterUploading ? fieldErrors.posterImageUrl?.[0] : undefined
+              }
               onUploadStart={handlePosterUploadStart}
               onUploadSuccess={handlePosterUploadSuccess}
               onRemove={handlePosterRemove}
@@ -169,24 +103,24 @@ const EventInfoForm = forwardRef<StepFormHandle>(
             <div className="flex flex-1 flex-col gap-5">
               <EventTitleField
                 value={form.title}
-                error={errors.title}
+                error={fieldErrors.title?.[0]}
                 onChange={handleChange}
               />
               <EventDateRangeField
                 startDate={form.startDate}
                 endDate={form.endDate}
-                startDateError={errors.startDate}
-                endDateError={errors.endDate}
+                startDateError={fieldErrors.startDate?.[0]}
+                endDateError={fieldErrors.endDate?.[0]}
                 onChange={handleChange}
               />
               <EventLocationField
                 value={form.location}
-                error={errors.location}
+                error={fieldErrors.location?.[0]}
                 onChange={handleChange}
               />
               <EventLocationUrlField
                 value={form.locationUrl}
-                error={errors.locationUrl}
+                error={fieldErrors.locationUrl?.[0]}
                 onChange={handleChange}
               />
               <div className="grid grid-cols-2 gap-4">
@@ -196,14 +130,14 @@ const EventInfoForm = forwardRef<StepFormHandle>(
                 />
                 <EventContactPhoneField
                   value={form.contactPhone}
-                  error={errors.contactPhone}
+                  error={fieldErrors.contactPhone?.[0]}
                   onChange={handleChange}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <EventContactEmailField
                   value={form.contactEmail}
-                  error={errors.contactEmail}
+                  error={fieldErrors.contactEmail?.[0]}
                   onChange={handleChange}
                 />
                 <EventOperatingHoursField

@@ -1,12 +1,12 @@
 "use client";
 import { memo } from "react";
 import { MapPin } from "lucide-react";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 type Props = {
   value: string;
-  error?: boolean;
+  error?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -16,7 +16,7 @@ const EventLocationField = memo(function EventLocationField({
   onChange,
 }: Props) {
   return (
-    <Field data-invalid={error}>
+    <Field data-invalid={!!error}>
       <FieldLabel htmlFor="location">
         주소 <span className="text-destructive">*</span>
       </FieldLabel>
@@ -30,8 +30,11 @@ const EventLocationField = memo(function EventLocationField({
           placeholder="행사 주소를 입력해주세요."
           className="pl-8"
           maxLength={100}
-          aria-invalid={error}
+          aria-invalid={!!error}
         />
+      </div>
+      <div className="h-3">
+        <FieldError>{error}</FieldError>
       </div>
     </Field>
   );

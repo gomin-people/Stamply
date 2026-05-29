@@ -1,12 +1,12 @@
 "use client";
 import { memo } from "react";
 import { Phone } from "lucide-react";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 type Props = {
   value: string;
-  error?: boolean;
+  error?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -16,7 +16,7 @@ const EventContactPhoneField = memo(function EventContactPhoneField({
   onChange,
 }: Props) {
   return (
-    <Field data-invalid={error}>
+    <Field data-invalid={!!error}>
       <FieldLabel htmlFor="contactPhone">문의처 전화번호</FieldLabel>
       <div className="relative">
         <Phone className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -28,8 +28,11 @@ const EventContactPhoneField = memo(function EventContactPhoneField({
           placeholder="000-0000-0000"
           className="pl-8"
           maxLength={13}
-          aria-invalid={error}
+          aria-invalid={!!error}
         />
+      </div>
+      <div className="h-3">
+        <FieldError>{error}</FieldError>
       </div>
     </Field>
   );
