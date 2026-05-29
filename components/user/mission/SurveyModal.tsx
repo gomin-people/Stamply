@@ -55,7 +55,7 @@ export default function SurveyModal({
         onSuccess: () => {
           onSubmitSuccess();
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           setErrorMessage(
             error.message || "설문 제출에 실패했습니다. 다시 시도해 주세요."
           );
