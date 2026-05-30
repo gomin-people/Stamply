@@ -46,7 +46,7 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
       )}
     >
       <GripVertical
-        className="size-3.5 cursor-grab touch-none text-gomin-neutral-400"
+        className="size-3.5 cursor-grab touch-none text-gomin-neutral-400 focus:outline-none"
         {...attributes}
         {...listeners}
       />

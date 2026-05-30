@@ -17,7 +17,7 @@ const BrochureAddButton = ({ onChange }: AddProps) => {
         type="button"
         variant="outline"
         onClick={() => inputRef.current?.click()}
-        className="h-auto w-full gap-1.5 rounded-2xl border-dashed border-gomin-primary-300 py-4"
+        className="h-auto w-full cursor-pointer gap-1.5 rounded-2xl border-dashed border-gomin-primary-300 py-4"
       >
         <Plus className="size-3.5 text-gomin-primary-700" />
         <span className="text-[15px] font-medium text-gomin-primary-700">
