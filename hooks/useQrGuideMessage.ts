@@ -23,35 +23,41 @@ export const useQrGuideMessage = () => {
     hideTimeoutRef.current = null;
   }, []);
 
+  const showQrGuideMessage = useCallback(
+    (message: string) => {
+      const now = Date.now();
+
+      // 안내가 표시 중이거나 쿨다운 중이면 같은 QR 반복 인식을 무시합니다.
+      if (
+        isGuideMessageVisibleRef.current ||
+        now < nextGuideMessageAllowedAtRef.current
+      ) {
+        return;
+      }
+
+      isGuideMessageVisibleRef.current = true;
+      clearGuideMessageTimers();
+      setGuideMessage({ message });
+
+      hideTimeoutRef.current = window.setTimeout(() => {
+        setGuideMessage(null);
+        hideTimeoutRef.current = null;
+        isGuideMessageVisibleRef.current = false;
+        nextGuideMessageAllowedAtRef.current = Date.now() + 2000;
+      }, 1800);
+    },
+    [clearGuideMessageTimers]
+  );
+
   const showUnsupportedQrMessage = useCallback(() => {
-    const now = Date.now();
-
-    // 안내가 표시 중이거나 쿨다운 중이면 같은 QR 반복 인식을 무시합니다.
-    if (
-      isGuideMessageVisibleRef.current ||
-      now < nextGuideMessageAllowedAtRef.current
-    ) {
-      return;
-    }
-
-    isGuideMessageVisibleRef.current = true;
-    clearGuideMessageTimers();
-    setGuideMessage({
-      message: "지원하지 않는 QR입니다",
-    });
-
-    hideTimeoutRef.current = window.setTimeout(() => {
-      setGuideMessage(null);
-      hideTimeoutRef.current = null;
-      isGuideMessageVisibleRef.current = false;
-      nextGuideMessageAllowedAtRef.current = Date.now() + 2000;
-    }, 1800);
-  }, [clearGuideMessageTimers]);
+    showQrGuideMessage("지원하지 않는 QR입니다");
+  }, [showQrGuideMessage]);
 
   useEffect(() => clearGuideMessageTimers, [clearGuideMessageTimers]);
 
   return {
     guideMessage,
+    showQrGuideMessage,
     showUnsupportedQrMessage,
   };
 };

@@ -1,4 +1,4 @@
-import QrCheckClient from "@/components/user/QrCheckClient";
+import QrCheckClient from "@/components/user/qr-check/QrCheckClient";
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 type QrCheckPageProps = {

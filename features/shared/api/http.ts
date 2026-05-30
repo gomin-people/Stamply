@@ -70,7 +70,11 @@ export async function requestJson<T>(
   const body = await parseJsonResponse(response);
 
   if (!response.ok) {
-    throw new ApiError(getErrorMessage(body), response.status, body);
+    throw new ApiError(
+      getResponseMessage(body) ?? "API 요청 실패",
+      response.status,
+      body
+    );
   }
 
   if (isRecord(body) && "data" in body) {
@@ -98,9 +102,9 @@ export function createJsonRequest(method: string, body?: unknown): RequestInit {
  * fetch 응답 본문을 안전하게 JSON으로 파싱합니다.
  *
  * @param response - fetch 응답 객체
- * @returns JSON 파싱 결과 또는 null
+ * @returns JSON 파싱 결과, 텍스트 응답, 또는 빈 응답의 null 값
  */
-async function parseJsonResponse(response: Response) {
+export async function parseJsonResponse(response: Response) {
   const text = await response.text();
 
   if (!text) {
@@ -115,17 +119,25 @@ async function parseJsonResponse(response: Response) {
 }
 
 /**
- * API 에러 응답에서 사용자에게 보여줄 메시지를 추출합니다.
+ * API 응답 본문에서 사용자에게 보여줄 에러 메시지 문자열을 추출합니다.
  *
  * @param body - API 응답 본문
- * @returns 에러 메시지
+ * @returns message 또는 error 문자열이 있으면 해당 값, 없으면 null
  */
-function getErrorMessage(body: unknown) {
-  if (isRecord(body) && typeof body.message === "string") {
+export function getResponseMessage(body: unknown) {
+  if (!isRecord(body)) {
+    return null;
+  }
+
+  if (typeof body.message === "string") {
     return body.message;
   }
 
-  return "API 요청 실패";
+  if (typeof body.error === "string") {
+    return body.error;
+  }
+
+  return null;
 }
 
 /**

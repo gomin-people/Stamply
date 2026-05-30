@@ -1,11 +1,16 @@
 "use client";
 
 import QrScanner from "qr-scanner";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQrGuideMessage } from "@/hooks/useQrGuideMessage";
 import { type CameraStatus, type QrGuideMessageState } from "@/types/qr-check";
 import { getQrScanTarget } from "@/utils/qr";
+import { completeMissionFromQr } from "./completeMissionFromQr";
+import {
+  isCameraPermissionDeniedError,
+  isQrNotFoundError,
+} from "./qrCheckUtils";
 
 type CreateQrScannerParams = {
   video: HTMLVideoElement;
@@ -22,7 +27,10 @@ type HandleQrScanResultParams = {
   hasScanned: boolean;
   currentEventId: string;
   markScanned: () => void;
+  navigateToMissionPage: () => void;
   navigateToEvent: (path: string) => void;
+  restartScannerAfterMessage: (scanner: QrScanner) => void;
+  showQrGuideMessage: (message: string) => void;
   showUnsupportedQrMessage: () => void;
 };
 
@@ -35,35 +43,7 @@ type ScanGuideBubbleProps = {
 const PRIMARY_700_BACKGROUND_STYLE = {
   backgroundColor: "var(--primary-700)",
 };
-
-/**
- * QR 스캐너가 QR을 찾지 못한 정상 대기 상태인지 확인합니다.
- *
- * @param error - qr-scanner가 전달한 디코딩 에러
- * @returns QR 미검출 에러이면 true
- */
-const isQrNotFoundError = (error: Error | string) => {
-  const message = error instanceof Error ? error.message : error;
-  return message.includes(QrScanner.NO_QR_CODE_FOUND);
-};
-
-/**
- * 카메라 시작 실패가 사용자 권한 거부 또는 브라우저 차단 때문인지 확인합니다.
- *
- * @param error - qr-scanner 시작 실패 에러
- * @returns 권한 거부로 볼 수 있으면 true
- */
-const isCameraPermissionDeniedError = (error: unknown) => {
-  const name = error instanceof Error ? error.name : "";
-  const message = error instanceof Error ? error.message : String(error);
-
-  return (
-    name === "NotAllowedError" ||
-    name === "PermissionDeniedError" ||
-    name === "SecurityError" ||
-    /permission|denied|not allowed/i.test(message)
-  );
-};
+const QR_SCANNER_RESTART_DELAY_MS = 3800;
 
 /**
  * 브라우저가 제공하는 카메라 권한 상태를 QR 스캐너 화면 상태로 변환합니다.
@@ -111,13 +91,16 @@ const createQrScanner = ({ video, onDecode }: CreateQrScannerParams) =>
  *
  * @param params - 스캔 결과 처리에 필요한 스캐너 상태와 라우터
  */
-const handleQrScanResult = ({
+const handleQrScanResult = async ({
   result,
   scanner,
   hasScanned,
   currentEventId,
   markScanned,
+  navigateToMissionPage,
   navigateToEvent,
+  restartScannerAfterMessage,
+  showQrGuideMessage,
   showUnsupportedQrMessage,
 }: HandleQrScanResultParams) => {
   if (hasScanned || !scanner) return;
@@ -133,7 +116,25 @@ const handleQrScanResult = ({
   scanner.stop();
 
   if (scanTarget.type === "missionCheck") {
-    window.location.assign(scanTarget.path);
+    const missionCheckResult = await completeMissionFromQr(scanTarget.path);
+
+    if (missionCheckResult.type === "completed") {
+      navigateToMissionPage();
+      return;
+    }
+
+    if (missionCheckResult.type === "qrRequired") {
+      window.location.assign("/qr-required");
+      return;
+    }
+
+    if (missionCheckResult.type === "missionUnavailable") {
+      window.location.assign(missionCheckResult.path);
+      return;
+    }
+
+    showQrGuideMessage(missionCheckResult.message);
+    restartScannerAfterMessage(scanner);
     return;
   }
 
@@ -199,9 +200,11 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasScannedRef = useRef(false);
+  const restartScannerTimeoutRef = useRef<number | null>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("loading");
   const [loadingDotCount, setLoadingDotCount] = useState(1);
-  const { guideMessage, showUnsupportedQrMessage } = useQrGuideMessage();
+  const { guideMessage, showQrGuideMessage, showUnsupportedQrMessage } =
+    useQrGuideMessage();
   const isCameraActive = cameraStatus === "active";
 
   /**
@@ -222,6 +225,34 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
     setCameraStatus("active");
   };
 
+  const clearRestartScannerTimer = useCallback(() => {
+    if (restartScannerTimeoutRef.current === null) return;
+
+    window.clearTimeout(restartScannerTimeoutRef.current);
+    restartScannerTimeoutRef.current = null;
+  }, []);
+
+  const restartScanner = useCallback((scanner: QrScanner) => {
+    hasScannedRef.current = false;
+    scanner.start().catch((error) => {
+      setCameraStatus(
+        isCameraPermissionDeniedError(error) ? "denied" : "unavailable"
+      );
+      console.error("QR scanner restart failed:", error);
+    });
+  }, []);
+
+  const restartScannerAfterMessage = useCallback(
+    (scanner: QrScanner) => {
+      clearRestartScannerTimer();
+      restartScannerTimeoutRef.current = window.setTimeout(() => {
+        restartScannerTimeoutRef.current = null;
+        restartScanner(scanner);
+      }, QR_SCANNER_RESTART_DELAY_MS);
+    },
+    [clearRestartScannerTimer, restartScanner]
+  );
+
   // 페이지가 마운트된 동안에만 스캐너 인스턴스와 카메라 스트림 유지
   useEffect(() => {
     if (!videoRef.current) return;
@@ -232,7 +263,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
     scanner = createQrScanner({
       video: videoRef.current,
       onDecode: (result) => {
-        handleQrScanResult({
+        void handleQrScanResult({
           result,
           scanner,
           hasScanned: hasScannedRef.current,
@@ -240,9 +271,14 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
           markScanned: () => {
             hasScannedRef.current = true;
           },
+          navigateToMissionPage: () => {
+            window.location.assign(`/event/${eventId}/mission`);
+          },
           navigateToEvent: (eventPath) => {
             router.push(eventPath);
           },
+          restartScannerAfterMessage,
+          showQrGuideMessage,
           showUnsupportedQrMessage,
         });
       },
@@ -273,10 +309,18 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
 
     return () => {
       isMounted = false;
+      clearRestartScannerTimer();
       scanner?.stop();
       scanner?.destroy();
     };
-  }, [eventId, router, showUnsupportedQrMessage]);
+  }, [
+    clearRestartScannerTimer,
+    eventId,
+    restartScannerAfterMessage,
+    router,
+    showQrGuideMessage,
+    showUnsupportedQrMessage,
+  ]);
 
   useEffect(() => {
     if (cameraStatus !== "loading") return;
