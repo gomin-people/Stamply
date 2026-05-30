@@ -21,10 +21,21 @@ const BrochureDropzone = ({
   const [isDragOver, setIsDragOver] = useState(false);
   const [shake, setShake] = useState(0);
 
+  // ui 검증 레벨이라 여기 있는게 나음. 훅은 파일을 받아서 상태/업로드 처리만 하고, 어떤 파일을 받을지는 컴포넌트에서 결정하는 게 자연스러움.
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    if (e.dataTransfer.files) onDrop(e.dataTransfer.files);
+    if (!e.dataTransfer.files) return;
+    const allowed = Array.from(e.dataTransfer.files).filter((f) =>
+      ["image/jpeg", "image/png"].includes(f.type)
+    );
+    if (allowed.length === 0) {
+      toast.warning("JPG, PNG 파일만 업로드할 수 있어요.");
+      return;
+    }
+    const dt = new DataTransfer();
+    allowed.forEach((f) => dt.items.add(f));
+    onDrop(dt.files);
   };
 
   const handleClick = () => {
