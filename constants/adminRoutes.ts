@@ -68,6 +68,16 @@ export const adminRoutes: AdminRouteConfig[] = [
       icon: Target,
     },
   },
+  {
+    pattern: "/admin/events/register",
+    title: "행사 등록",
+    description: [
+      {
+        type: "text",
+        text: "새로운 팝업 스탬프 투어를 등록합니다. 모든 정보는 저장 후에도 수정 가능합니다.",
+      },
+    ],
+  },
 ];
 
 /**
@@ -82,12 +92,22 @@ const getAdminRoutePath = (pattern: string, params: AdminRouteParams) => {
   return pattern.replace(/\[eventId\]/g, params.eventId);
 };
 
+const getDynamicSegmentCount = (pattern: string) =>
+  pattern.match(/\[[^\]]+\]/g)?.length ?? 0;
+
 /**
  * 현재 경로에 해당하는 관리자 라우트 설정
  */
 export const getAdminRouteConfig = (pathname: string) => {
   return [...adminRoutes]
-    .sort((a, b) => b.pattern.length - a.pattern.length)
+    .sort((a, b) => {
+      const dynamicDiff =
+        getDynamicSegmentCount(a.pattern) - getDynamicSegmentCount(b.pattern);
+
+      if (dynamicDiff !== 0) return dynamicDiff;
+
+      return b.pattern.length - a.pattern.length;
+    })
     .find((route) => patternToRegex(route.pattern).test(pathname));
 };
 
