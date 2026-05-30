@@ -23,19 +23,20 @@ type QrCheckClientProps = {
 
 type HandleQrScanResultParams = {
   result: QrScanner.ScanResult;
-  scanner: QrScanner | null;
   hasScanned: boolean;
   currentEventId: string;
   markScanned: () => void;
   navigateToMissionPage: () => void;
   navigateToEvent: (path: string) => void;
-  restartScannerAfterMessage: (scanner: QrScanner) => void;
+  releaseScanLockAfterMessage: () => void;
+  setMissionChecking: (isChecking: boolean) => void;
   showQrGuideMessage: (message: string) => void;
   showUnsupportedQrMessage: () => void;
 };
 
 type ScanGuideBubbleProps = {
   cameraStatus: CameraStatus;
+  isMissionChecking: boolean;
   loadingDotCount: number;
   guideMessage: QrGuideMessageState | null;
 };
@@ -43,7 +44,7 @@ type ScanGuideBubbleProps = {
 const PRIMARY_700_BACKGROUND_STYLE = {
   backgroundColor: "var(--primary-700)",
 };
-const QR_SCANNER_RESTART_DELAY_MS = 3800;
+const SCAN_LOCK_RELEASE_DELAY_MS = 3800;
 
 /**
  * 브라우저가 제공하는 카메라 권한 상태를 QR 스캐너 화면 상태로 변환합니다.
@@ -93,17 +94,17 @@ const createQrScanner = ({ video, onDecode }: CreateQrScannerParams) =>
  */
 const handleQrScanResult = async ({
   result,
-  scanner,
   hasScanned,
   currentEventId,
   markScanned,
   navigateToMissionPage,
   navigateToEvent,
-  restartScannerAfterMessage,
+  releaseScanLockAfterMessage,
+  setMissionChecking,
   showQrGuideMessage,
   showUnsupportedQrMessage,
 }: HandleQrScanResultParams) => {
-  if (hasScanned || !scanner) return;
+  if (hasScanned) return;
 
   const scanTarget = getQrScanTarget(result.data, { currentEventId });
   if (!scanTarget) {
@@ -111,11 +112,11 @@ const handleQrScanResult = async ({
     return;
   }
 
-  // 지원하는 QR은 한 번만 처리해야 하므로 이동 직전에 스캐너 잠금 처리
+  // 지원하는 QR은 한 번만 처리해야 하므로 처리 완료 전까지 추가 디코딩을 잠급니다.
   markScanned();
-  scanner.stop();
 
   if (scanTarget.type === "missionCheck") {
+    setMissionChecking(true);
     const missionCheckResult = await completeMissionFromQr(scanTarget.path);
 
     if (missionCheckResult.type === "completed") {
@@ -133,8 +134,9 @@ const handleQrScanResult = async ({
       return;
     }
 
+    setMissionChecking(false);
     showQrGuideMessage(missionCheckResult.message);
-    restartScannerAfterMessage(scanner);
+    releaseScanLockAfterMessage();
     return;
   }
 
@@ -146,6 +148,7 @@ const handleQrScanResult = async ({
  */
 const ScanGuideBubble = ({
   cameraStatus,
+  isMissionChecking,
   loadingDotCount,
   guideMessage,
 }: ScanGuideBubbleProps) => {
@@ -153,6 +156,15 @@ const ScanGuideBubble = ({
 
   if (guideMessage) {
     guideContent = guideMessage.message;
+  } else if (isMissionChecking) {
+    guideContent = (
+      <>
+        미션 확인 중
+        <span className="inline-block w-[1.5em] text-left">
+          {".".repeat(loadingDotCount)}
+        </span>
+      </>
+    );
   } else if (cameraStatus === "loading") {
     guideContent = (
       <>
@@ -200,8 +212,9 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasScannedRef = useRef(false);
-  const restartScannerTimeoutRef = useRef<number | null>(null);
+  const releaseScanLockTimeoutRef = useRef<number | null>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("loading");
+  const [isMissionChecking, setIsMissionChecking] = useState(false);
   const [loadingDotCount, setLoadingDotCount] = useState(1);
   const { guideMessage, showQrGuideMessage, showUnsupportedQrMessage } =
     useQrGuideMessage();
@@ -225,33 +238,20 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
     setCameraStatus("active");
   };
 
-  const clearRestartScannerTimer = useCallback(() => {
-    if (restartScannerTimeoutRef.current === null) return;
+  const clearReleaseScanLockTimer = useCallback(() => {
+    if (releaseScanLockTimeoutRef.current === null) return;
 
-    window.clearTimeout(restartScannerTimeoutRef.current);
-    restartScannerTimeoutRef.current = null;
+    window.clearTimeout(releaseScanLockTimeoutRef.current);
+    releaseScanLockTimeoutRef.current = null;
   }, []);
 
-  const restartScanner = useCallback((scanner: QrScanner) => {
-    hasScannedRef.current = false;
-    scanner.start().catch((error) => {
-      setCameraStatus(
-        isCameraPermissionDeniedError(error) ? "denied" : "unavailable"
-      );
-      console.error("QR scanner restart failed:", error);
-    });
-  }, []);
-
-  const restartScannerAfterMessage = useCallback(
-    (scanner: QrScanner) => {
-      clearRestartScannerTimer();
-      restartScannerTimeoutRef.current = window.setTimeout(() => {
-        restartScannerTimeoutRef.current = null;
-        restartScanner(scanner);
-      }, QR_SCANNER_RESTART_DELAY_MS);
-    },
-    [clearRestartScannerTimer, restartScanner]
-  );
+  const releaseScanLockAfterMessage = useCallback(() => {
+    clearReleaseScanLockTimer();
+    releaseScanLockTimeoutRef.current = window.setTimeout(() => {
+      releaseScanLockTimeoutRef.current = null;
+      hasScannedRef.current = false;
+    }, SCAN_LOCK_RELEASE_DELAY_MS);
+  }, [clearReleaseScanLockTimer]);
 
   // 페이지가 마운트된 동안에만 스캐너 인스턴스와 카메라 스트림 유지
   useEffect(() => {
@@ -265,7 +265,6 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       onDecode: (result) => {
         void handleQrScanResult({
           result,
-          scanner,
           hasScanned: hasScannedRef.current,
           currentEventId: eventId,
           markScanned: () => {
@@ -277,7 +276,8 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
           navigateToEvent: (eventPath) => {
             router.push(eventPath);
           },
-          restartScannerAfterMessage,
+          releaseScanLockAfterMessage,
+          setMissionChecking: setIsMissionChecking,
           showQrGuideMessage,
           showUnsupportedQrMessage,
         });
@@ -309,23 +309,23 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
 
     return () => {
       isMounted = false;
-      clearRestartScannerTimer();
+      clearReleaseScanLockTimer();
       scanner?.stop();
       scanner?.destroy();
     };
   }, [
-    clearRestartScannerTimer,
+    clearReleaseScanLockTimer,
     eventId,
-    restartScannerAfterMessage,
+    releaseScanLockAfterMessage,
     router,
     showQrGuideMessage,
     showUnsupportedQrMessage,
   ]);
 
   useEffect(() => {
-    if (cameraStatus !== "loading") return;
+    if (cameraStatus !== "loading" && !isMissionChecking) return;
 
-    // 카메라 준비 중 메시지의 점 개수를 0.3초마다 1, 2, 3, 1, ... 순으로 변경
+    // 카메라 준비/미션 확인 중 메시지의 점 개수를 0.3초마다 1, 2, 3, 1, ... 순으로 변경
     const intervalId = window.setInterval(() => {
       setLoadingDotCount((currentCount) =>
         currentCount === 3 ? 1 : currentCount + 1
@@ -333,7 +333,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
     }, 300);
 
     return () => window.clearInterval(intervalId);
-  }, [cameraStatus]);
+  }, [cameraStatus, isMissionChecking]);
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-gomin-black text-gomin-white">
@@ -353,6 +353,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
         {/* 스캔/카메라 상태 안내 말풍선 */}
         <ScanGuideBubble
           cameraStatus={cameraStatus}
+          isMissionChecking={isMissionChecking}
           loadingDotCount={loadingDotCount}
           guideMessage={guideMessage}
         />
