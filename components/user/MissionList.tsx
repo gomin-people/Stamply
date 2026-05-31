@@ -1,5 +1,5 @@
 // 서버 컴포넌트
-import MissionItem from "./mission/MissionItem";
+import MissionItem from "@/components/user/mission/MissionItem";
 
 const MISSIONS = [
   { id: 1, title: "미션 1", description: "샘플코드입니다.", isStamped: true },

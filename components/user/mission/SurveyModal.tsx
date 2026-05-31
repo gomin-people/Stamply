@@ -9,8 +9,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useSubmitSurveyMutation } from "@/features/participant/survey/participantSurveyMutations";
+import { type Gender } from "@/features/shared/types/stamply";
 
-type GenderType = "MALE" | "FEMALE" | "UNKNOWN" | null;
+type GenderType = Gender | null;
 type AgeRangeType = "10대" | "20대" | "30대" | "40대" | "50대+" | null;
 
 type SurveyModalProps = {
@@ -30,12 +31,8 @@ export default function SurveyModal({
 
   const { mutate: submitSurvey, isPending } = useSubmitSurveyMutation();
 
-  const handleGenderSelect = (selectedGender: "MALE" | "FEMALE") => {
+  const handleGenderSelect = (selectedGender: Gender) => {
     setGender(selectedGender);
-  };
-
-  const handleUnknownGenderSelect = () => {
-    setGender("UNKNOWN");
   };
 
   const handleAgeSelect = (selectedAge: Exclude<AgeRangeType, null>) => {
@@ -43,12 +40,14 @@ export default function SurveyModal({
   };
 
   const handleSubmit = () => {
+    if (!gender || !ageRange) return;
+
     setErrorMessage(null);
 
     submitSurvey(
       {
-        gender: gender as "MALE" | "FEMALE" | "UNKNOWN",
-        ageRange: ageRange,
+        gender,
+        ageRange,
         isRewardClaimed: true,
       },
       {
@@ -126,7 +125,7 @@ export default function SurveyModal({
           </div>
           <button
             type="button"
-            onClick={handleUnknownGenderSelect}
+            onClick={() => handleGenderSelect("UNKNOWN")}
             className={`mt-2 text-xs font-semibold underline cursor-pointer hover:text-gomin-neutral-600 self-start transition-colors ${
               gender === "UNKNOWN"
                 ? "text-gomin-primary-700 font-bold"

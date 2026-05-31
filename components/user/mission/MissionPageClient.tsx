@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import BrochureButton from "./BrochureButton";
-import ViewToggle from "./ViewToggle";
-import MissionStamp from "./MissionStamp";
-import MissionItem from "./MissionItem";
-import FloatingActionButton from "./FloatingActionButton";
-import SurveyModal from "./SurveyModal";
+import BrochureButton from "@/components/user/mission/BrochureButton";
+import ViewToggle from "@/components/user/mission/ViewToggle";
+import MissionStamp from "@/components/user/mission/MissionStamp";
+import MissionItem from "@/components/user/mission/MissionItem";
+import FloatingActionButton from "@/components/user/mission/FloatingActionButton";
+import SurveyModal from "@/components/user/mission/SurveyModal";
 import {
   useParticipantMissionsQuery,
   type ParticipantMission,
