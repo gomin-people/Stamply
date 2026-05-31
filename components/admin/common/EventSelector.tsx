@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { cn } from "@/utils";
+import { ADMIN_EVENT_REGISTER_PATH } from "@/constants/adminRoutes";
+import { AutoScrollText } from "@/components/admin/common/AutoScrollText";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,17 +19,20 @@ import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
 import type { StamplyEvent } from "@/features/shared/types/stamply";
 import { useSetSelectedEventId } from "@/stores/admin";
 
-interface EventSelectorProps {
+type Props = {
   eventId: string;
-}
+};
 
 type AdminEventStatus = "진행중" | "예정" | "종료";
 
+const SELECTED_EVENT_SCROLL_TARGET = "selected-event";
+
 const getStatusBadgeClassName = (status: AdminEventStatus) =>
   cn(
+    "transition-colors",
     status === "진행중"
-      ? "bg-gomin-primary-200 text-gomin-primary-600"
-      : "bg-gomin-neutral-100 text-gomin-neutral-500"
+      ? "bg-gomin-primary-200 text-gomin-primary-600 group-hover/dropdown-menu-item:bg-gomin-primary-300 group-hover/dropdown-menu-item:!text-gomin-primary-700 group-focus/dropdown-menu-item:bg-gomin-primary-300 group-focus/dropdown-menu-item:!text-gomin-primary-700"
+      : "bg-gomin-neutral-100 text-gomin-neutral-500 group-hover/dropdown-menu-item:bg-gomin-neutral-200 group-hover/dropdown-menu-item:!text-gomin-neutral-700 group-focus/dropdown-menu-item:bg-gomin-neutral-200 group-focus/dropdown-menu-item:!text-gomin-neutral-700"
   );
 
 const getLocalDateKey = () => {
@@ -97,9 +102,13 @@ const compareEventsByDisplayPriority = (
   return compareDateAsc(firstEvent.startDate, secondEvent.startDate);
 };
 
-export default function EventSelector({ eventId }: EventSelectorProps) {
+export default function EventSelector({ eventId }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isEventMenuOpen, setIsEventMenuOpen] = useState(false);
+  const [activeScrollTarget, setActiveScrollTarget] = useState<string | null>(
+    null
+  );
   const setSelectedEventId = useSetSelectedEventId();
   const { data: events = [], isError, isLoading } = useAdminEventsQuery();
   const sortedEvents = useMemo(
@@ -134,6 +143,26 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
     }
   };
 
+  const createEvent = () => {
+    router.push(ADMIN_EVENT_REGISTER_PATH);
+  };
+
+  const activateScrollTarget = (target: string) => {
+    setActiveScrollTarget(target);
+  };
+
+  const clearScrollTarget = () => {
+    setActiveScrollTarget(null);
+  };
+
+  const handleEventMenuOpenChange = (open: boolean) => {
+    setIsEventMenuOpen(open);
+
+    if (!open) {
+      clearScrollTarget();
+    }
+  };
+
   return (
     <div className="mt-8">
       <label
@@ -142,15 +171,38 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
       >
         현재 행사
       </label>
-      <DropdownMenu>
+      <DropdownMenu
+        open={isEventMenuOpen}
+        onOpenChange={handleEventMenuOpenChange}
+      >
         <DropdownMenuTrigger asChild>
           <Button
             id="admin-event-select"
             type="button"
             variant="outline"
-            className="mt-2 flex h-14 w-full cursor-pointer rounded-xl border-gomin-primary-300 bg-gomin-primary-100 px-3 font-semibold text-gomin-black transition-colors hover:border-gomin-primary-400 hover:bg-gomin-primary-200 focus-visible:ring-0"
+            className="mt-2 flex h-14 w-full cursor-pointer justify-between gap-2 rounded-xl !border-gomin-primary-400 bg-gomin-primary-100 px-3 font-semibold text-gomin-black transition-colors hover:!border-gomin-primary-600 hover:bg-gomin-primary-200 focus-visible:!border-gomin-primary-600 focus-visible:ring-0 aria-expanded:!border-gomin-primary-600 aria-expanded:bg-gomin-primary-200"
+            onMouseEnter={() =>
+              activateScrollTarget(SELECTED_EVENT_SCROLL_TARGET)
+            }
+            onMouseLeave={clearScrollTarget}
           >
-            <span className="max-w-full truncate">{selectedEventLabel}</span>
+            <AutoScrollText
+              active={activeScrollTarget === SELECTED_EVENT_SCROLL_TARGET}
+              className="flex-1 text-left"
+            >
+              {selectedEventLabel}
+            </AutoScrollText>
+            {isEventMenuOpen ? (
+              <ChevronUp
+                className="size-4 shrink-0 text-gomin-primary-600"
+                aria-hidden="true"
+              />
+            ) : (
+              <ChevronDown
+                className="size-4 shrink-0 text-gomin-primary-600"
+                aria-hidden="true"
+              />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -161,23 +213,29 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
             const nextEventId = String(event.id);
             const isSelected = nextEventId === eventId;
             const status = getEventStatus(event);
+            const scrollTarget = `event-${nextEventId}`;
 
             return (
               <DropdownMenuItem
                 key={event.id}
                 data-selected={isSelected}
                 className="h-13 cursor-pointer justify-between rounded-lg text-left transition-colors focus:bg-gomin-neutral-100"
+                onMouseEnter={() => activateScrollTarget(scrollTarget)}
+                onMouseLeave={clearScrollTarget}
                 onSelect={() => selectEvent(nextEventId)}
               >
-                <span
+                <AutoScrollText
+                  active={activeScrollTarget === scrollTarget}
                   className={cn(
-                    "min-w-0 truncate font-semibold",
+                    "flex-1 font-semibold",
                     isSelected ? "text-gomin-black" : "text-gomin-neutral-500"
                   )}
                 >
                   {event.title}
-                </span>
-                <Badge className={getStatusBadgeClassName(status)}>
+                </AutoScrollText>
+                <Badge
+                  className={cn("shrink-0", getStatusBadgeClassName(status))}
+                >
                   {status}
                 </Badge>
               </DropdownMenuItem>
@@ -185,7 +243,10 @@ export default function EventSelector({ eventId }: EventSelectorProps) {
           })}
 
           <DropdownMenuSeparator className="my-2 bg-gomin-neutral-100" />
-          <DropdownMenuItem className="h-12 cursor-pointer justify-center rounded-lg bg-gomin-neutral-300 font-semibold text-gomin-white transition-colors focus:bg-gomin-neutral-400 focus:text-gomin-white focus:**:text-gomin-white">
+          <DropdownMenuItem
+            className="h-12 cursor-pointer justify-center rounded-lg bg-gomin-neutral-300 font-semibold text-gomin-white transition-colors focus:bg-gomin-neutral-400 focus:text-gomin-white focus:**:text-gomin-white"
+            onSelect={createEvent}
+          >
             <Plus className="size-5" aria-hidden="true" />
             <span>새 행사 만들기</span>
           </DropdownMenuItem>

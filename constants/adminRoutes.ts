@@ -23,12 +23,17 @@ type AdminRouteParams = {
   eventId: string;
 };
 
+export const ADMIN_EVENT_DASHBOARD_PATH = "/admin/events/[eventId]/dashboard";
+export const ADMIN_EVENT_DETAIL_PATH = "/admin/events/[eventId]";
+export const ADMIN_EVENT_MISSIONS_PATH = "/admin/events/[eventId]/missions";
+export const ADMIN_EVENT_REGISTER_PATH = "/admin/events/register";
+
 /**
  * 관리자 페이지의 라우트별 헤더/사이드바 정보 관리
  */
 export const adminRoutes: AdminRouteConfig[] = [
   {
-    pattern: "/admin/events/[eventId]/dashboard",
+    pattern: ADMIN_EVENT_DASHBOARD_PATH,
     title: "대시보드",
     description: [
       { type: "text", text: "현재 운영 중인 행사 · " },
@@ -40,7 +45,7 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
   },
   {
-    pattern: "/admin/events/[eventId]",
+    pattern: ADMIN_EVENT_DETAIL_PATH,
     title: "행사 상세",
     description: [
       { type: "eventTitle" },
@@ -55,7 +60,7 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
   },
   {
-    pattern: "/admin/events/[eventId]/missions",
+    pattern: ADMIN_EVENT_MISSIONS_PATH,
     title: "미션 관리",
     description: [
       { type: "eventTitle" },
@@ -69,7 +74,7 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
   },
   {
-    pattern: "/admin/events/register",
+    pattern: ADMIN_EVENT_REGISTER_PATH,
     title: "행사 등록",
     description: [
       {

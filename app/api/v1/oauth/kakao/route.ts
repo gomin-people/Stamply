@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ADMIN_EVENT_REGISTER_PATH } from "@/constants/adminRoutes";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
 export async function GET(request: NextRequest) {
@@ -60,7 +61,7 @@ export async function GET(request: NextRequest) {
     "get_priority_admin_event_id"
   );
 
-  let redirectPath = "/admin/events/register";
+  let redirectPath = ADMIN_EVENT_REGISTER_PATH;
 
   if (eventsError) {
     console.error("Error fetching events:", eventsError);
