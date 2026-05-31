@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import AnimatedIconStamply from "@/components/icons/AnimatedIconStamply";
 
-export default function CompletePageClient() {
+const CompletePageClient = () => {
   const router = useRouter();
 
   const handleStaffConfirm = () => {
@@ -17,7 +17,7 @@ export default function CompletePageClient() {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gomin-primary-700 flex flex-col items-center justify-center p-6 text-center select-none z-50">
+    <div className="fixed inset-0 w-full h-full bg-gomin-primary-700 flex flex-col items-center justify-center p-6 text-center select-none">
       <div className="max-w-md w-full flex flex-col items-center justify-center space-y-10">
         {/* 1. 중앙 Stamply 대형 원형 도장 그래픽 */}
         <div className="w-64 h-64 shrink-0 flex items-center justify-center relative select-none">
@@ -42,4 +42,6 @@ export default function CompletePageClient() {
       </div>
     </div>
   );
-}
+};
+
+export default CompletePageClient;

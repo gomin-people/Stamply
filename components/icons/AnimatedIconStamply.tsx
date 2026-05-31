@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export default function AnimatedIconStamply(props: SVGProps<SVGSVGElement>) {
+const AnimatedIconStamply = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       viewBox="0 0 162 171"
@@ -100,4 +100,6 @@ export default function AnimatedIconStamply(props: SVGProps<SVGSVGElement>) {
       />
     </svg>
   );
-}
+};
+
+export default AnimatedIconStamply;
