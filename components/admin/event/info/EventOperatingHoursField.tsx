@@ -8,6 +8,7 @@ type Props = {
   endTime: string;
   startTimeError?: string;
   endTimeError?: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -16,6 +17,7 @@ const EventOperatingHoursField = memo(function EventOperatingHoursField({
   endTime,
   startTimeError,
   endTimeError,
+  disabled,
   onChange,
 }: Props) {
   const error = startTimeError || endTimeError;
@@ -31,6 +33,7 @@ const EventOperatingHoursField = memo(function EventOperatingHoursField({
           value={startTime}
           onChange={onChange}
           aria-invalid={!!startTimeError}
+          disabled={disabled}
         />
         <span className="shrink-0 text-muted-foreground">~</span>
         <Input
@@ -39,6 +42,7 @@ const EventOperatingHoursField = memo(function EventOperatingHoursField({
           value={endTime}
           onChange={onChange}
           aria-invalid={!!endTimeError}
+          disabled={disabled}
         />
       </div>
       <div className="h-3">

@@ -10,6 +10,7 @@ import { type StepFormHandle } from "@/types";
 
 type Props = {
   initialData?: { brochureImageUrl?: string[] };
+  disabled?: boolean;
 };
 
 const EventBrochureForm = forwardRef<StepFormHandle, Props>(

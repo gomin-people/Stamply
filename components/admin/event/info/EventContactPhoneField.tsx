@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input";
 type Props = {
   value: string;
   error?: string;
+  disabled?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const EventContactPhoneField = memo(function EventContactPhoneField({
   value,
   error,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -29,6 +31,7 @@ const EventContactPhoneField = memo(function EventContactPhoneField({
           className="pl-8"
           maxLength={13}
           aria-invalid={!!error}
+          disabled={disabled}
         />
       </div>
       <div className="h-3">

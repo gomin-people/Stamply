@@ -66,7 +66,7 @@ const EventFormFooter = ({
         )}
       </div>
 
-      {mode === "view" && (
+      {mode === "view" && onEditStart && (
         <Button
           type="button"
           variant="outline"

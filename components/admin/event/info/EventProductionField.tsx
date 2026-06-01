@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 
 type Props = {
   value: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 const EventProductionField = memo(function EventProductionField({
   value,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -22,6 +24,7 @@ const EventProductionField = memo(function EventProductionField({
         onChange={onChange}
         placeholder="문의처 명을 입력해주세요."
         maxLength={100}
+        disabled={disabled}
       />
     </Field>
   );

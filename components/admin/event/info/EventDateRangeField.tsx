@@ -8,6 +8,7 @@ type Props = {
   endDate: string;
   startDateError?: string;
   endDateError?: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -16,6 +17,7 @@ const EventDateRangeField = memo(function EventDateRangeField({
   endDate,
   startDateError,
   endDateError,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -31,6 +33,7 @@ const EventDateRangeField = memo(function EventDateRangeField({
           value={startDate}
           onChange={onChange}
           aria-invalid={!!startDateError}
+          disabled={disabled}
         />
         <div className="h-3">
           <FieldError>{startDateError}</FieldError>
@@ -47,6 +50,7 @@ const EventDateRangeField = memo(function EventDateRangeField({
           value={endDate}
           onChange={onChange}
           aria-invalid={!!endDateError}
+          disabled={disabled}
         />
         <div className="h-3">
           <FieldError>{endDateError}</FieldError>

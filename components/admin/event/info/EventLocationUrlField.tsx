@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input";
 type Props = {
   value: string;
   error?: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 const EventLocationUrlField = memo(function EventLocationUrlField({
   value,
   error,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -29,6 +31,7 @@ const EventLocationUrlField = memo(function EventLocationUrlField({
           className="pl-8"
           maxLength={100}
           aria-invalid={!!error}
+          disabled={disabled}
         />
       </div>
       <div className="h-3">

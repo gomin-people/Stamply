@@ -5,11 +5,13 @@ import { Textarea } from "@/components/ui/textarea";
 
 type Props = {
   value: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
 };
 
 const EventRemarksField = memo(function EventRemarksField({
   value,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -24,6 +26,7 @@ const EventRemarksField = memo(function EventRemarksField({
         rows={3}
         maxLength={1000}
         className="resize-none"
+        disabled={disabled}
       />
     </Field>
   );

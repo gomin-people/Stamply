@@ -16,6 +16,7 @@ import { useAdminEventQuery } from "@/features/admin/events/adminEventQueries";
 import { useUpdateEventMutation } from "@/features/admin/events/adminEventMutations";
 import type { EventUpdatePayload } from "@/features/shared/types/stamply";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useEventOperationStatus } from "@/hooks/useEventOperationStatus";
 
 const TOTAL_STEPS = 3;
 
@@ -30,6 +31,13 @@ const EventEditPage = () => {
 
   const { data: event, isLoading } = useAdminEventQuery(eventIdNum);
   const { mutateAsync: updateEvent, isPending } = useUpdateEventMutation();
+
+  const operationStatus = useEventOperationStatus(
+    event?.startDate,
+    event?.endDate
+  );
+  const isAfter = operationStatus === "after";
+  const isDuring = operationStatus === "during";
 
   const step1Ref = useRef<StepFormHandle>(null);
   const step2Ref = useRef<StepFormHandle>(null);
@@ -97,12 +105,26 @@ const EventEditPage = () => {
                       }
                     : undefined
                 }
+                disabledFields={
+                  isAfter
+                    ? "all"
+                    : isDuring
+                      ? [
+                          "startDate",
+                          "endDate",
+                          "posterImageUrl",
+                          "locationUrl",
+                          "production",
+                        ]
+                      : undefined
+                }
               />
             </div>
             <div className={currentStep !== 2 ? "hidden" : ""}>
               <EventBrochureForm
                 key={formKey}
                 ref={step2Ref}
+                disabled={isAfter || isDuring}
                 initialData={
                   event?.brochureImageUrl
                     ? { brochureImageUrl: event.brochureImageUrl }
@@ -111,7 +133,7 @@ const EventEditPage = () => {
               />
             </div>
             <div className={currentStep !== 3 ? "hidden" : ""}>
-              <EventStep3Form ref={step3Ref} />
+              <EventStep3Form ref={step3Ref} disabled={isAfter || isDuring} />
             </div>
           </div>
 
@@ -123,7 +145,7 @@ const EventEditPage = () => {
               onNext={handleNext}
               isLastStep={currentStep === TOTAL_STEPS}
               mode={mode}
-              onEditStart={handleEditStart}
+              onEditStart={isAfter ? undefined : handleEditStart}
               onEditCancel={handleEditCancel}
               onEditSave={handleEditSave}
               disabled={isPending}

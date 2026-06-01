@@ -18,8 +18,11 @@ import { eventInfoSchema } from "@/utils/schemas";
 
 type FormState = z.infer<typeof eventInfoSchema>;
 
+type DisabledField = keyof FormState;
+
 type Props = {
   initialData?: Partial<FormState>;
+  disabledFields?: "all" | DisabledField[];
 };
 
 const defaultForm: FormState = {
@@ -38,9 +41,12 @@ const defaultForm: FormState = {
 };
 
 const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
-  { initialData },
+  { initialData, disabledFields },
   ref
 ) {
+  const isDisabled = (field: DisabledField) =>
+    disabledFields === "all" ||
+    (Array.isArray(disabledFields) && disabledFields.includes(field));
   const [form, setForm] = useState<FormState>({
     ...defaultForm,
     ...(initialData
@@ -110,6 +116,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
             onUploadStart={handlePosterUploadStart}
             onUploadSuccess={handlePosterUploadSuccess}
             onRemove={handlePosterRemove}
+            disabled={isDisabled("posterImageUrl")}
           />
 
           <div className="flex flex-1 flex-col gap-4">
@@ -117,6 +124,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               value={form.title}
               error={fieldErrors.title?.[0]}
               onChange={handleChange}
+              disabled={isDisabled("title")}
             />
             <EventDateRangeField
               startDate={form.startDate}
@@ -124,26 +132,31 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               startDateError={fieldErrors.startDate?.[0]}
               endDateError={fieldErrors.endDate?.[0]}
               onChange={handleChange}
+              disabled={isDisabled("startDate")}
             />
             <EventLocationField
               value={form.location}
               error={fieldErrors.location?.[0]}
               onChange={handleChange}
+              disabled={isDisabled("location")}
             />
             <EventLocationUrlField
               value={form.locationUrl}
               error={fieldErrors.locationUrl?.[0]}
               onChange={handleChange}
+              disabled={isDisabled("locationUrl")}
             />
             <div className="grid grid-cols-2 gap-4">
               <EventProductionField
                 value={form.production}
                 onChange={handleChange}
+                disabled={isDisabled("production")}
               />
               <EventContactPhoneField
                 value={form.contactPhone}
                 error={fieldErrors.contactPhone?.[0]}
                 onChange={handleChange}
+                disabled={isDisabled("contactPhone")}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -151,16 +164,19 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                 value={form.contactEmail}
                 error={fieldErrors.contactEmail?.[0]}
                 onChange={handleChange}
+                disabled={isDisabled("contactEmail")}
               />
               <EventOperatingHoursField
                 startTime={form.startTime}
                 endTime={form.endTime}
                 onChange={handleChange}
+                disabled={isDisabled("startTime")}
               />
             </div>
             <EventRemarksField
               value={form.operatingRemarks}
               onChange={handleChange}
+              disabled={isDisabled("operatingRemarks")}
             />
           </div>
         </div>
