@@ -42,7 +42,7 @@ const EventDetailPage = () => {
     <div className="bg-white min-h-screen flex flex-col w-full max-w-md mx-auto relative select-none">
       {/* 1. 대형 포스터 이미지 */}
       <div className="px-6 mt-6">
-        {event?.posterImageUrl && (
+        {event.posterImageUrl && (
           <div className="relative w-full aspect-[3/4] rounded-[24px] overflow-hidden shadow-md border border-gomin-neutral-100">
             <Image
               src={event.posterImageUrl}
@@ -61,17 +61,17 @@ const EventDetailPage = () => {
         {/* 카드 1: 행사명 */}
         <InfoCard label="행사명">
           <h2 className="text-[17px] font-nanum font-extrabold text-gomin-primary-700">
-            {event?.title}
+            {event.title}
           </h2>
         </InfoCard>
 
         {/* 카드 2: 운영 기간 및 시간 */}
         <EventDateTimeCard
-          startDate={event?.startDate || ""}
-          endDate={event?.endDate || ""}
-          operatingRemarks={event?.operatingRemarks}
-          startTime={event?.startTime}
-          endTime={event?.endTime}
+          startDate={event.startDate || ""}
+          endDate={event.endDate || ""}
+          operatingRemarks={event.operatingRemarks}
+          startTime={event.startTime}
+          endTime={event.endTime}
           formatDate={formatDate}
         />
 
@@ -79,9 +79,9 @@ const EventDetailPage = () => {
         <InfoCard label="행사 장소">
           <div className="flex justify-between items-center">
             <span className="text-[15px] font-bold text-gomin-neutral-700">
-              {event?.location}
+              {event.location}
             </span>
-            {event?.locationUrl && (
+            {event.locationUrl && (
               <a
                 href={event.locationUrl}
                 target="_blank"
@@ -96,15 +96,15 @@ const EventDetailPage = () => {
 
         {/* 카드 4: 주최측 정보 */}
         <EventHostCard
-          production={event?.production}
-          contactPhone={event?.contactPhone}
-          contactEmail={event?.contactEmail}
+          production={event.production}
+          contactPhone={event.contactPhone}
+          contactEmail={event.contactEmail}
         />
 
         {/* 카드 5: 비고 */}
         <InfoCard label="비고">
           <p className="text-[14px] text-gomin-neutral-700 font-semibold whitespace-pre-line leading-relaxed">
-            {event?.notice || "특이사항이 없습니다."}
+            {event.notice || "특이사항이 없습니다."}
           </p>
         </InfoCard>
       </div>
