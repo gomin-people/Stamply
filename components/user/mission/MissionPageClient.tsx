@@ -44,11 +44,11 @@ type ClientMission = {
   isStamped: boolean;
 };
 
-export default function MissionPageClient({
+const MissionPageClient = ({
   event,
   eventId,
   initialMissions,
-}: MissionPageClientProps) {
+}: MissionPageClientProps) => {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
@@ -85,7 +85,7 @@ export default function MissionPageClient({
     if (isAllCompleted) {
       setIsSurveyOpen(true);
     } else {
-      router.push(`/event/${eventId}/qr-check`);
+      window.location.assign(`/event/${eventId}/qr-check`);
     }
   };
 
@@ -202,4 +202,6 @@ export default function MissionPageClient({
       />
     </div>
   );
-}
+};
+
+export default MissionPageClient;

@@ -21,10 +21,15 @@ const shouldHideHeader = (pathname: string) => {
     return true;
   }
 
+  // 4. QR 스캔 페이지 (.../qr-check) 형태인 경우 숨김
+  if (segments[segments.length - 1] === "qr-check") {
+    return true;
+  }
+
   return false;
 };
 
-export default function LayoutHeader() {
+const LayoutHeader = () => {
   const pathname = usePathname();
 
   // 헤더를 숨겨야 하는 페이지이면 아무것도 렌더링하지 않습니다.
@@ -33,4 +38,6 @@ export default function LayoutHeader() {
   }
 
   return <Header showBackButton={true} />;
-}
+};
+
+export default LayoutHeader;
