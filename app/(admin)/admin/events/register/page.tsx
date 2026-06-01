@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
-import EventStep2Form from "@/components/admin/event/EventStep2Form";
+import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventStep3Form from "@/components/admin/event/EventStep3Form";
 import { type StepFormHandle } from "@/types";
 
@@ -23,8 +23,6 @@ export default function CreateEventPage() {
 
   const handleNext = () => {
     const ref = stepRefs[currentStep - 1];
-    console.log("제출 데이터:", ref.current?.getData());
-
     if (!ref.current?.validate()) return;
     setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
   };
@@ -47,7 +45,7 @@ export default function CreateEventPage() {
             <EventInfoForm ref={step1Ref} />
           </div>
           <div className={currentStep !== 2 ? "hidden" : ""}>
-            <EventStep2Form ref={step2Ref} />
+            <EventBrochureForm ref={step2Ref} />
           </div>
           <div className={currentStep !== 3 ? "hidden" : ""}>
             <EventStep3Form ref={step3Ref} />

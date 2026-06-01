@@ -11,7 +11,7 @@ const EventStep3Form = forwardRef<StepFormHandle>(
     }));
 
     return (
-      <div className="flex min-h-[400px] items-center justify-center text-sm text-gomin-neutral-400">
+      <div className="flex min-h-129 items-center justify-center text-sm text-gomin-neutral-400">
         스탬프 · 테마색상
       </div>
     );
