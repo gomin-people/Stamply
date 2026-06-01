@@ -14,6 +14,11 @@ export function getMissionCheckUrl(token: string): string {
   return `${baseUrl}/api/v1/qr/mission-check/${token}`;
 }
 
+export function getEntryQrUrl(token: string): string {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  return `${baseUrl}/api/v1/qr/entry/${token}`;
+}
+
 /**
  * 스캔된 문자열을 QR 처리 대상 URL로 변환합니다.
  *

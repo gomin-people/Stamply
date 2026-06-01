@@ -8,8 +8,12 @@ import BrochureAddButton from "./brochure/BrochureAddButton";
 import usePageUpload, { MAX_PAGES } from "@/hooks/usePageUpload";
 import { type StepFormHandle } from "@/types";
 
-const EventBrochureForm = forwardRef<StepFormHandle>(
-  function EventBrochureForm(_, ref) {
+type Props = {
+  initialData?: { brochureImageUrl?: string[] };
+};
+
+const EventBrochureForm = forwardRef<StepFormHandle, Props>(
+  function EventBrochureForm(_props, ref) {
     const {
       pages,
       addFiles,
