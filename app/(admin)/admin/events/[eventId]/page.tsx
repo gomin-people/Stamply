@@ -26,6 +26,7 @@ const EventEditPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [formKey, setFormKey] = useState(0);
 
   const { data: event, isLoading } = useAdminEventQuery(eventIdNum);
   const { mutateAsync: updateEvent, isPending } = useUpdateEventMutation();
@@ -45,6 +46,7 @@ const EventEditPage = () => {
   const handleCancelConfirm = () => {
     setMode("view");
     setCancelDialogOpen(false);
+    setFormKey((k) => k + 1);
   };
 
   const handleEditSave = async () => {
@@ -82,6 +84,7 @@ const EventEditPage = () => {
           <div className="p-6">
             <div className={currentStep !== 1 ? "hidden" : ""}>
               <EventInfoForm
+                key={formKey}
                 ref={step1Ref}
                 initialData={
                   event
@@ -98,6 +101,7 @@ const EventEditPage = () => {
             </div>
             <div className={currentStep !== 2 ? "hidden" : ""}>
               <EventBrochureForm
+                key={formKey}
                 ref={step2Ref}
                 initialData={
                   event?.brochureImageUrl

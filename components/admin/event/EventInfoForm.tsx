@@ -43,7 +43,11 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
 ) {
   const [form, setForm] = useState<FormState>({
     ...defaultForm,
-    ...initialData,
+    ...(initialData
+      ? Object.fromEntries(
+          Object.entries(initialData).filter(([, v]) => v !== undefined)
+        )
+      : {}),
   });
   const [isPosterUploading, setIsPosterUploading] = useState(false);
   const [zodError, setZodError] = useState<z.ZodError<FormState> | null>(null);
@@ -102,6 +106,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
             error={
               !isPosterUploading ? fieldErrors.posterImageUrl?.[0] : undefined
             }
+            initialImageUrl={initialData?.posterImageUrl}
             onUploadStart={handlePosterUploadStart}
             onUploadSuccess={handlePosterUploadSuccess}
             onRemove={handlePosterRemove}

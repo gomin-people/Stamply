@@ -18,6 +18,7 @@ import {
 
 type Props = {
   error?: string;
+  initialImageUrl?: string;
   onUploadStart: () => void;
   onUploadSuccess: (url: string) => void;
   onRemove: () => void;
@@ -25,11 +26,14 @@ type Props = {
 
 const PosterImageField = memo(function PosterImageField({
   error,
+  initialImageUrl,
   onUploadStart,
   onUploadSuccess,
   onRemove,
 }: Props) {
-  const [posterPreview, setPosterPreview] = useState<string | null>(null);
+  const [posterPreview, setPosterPreview] = useState<string | null>(
+    initialImageUrl ?? null
+  );
   const [posterPath, setPosterPath] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | undefined>();
   const fileInputRef = useRef<HTMLInputElement>(null);
