@@ -11,12 +11,29 @@ import { formatDate } from "@/utils";
 const EventDetailPage = () => {
   const { eventId } = useParams<{ eventId: string }>();
 
-  const { data: event, isLoading } = useParticipantEventQuery(Number(eventId));
+  const {
+    data: event,
+    isLoading,
+    isError,
+  } = useParticipantEventQuery(Number(eventId));
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <span className="size-8 border-4 border-gomin-primary-700 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError || !event) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6 text-center">
+        <p className="text-[16px] font-bold text-gomin-neutral-700 mb-2">
+          존재하지 않거나 불러올 수 없는 행사입니다.
+        </p>
+        <p className="text-[14px] text-gomin-neutral-400">
+          행사 ID를 다시 확인해 주세요.
+        </p>
       </div>
     );
   }
