@@ -91,7 +91,7 @@ const EventDetailPage = () => {
               <span className="font-extrabold text-gomin-primary-700 pl-4 mt-0.5">
                 {event?.operatingRemarks ? `${event.operatingRemarks} ` : ""}
                 {event?.startTime
-                  ? `${event.startTime.slice(0, 5)} ~ ${event.endTime.slice(0, 5)}`
+                  ? `${event.startTime.slice(0, 5)} ~ ${event?.endTime?.slice(0, 5)}`
                   : ""}
               </span>
             </div>
