@@ -15,6 +15,7 @@ import { type StepFormHandle } from "@/types";
 import { useAdminEventQuery } from "@/features/admin/events/adminEventQueries";
 import { useUpdateEventMutation } from "@/features/admin/events/adminEventMutations";
 import type { EventUpdatePayload } from "@/features/shared/types/stamply";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 const TOTAL_STEPS = 3;
 
@@ -67,11 +68,7 @@ const EventEditPage = () => {
   const entryQr = event?.qrCodes?.find((qr) => qr.type === "ENTRY");
 
   if (isLoading) {
-    return (
-      <div className="flex h-96 items-center justify-center text-sm text-gomin-neutral-400">
-        불러오는 중...
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

@@ -46,22 +46,9 @@ const EntryQrCard = ({ token, qrId }: Props) => {
   };
 
   return (
-    <div
-      className="relative flex items-center gap-4 overflow-hidden rounded-2xl border border-gomin-primary-200 px-6 py-5"
-      style={{
-        background: "linear-gradient(134deg, #f3f1fe 0%, #ece6fe 100%)",
-      }}
-    >
-      <div
-        className="absolute -right-10 -top-10 size-40 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(84,53,235,0.1) 0%, rgba(84,53,235,0) 70%)",
-        }}
-      />
-
+    <div className="relative flex items-center gap-4 overflow-hidden rounded-2xl border border-gomin-primary-200 bg-linear-to-br from-[#f3f1fe] to-[#ece6fe] px-6 py-4">
       <div className="relative shrink-0">
-        <div className="flex size-16 items-center justify-center rounded-xl bg-white shadow-[0px_4px_12px_-4px_rgba(84,53,235,0.25)]">
+        <div className="flex size-14 items-center justify-center rounded-xl bg-white shadow-[0px_4px_12px_-4px_rgba(84,53,235,0.25)]">
           <div ref={svgRef} className="hidden">
             <QRCode value={qrUrl} size={QR_SIZE} />
           </div>
@@ -71,14 +58,14 @@ const EntryQrCard = ({ token, qrId }: Props) => {
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gomin-black">
+          <span className="text-sm font-semibold text-gomin-black">
             행사 입장 QR 코드
           </span>
-          <span className="rounded-full bg-gomin-primary-600 px-2 py-0.5 text-xs font-medium uppercase tracking-widest text-white">
+          <span className="rounded-full bg-gomin-primary-700 px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-white">
             Entry
           </span>
         </div>
-        <p className="text-xs text-gomin-neutral-500">
+        <p className="text-[13px] text-gomin-neutral-500">
           참여자는 이 QR을 스캔해 행사에 입장합니다. 인쇄용 PNG · PDF로
           다운로드하세요.
         </p>
@@ -86,7 +73,7 @@ const EntryQrCard = ({ token, qrId }: Props) => {
 
       <Button
         size={null}
-        className="relative shrink-0 gap-2 rounded-xl bg-gomin-primary-700 px-5 py-3 text-xs font-medium shadow-[0px_6px_14px_-4px_rgba(84,53,235,0.5)] hover:bg-gomin-primary-700/90"
+        className="relative shrink-0 gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5 py-2.5 text-[14px] font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0"
         onClick={handleDownload}
       >
         <Download className="size-3.5" />

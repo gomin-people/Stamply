@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 type Mode = "view" | "edit";
 
-type Props = {
+type EventFormFooterProps = {
   currentStep: number;
   totalSteps: number;
   onPrev?: () => void;
@@ -22,6 +22,12 @@ type Props = {
   onEditSave?: () => void;
 };
 
+const outlineButton =
+  "gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0";
+
+const primaryButton =
+  "gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5.5 py-3 text-sm font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0";
+
 const EventFormFooter = ({
   currentStep,
   totalSteps,
@@ -35,7 +41,7 @@ const EventFormFooter = ({
   onEditStart,
   onEditCancel,
   onEditSave,
-}: Props) => {
+}: EventFormFooterProps) => {
   const [shake, setShake] = useState(0);
 
   const handleNext = () => {
@@ -44,47 +50,14 @@ const EventFormFooter = ({
       return;
     }
     const result = onNext?.();
-    if (result === false) {
-      setShake((s) => s + 1);
-    }
+    if (result === false) setShake((s) => s + 1);
   };
+
+  const showNextButton = !isLastStep || !mode;
 
   return (
     <div className="flex h-20 items-center gap-2 border-t border-gomin-neutral-100 pt-4">
-      <div className="flex flex-1 items-center gap-2">
-        {mode === "view" && (
-          <Button
-            type="button"
-            variant="outline"
-            className="h-auto! rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
-            onClick={onEditStart}
-          >
-            수정하기
-          </Button>
-        )}
-        {mode === "edit" && (
-          <>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-auto! gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
-              onClick={onEditCancel}
-            >
-              <X className="size-3.5" />
-              변경 취소
-            </Button>
-            <Button
-              type="button"
-              size={null}
-              className="gap-1.5 rounded-xl bg-gomin-primary-700 px-5.5 py-3 text-sm font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0"
-              disabled={disabled}
-              onClick={onEditSave}
-            >
-              <Save className="size-3.5" />
-              변경사항 저장
-            </Button>
-          </>
-        )}
+      <div className="flex-1">
         {!mode && (
           <span className="text-xs font-medium">
             <span className="text-gomin-black">{currentStep}</span>
@@ -93,31 +66,70 @@ const EventFormFooter = ({
         )}
       </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="h-auto! gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
-        style={{ visibility: currentStep === 1 ? "hidden" : "visible" }}
-        onClick={onPrev}
-      >
-        <ChevronLeft className="size-3.5" />
-        이전
-      </Button>
+      {mode === "view" && (
+        <Button
+          type="button"
+          variant="outline"
+          size={null}
+          className={outlineButton}
+          onClick={onEditStart}
+        >
+          수정하기
+        </Button>
+      )}
 
-      <motion.div
-        key={shake}
-        animate={shake > 0 ? { x: [0, -6, 6, -4, 4, -2, 2, 0] } : {}}
-        transition={{ duration: 0.4 }}
-      >
-        {(!mode || mode === "view") && (
+      {mode === "edit" && (
+        <>
           <Button
             type="button"
             size={null}
-            className="gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5.5 py-3 text-sm font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0"
+            className={primaryButton}
+            disabled={disabled}
+            onClick={onEditSave}
+          >
+            <Save className="size-3.5" />
+            변경사항 저장
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size={null}
+            className={outlineButton}
+            onClick={onEditCancel}
+          >
+            <X className="size-3.5" />
+            변경 취소
+          </Button>
+        </>
+      )}
+
+      {currentStep > 1 && (
+        <Button
+          type="button"
+          variant="outline"
+          size={null}
+          className={outlineButton}
+          onClick={onPrev}
+        >
+          <ChevronLeft className="size-3.5" />
+          이전
+        </Button>
+      )}
+
+      {showNextButton && (
+        <motion.div
+          key={shake}
+          animate={shake > 0 ? { x: [0, -6, 6, -4, 4, -2, 2, 0] } : {}}
+          transition={{ duration: 0.4 }}
+        >
+          <Button
+            type="button"
+            size={null}
+            className={primaryButton}
             disabled={disabled}
             onClick={handleNext}
           >
-            {isLastStep ? (
+            {!mode && isLastStep ? (
               <>
                 {completeLabel}
                 <Check className="size-3.5" />
@@ -129,8 +141,8 @@ const EventFormFooter = ({
               </>
             )}
           </Button>
-        )}
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };
