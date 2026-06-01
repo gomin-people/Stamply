@@ -27,7 +27,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(
       () => ({
         validate: () => true,
         getData: () => ({
-          brochureImageUrls: pages
+          brochureImageUrl: pages
             .filter((p) => p.url !== null)
             .map((p) => p.url as string),
         }),

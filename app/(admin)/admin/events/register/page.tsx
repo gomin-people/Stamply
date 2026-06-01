@@ -1,17 +1,22 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import { type StepFormHandle } from "@/types";
+import { useCreateEventMutation } from "@/features/admin/events/adminEventMutations";
+import type { EventCreatePayload } from "@/features/shared/types/stamply";
 
 const TOTAL_STEPS = 3;
 
 export default function CreateEventPage() {
   const [currentStep, setCurrentStep] = useState(1);
+  const router = useRouter();
+  const { mutateAsync: createEvent, isPending } = useCreateEventMutation();
 
   const step1Ref = useRef<StepFormHandle>(null);
   const step2Ref = useRef<StepFormHandle>(null);
@@ -27,12 +32,21 @@ export default function CreateEventPage() {
     setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     const ref = stepRefs[currentStep - 1];
     if (!ref.current?.validate()) return;
-    const allData = stepRefs.map((r) => r.current?.getData());
-    console.log("제출 데이터:", allData);
-    // TODO: submit API 호출
+
+    const [step1Data, step2Data, step3Data] = stepRefs.map((r) =>
+      r.current?.getData()
+    );
+    const payload = {
+      ...step1Data,
+      ...step2Data,
+      ...step3Data,
+    } as EventCreatePayload;
+
+    const event = await createEvent(payload);
+    router.push(`/admin/events/${event.id}`);
   };
 
   return (
@@ -59,7 +73,8 @@ export default function CreateEventPage() {
             onPrev={handlePrev}
             onNext={currentStep === TOTAL_STEPS ? handleComplete : handleNext}
             isLastStep={currentStep === TOTAL_STEPS}
-            completeLabel="행사 등록 완료"
+            completeLabel={isPending ? "행사 생성 중..." : "행사 등록 완료"}
+            disabled={isPending}
           />
         </div>
       </div>

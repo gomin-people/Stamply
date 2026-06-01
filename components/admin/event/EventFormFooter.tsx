@@ -12,6 +12,7 @@ type Props = {
   onNext?: () => boolean | void;
   isLastStep?: boolean;
   completeLabel?: string;
+  disabled?: boolean;
 };
 
 export default function EventFormFooter({
@@ -21,6 +22,7 @@ export default function EventFormFooter({
   onNext,
   isLastStep = false,
   completeLabel = "등록 완료",
+  disabled = false,
 }: Props) {
   const [shake, setShake] = useState(0);
 
@@ -58,6 +60,7 @@ export default function EventFormFooter({
           type="button"
           size={null}
           className="gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5.5 py-3 text-sm font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0"
+          disabled={disabled}
           onClick={handleNext}
         >
           {isLastStep ? (
