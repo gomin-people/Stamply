@@ -8,11 +8,11 @@ export default function AdminEventsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-gomin-neutral-100">
+    <div className="flex h-screen overflow-hidden bg-gomin-neutral-100">
       <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto">
         <Header />
-        <main className="flex-1">{children}</main>
+        <main>{children}</main>
         <Footer />
       </div>
     </div>
