@@ -6,26 +6,12 @@ import { useParticipantEventQuery } from "@/features/participant/events/particip
 import InfoCard from "@/components/user/common/InfoCard";
 import EventDateTimeCard from "@/components/user/event/EventDateTimeCard";
 import EventHostCard from "@/components/user/event/EventHostCard";
+import { formatDate } from "@/utils";
 
 const EventDetailPage = () => {
   const { eventId } = useParams<{ eventId: string }>();
 
   const { data: event, isLoading } = useParticipantEventQuery(Number(eventId));
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    try {
-      const date = new Date(dateStr);
-      const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      const weekDay = weekDays[date.getDay()];
-      return `${year}년 ${month}월 ${day}일 (${weekDay})`;
-    } catch {
-      return dateStr;
-    }
-  };
 
   if (isLoading) {
     return (
