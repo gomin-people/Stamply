@@ -38,7 +38,14 @@ export const isValidPhone = (value: string): boolean => {
 export const formatDate = (dateStr: string): string => {
   if (!dateStr) return "";
   try {
-    const date = new Date(dateStr);
+    const parts = dateStr.split("-");
+    let date: Date;
+    if (parts.length === 3) {
+      const [year, month, day] = parts.map(Number);
+      date = new Date(year, month - 1, day);
+    } else {
+      date = new Date(dateStr);
+    }
     const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
