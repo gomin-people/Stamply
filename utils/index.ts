@@ -5,6 +5,9 @@ export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 export * from "./palette";
 
+export const formatNumber = (value: number): string =>
+  new Intl.NumberFormat("ko-KR").format(value);
+
 export const formatPhoneNumber = (raw: string): string => {
   const digits = raw.replace(/\D/g, "");
   if (digits.startsWith("02")) {
