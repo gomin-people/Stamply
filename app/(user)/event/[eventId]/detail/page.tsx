@@ -6,8 +6,6 @@ import { useParticipantEventQuery } from "@/features/participant/events/particip
 import InfoCard from "@/components/user/common/InfoCard";
 import EventDateTimeCard from "@/components/user/event/EventDateTimeCard";
 import EventHostCard from "@/components/user/event/EventHostCard";
-import { formatDate } from "@/utils";
-
 const EventDetailPage = () => {
   const { eventId } = useParams<{ eventId: string }>();
 
@@ -72,7 +70,6 @@ const EventDetailPage = () => {
           operatingRemarks={event.operatingRemarks}
           startTime={event.startTime}
           endTime={event.endTime}
-          formatDate={formatDate}
         />
 
         {/* 카드 3: 행사 장소 */}

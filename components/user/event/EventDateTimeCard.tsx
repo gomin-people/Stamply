@@ -1,4 +1,5 @@
 import InfoCard from "@/components/user/common/InfoCard";
+import { formatDate } from "@/utils";
 
 type EventDateTimeCardProps = {
   startDate: string;
@@ -6,7 +7,6 @@ type EventDateTimeCardProps = {
   operatingRemarks?: string | null;
   startTime?: string | null;
   endTime?: string | null;
-  formatDate: (dateStr: string) => string;
 };
 
 const EventDateTimeCard = ({
@@ -15,7 +15,6 @@ const EventDateTimeCard = ({
   operatingRemarks,
   startTime,
   endTime,
-  formatDate,
 }: EventDateTimeCardProps) => {
   return (
     <InfoCard label="운영 기간 및 시간">
