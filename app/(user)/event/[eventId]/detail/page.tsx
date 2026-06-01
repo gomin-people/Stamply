@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useParticipantEventQuery } from "@/features/participant/events/participantEventQueries";
 
@@ -36,11 +37,16 @@ const EventDetailPage = () => {
       {/* 1. 대형 포스터 이미지 */}
       <div className="px-6 mt-6">
         {event?.posterImageUrl && (
-          <img
-            src={event.posterImageUrl}
-            alt="행사 포스터"
-            className="w-full aspect-[3/4] object-cover rounded-[24px] shadow-md border border-gomin-neutral-100"
-          />
+          <div className="relative w-full aspect-[3/4] rounded-[24px] overflow-hidden shadow-md border border-gomin-neutral-100">
+            <Image
+              src={event.posterImageUrl}
+              alt="행사 포스터"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 448px) 100vw, 400px"
+            />
+          </div>
         )}
       </div>
 
