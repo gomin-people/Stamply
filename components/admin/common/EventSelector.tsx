@@ -27,12 +27,18 @@ type AdminEventStatus = "진행중" | "예정" | "종료";
 
 const SELECTED_EVENT_SCROLL_TARGET = "selected-event";
 
-const getStatusBadgeClassName = (status: AdminEventStatus) =>
+const getStatusBadgeClassName = (status: AdminEventStatus, isActive = false) =>
   cn(
     "transition-colors",
     status === "진행중"
-      ? "bg-gomin-primary-200 text-gomin-primary-600 group-hover/dropdown-menu-item:bg-gomin-primary-300 group-hover/dropdown-menu-item:!text-gomin-primary-700 group-focus/dropdown-menu-item:bg-gomin-primary-300 group-focus/dropdown-menu-item:!text-gomin-primary-700"
-      : "bg-gomin-neutral-100 text-gomin-neutral-500 group-hover/dropdown-menu-item:bg-gomin-neutral-200 group-hover/dropdown-menu-item:!text-gomin-neutral-700 group-focus/dropdown-menu-item:bg-gomin-neutral-200 group-focus/dropdown-menu-item:!text-gomin-neutral-700"
+      ? cn(
+          "bg-gomin-primary-200 text-gomin-primary-600 group-hover/dropdown-menu-item:bg-gomin-primary-300 group-hover/dropdown-menu-item:!text-gomin-primary-700 group-focus/dropdown-menu-item:bg-gomin-primary-300 group-focus/dropdown-menu-item:!text-gomin-primary-700",
+          isActive && "bg-gomin-primary-300 !text-gomin-primary-700"
+        )
+      : cn(
+          "bg-gomin-neutral-100 text-gomin-neutral-500 group-hover/dropdown-menu-item:bg-gomin-neutral-200 group-hover/dropdown-menu-item:!text-gomin-neutral-700 group-focus/dropdown-menu-item:bg-gomin-neutral-200 group-focus/dropdown-menu-item:!text-gomin-neutral-700",
+          isActive && "bg-gomin-neutral-200 !text-gomin-neutral-700"
+        )
   );
 
 const getLocalDateKey = () => {
@@ -82,7 +88,8 @@ const getEventSortPriority = (status: AdminEventStatus) => {
   return 3;
 };
 
-const compareEventsByDisplayPriority = (
+// 현재 행사 선택 목록과 생성 취소 이동 대상에서 동일하게 사용하는 행사 노출 우선순위
+export const compareEventsByDisplayPriority = (
   firstEvent: StamplyEvent,
   secondEvent: StamplyEvent
 ) => {
@@ -102,7 +109,8 @@ const compareEventsByDisplayPriority = (
   return compareDateAsc(firstEvent.startDate, secondEvent.startDate);
 };
 
-export default function EventSelector({ eventId }: Props) {
+// 현재 행사 선택 드롭다운과 행사 전환 동작을 담당하는 사이드바 컴포넌트
+const EventSelector = ({ eventId }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
   const [isEventMenuOpen, setIsEventMenuOpen] = useState(false);
@@ -214,12 +222,20 @@ export default function EventSelector({ eventId }: Props) {
             const isSelected = nextEventId === eventId;
             const status = getEventStatus(event);
             const scrollTarget = `event-${nextEventId}`;
+            const isHoveringAnotherEvent =
+              activeScrollTarget?.startsWith("event-") &&
+              activeScrollTarget !== scrollTarget;
 
             return (
               <DropdownMenuItem
                 key={event.id}
                 data-selected={isSelected}
-                className="h-13 cursor-pointer justify-between rounded-lg text-left transition-colors focus:bg-gomin-neutral-100"
+                className={cn(
+                  "h-13 cursor-pointer justify-between rounded-lg text-left transition-colors focus:bg-gomin-neutral-100",
+                  isSelected &&
+                    !isHoveringAnotherEvent &&
+                    "bg-gomin-neutral-100"
+                )}
                 onMouseEnter={() => activateScrollTarget(scrollTarget)}
                 onMouseLeave={clearScrollTarget}
                 onSelect={() => selectEvent(nextEventId)}
@@ -234,7 +250,13 @@ export default function EventSelector({ eventId }: Props) {
                   {event.title}
                 </AutoScrollText>
                 <Badge
-                  className={cn("shrink-0", getStatusBadgeClassName(status))}
+                  className={cn(
+                    "shrink-0",
+                    getStatusBadgeClassName(
+                      status,
+                      isSelected && !isHoveringAnotherEvent
+                    )
+                  )}
                 >
                   {status}
                 </Badge>
@@ -254,4 +276,6 @@ export default function EventSelector({ eventId }: Props) {
       </DropdownMenu>
     </div>
   );
-}
+};
+
+export default EventSelector;
