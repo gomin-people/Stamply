@@ -56,14 +56,24 @@ const EventStep3Form = forwardRef<StepFormHandle>(
 
     // Hex 입력 필드 변경 핸들러 (입력 완료 시 HSL 파싱 후 슬라이더 상태 h를 업데이트하여 일방통행 전파)
     const handleHexInputChange = (val: string) => {
-      setTypingValue(val);
-      const cleanHex = val.replace(/^#/, "");
-      if (cleanHex.length === 3 || cleanHex.length === 6) {
-        try {
-          const formatted = val.startsWith("#") ? val : `#${val}`;
+      // 16진수 문자(0-9, a-f, A-F)만 필터링하여 남김 (공백, #, 한글 등 외부 문자 자동 소거)
+      let cleanHex = val.replace(/[^0-9a-fA-F]/g, "");
 
+      // 최대 6자리로 입력 제한
+      cleanHex = cleanHex.substring(0, 6);
+
+      // 항상 맨 앞에 '#'을 결합하고 대문자로 통일하여 자동 포맷팅
+      const formattedInput =
+        cleanHex.length > 0 ? `#${cleanHex.toUpperCase()}` : "#";
+      setTypingValue(formattedInput);
+
+      // 유효한 Hex 규격(3자리 또는 6자리 16진수)일 때만 슬라이더 상태(h)를 업데이트하여 튐 현상 방지
+      const isValidHexFormat = cleanHex.length === 3 || cleanHex.length === 6;
+
+      if (isValidHexFormat) {
+        try {
+          const formatted = `#${cleanHex}`;
           // 입력된 컬러코드에 해당하는 HSL Hue 값으로 슬라이더 바 상태 동적 업데이트
-          // 규격 외 색상(S/L 불일치)일지라도 h가 바뀌면 keyColor useMemo 단계에서 자동 보정됩니다.
           const [parsedH] = hexToHsl(formatted);
           setH(Math.round(parsedH));
         } catch {
