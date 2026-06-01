@@ -60,6 +60,35 @@ export function hexToHsl(hex: string): [number, number, number] {
 export function hslToHex(h: number, s: number, l: number): string {
   // Hue 값을 [0, 360) 범위로 정규화 및 순환 처리
   h = ((h % 360) + 360) % 360;
+
+  // 노란색~민트색 구간(30도 ~ 180도)에 대한 지각적 눈부심 명도/채도 보정
+  if (h >= 30 && h <= 180) {
+    let lReduction = 0;
+    let sReduction = 0;
+
+    if (h >= 30 && h <= 60) {
+      // 30도에서 60도까지 서서히 보정치 증가
+      const factor = (h - 30) / 30; // 0 -> 1
+      lReduction = factor * 10; // 최대 10% 감쇄
+      sReduction = factor * 10; // 최대 10% 감쇄
+    } else if (h > 60 && h <= 120) {
+      // 60도에서 120도까지 부드러운 전이
+      // 60도: L -10%, S -10% | 120도: L -12%, S -10% (민트색 보정 대폭 강화)
+      const ratio = (h - 60) / 60; // 0 -> 1
+      lReduction = 10 + ratio * 2; // 10% -> 12%
+      sReduction = 10; // 10%로 채도 감쇄 유지
+    } else if (h > 120 && h <= 180) {
+      // 120도에서 180도까지 서서히 원래 스펙(0)으로 복귀
+      // 120도: L -12%, S -10% | 180도: L -0%, S -0%
+      const factor = (180 - h) / 60; // 1 -> 0
+      lReduction = factor * 12; // 최대 12%
+      sReduction = factor * 10; // 최대 10%
+    }
+
+    l = Math.max(0, l - lReduction);
+    s = Math.max(0, s - sReduction);
+  }
+
   // 채도와 명도를 [0, 100] 범위 내로 고정(Clamping)
   s = Math.max(0, Math.min(100, s)) / 100;
   l = Math.max(0, Math.min(100, l)) / 100;

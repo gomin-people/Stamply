@@ -7,15 +7,19 @@ type FloatingActionButtonProps = {
   isAllCompleted?: boolean;
   onClick: () => void;
   label?: string;
+  isPreview?: boolean;
 };
 
 export default function FloatingActionButton({
   isAllCompleted = false,
   onClick,
   label,
+  isPreview = false,
 }: FloatingActionButtonProps) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50">
+    <div
+      className={`${isPreview ? "absolute" : "fixed"} bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50`}
+    >
       <ThemedButton onClick={onClick} className="w-full max-w-none">
         {label ? (
           <span>{label}</span>
