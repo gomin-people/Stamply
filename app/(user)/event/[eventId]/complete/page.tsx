@@ -1,41 +1,33 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import CompletePageClient from "@/components/user/mission/CompletePageClient";
+import { getEntryEvent } from "@/features/qr/entry/api/entry";
 
 type PageProps = {
   params: Promise<{ eventId: string }>;
 };
 
 export default async function CompletePage({ params }: PageProps) {
-  const { eventId } = await params;
+  const { eventId: eventIdParam } = await params;
 
-  return (
-    <div className="flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-56px)] bg-gomin-white">
-      <div className="max-w-md w-full space-y-6">
-        <div className="space-y-2">
-          <div className="mx-auto w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mb-4">
-            🎉
-          </div>
-          <span className="inline-block px-3 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 rounded-full">
-            축하합니다! 챌린지 성공
-          </span>
-          <h2 className="text-2xl font-black text-gomin-black">
-            챌린지 최종 완료!
-          </h2>
-          <p className="text-sm text-gomin-neutral-500">
-            {eventId.toUpperCase()} 스탬프 투어를 무사히 마치셨습니다.
-            <br />
-            아래 버튼을 눌러 발급된 리워드 쿠폰을 확인해 보세요.
-          </p>
-        </div>
+  // 1. getEntryEvent를 사용하여 유저 세션 검증 (실패 시 내부적으로 redirect)
+  await getEntryEvent(eventIdParam);
 
-        <div className="pt-4 space-y-3">
-          <Link
-            href="/"
-            className="inline-flex w-full items-center justify-center h-12 px-6 font-bold text-white bg-gomin-primary-700 hover:bg-gomin-primary-600 rounded-xl transition-all duration-200 shadow-md shadow-gomin-primary-700/20 active:scale-[0.98]"
-          >
-            홈으로 돌아가기
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+  // 2. 참여자 세션 쿠키를 담아 API 요청을 전송하여 권한 유효성 엄격 검증
+  const missionsRes = await fetch(`${baseUrl}/api/v1/participant/missions`, {
+    headers: {
+      Cookie: cookieHeader,
+    },
+    next: { revalidate: 0 }, // 실시간 인증 상태 반영을 위해 캐시 방지
+  });
+
+  if (!missionsRes.ok) {
+    redirect("/qr-required");
+  }
+
+  return <CompletePageClient />;
 }
