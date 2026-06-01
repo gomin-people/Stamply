@@ -9,8 +9,29 @@ import {
 } from "react";
 import { Plus, X, Info } from "lucide-react";
 import { type StepFormHandle } from "@/types";
-import { generatePalette, hexToHsl, hslToHex } from "@/utils";
+import { generatePalette, hexToHsl, hslToHex, formatHexColor } from "@/utils";
 import MissionPageClient from "@/components/user/mission/MissionPageClient";
+
+const PREVIEW_MISSIONS = [
+  {
+    id: 1,
+    title: "미션 1",
+    description: "행사장 부스 방문하고\n첫 번째 스탬프 받기",
+    isCompleted: true,
+  },
+  {
+    id: 2,
+    title: "미션 2",
+    description: "포토존에서 사진 촬영 후\n두 번째 스탬프 획득하기",
+    isCompleted: true,
+  },
+  {
+    id: 3,
+    title: "미션 3",
+    description: "행사 만족도 설문조사에\n참여하여 완성하기",
+    isCompleted: false,
+  },
+];
 
 const EventStep3Form = forwardRef<StepFormHandle>(
   function EventStep3Form(_, ref) {
@@ -56,15 +77,8 @@ const EventStep3Form = forwardRef<StepFormHandle>(
 
     // Hex 입력 필드 변경 핸들러 (입력 완료 시 HSL 파싱 후 슬라이더 상태 h를 업데이트하여 일방통행 전파)
     const handleHexInputChange = (val: string) => {
-      // 16진수 문자(0-9, a-f, A-F)만 필터링하여 남김 (공백, #, 한글 등 외부 문자 자동 소거)
-      let cleanHex = val.replace(/[^0-9a-fA-F]/g, "");
-
-      // 최대 6자리로 입력 제한
-      cleanHex = cleanHex.substring(0, 6);
-
-      // 항상 맨 앞에 '#'을 결합하고 대문자로 통일하여 자동 포맷팅
-      const formattedInput =
-        cleanHex.length > 0 ? `#${cleanHex.toUpperCase()}` : "#";
+      // 외부 유틸리티를 활용해 16진수 필터링, 대문자 변환, # 자동 접두사 포맷팅 처리
+      const { cleanHex, formattedInput } = formatHexColor(val);
       setTypingValue(formattedInput);
 
       // 유효한 Hex 규격(3자리 또는 6자리 16진수)일 때만 슬라이더 상태(h)를 업데이트하여 튐 현상 방지
@@ -130,29 +144,7 @@ const EventStep3Form = forwardRef<StepFormHandle>(
       [stampImage]
     );
 
-    const previewMissions = useMemo(
-      () => [
-        {
-          id: 1,
-          title: "미션 1",
-          description: "점심먹기 뭐먹지\n배고프다",
-          isCompleted: true,
-        },
-        {
-          id: 2,
-          title: "미션 1",
-          description: "점심먹기 뭐먹지\n배고프다",
-          isCompleted: true,
-        },
-        {
-          id: 3,
-          title: "미션 1",
-          description: "점심먹기 뭐먹지\n배고프다",
-          isCompleted: false,
-        },
-      ],
-      []
-    );
+    const previewMissions = useMemo(() => PREVIEW_MISSIONS, []);
 
     // 실시간 미리보기에 주입할 CSS 변수 정의
     const previewThemeVars = {

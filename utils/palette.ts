@@ -178,3 +178,21 @@ export function generatePalette(keyColor: string): ColorPalette {
   }
   return result;
 }
+
+/**
+ * 입력된 문자열에서 16진수 문자만 남기고 최대 6자리로 제한하며,
+ * 항상 대문자와 '#' 접두사가 포함되도록 포맷팅합니다.
+ *
+ * @param val - 포맷팅할 원본 입력 문자열
+ * @returns cleanHex (순수 16진수 문자열)와 formattedInput (포맷팅된 문자열) 객체
+ */
+export function formatHexColor(val: string): {
+  cleanHex: string;
+  formattedInput: string;
+} {
+  let cleanHex = val.replace(/[^0-9a-fA-F]/g, "");
+  cleanHex = cleanHex.substring(0, 6);
+  const formattedInput =
+    cleanHex.length > 0 ? `#${cleanHex.toUpperCase()}` : "#";
+  return { cleanHex, formattedInput };
+}
