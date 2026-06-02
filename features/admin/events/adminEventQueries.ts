@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { requestJson } from "@/features/shared/api/http";
+import { requestJson, resolveRequest } from "@/features/shared/api/http";
 import {
   type Mission,
   type QrCode,
@@ -39,6 +39,13 @@ function getAdminEvents() {
 
 function getAdminEvent(eventId: number) {
   return requestJson<AdminEventDetail>(`/api/v1/admin/events/${eventId}`);
+}
+
+export async function fetchAdminEvent(
+  eventId: number
+): Promise<AdminEventDetail> {
+  const { url, init } = await resolveRequest(`/api/v1/admin/events/${eventId}`);
+  return requestJson<AdminEventDetail>(url, init);
 }
 
 function getEventDashboard(eventId: number) {
