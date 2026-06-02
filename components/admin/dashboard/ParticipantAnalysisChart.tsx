@@ -175,7 +175,7 @@ const ParticipantAnalysisChart = () => {
         <div
           role="tablist"
           aria-label="참여자 수 분석 보기"
-          className="grid h-11 w-[292px] grid-cols-3 rounded-xl bg-[#F4F4F4] p-1"
+          className="grid h-10 w-[260px] grid-cols-3 rounded-xl bg-[#F4F4F4] p-1"
         >
           {analysisTabs.map((tab) => (
             <button
@@ -184,7 +184,7 @@ const ParticipantAnalysisChart = () => {
               role="tab"
               aria-selected={activeView === tab.value}
               className={cn(
-                "rounded-lg px-3 text-sm font-semibold text-gomin-neutral-400 transition",
+                "rounded-lg px-3 text-xs font-semibold text-gomin-neutral-400 transition",
                 "focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none",
                 activeView === tab.value &&
                   "bg-white text-gomin-black shadow-[0_1px_6px_rgba(0,0,0,0.08)]"
@@ -197,7 +197,7 @@ const ParticipantAnalysisChart = () => {
         </div>
       </div>
 
-      <div className="mt-5 min-h-0 flex-1 overflow-x-auto">
+      <div className="mt-4 min-h-0 flex-1">
         {activeView === "daily" && <DailyAreaChart />}
         {activeView === "hourly" && <HourlyBarChart />}
         {activeView === "peak" && <PeakHeatmapChart />}
@@ -210,8 +210,8 @@ const DailyAreaChart = () => {
   return (
     <ChartContainer
       config={dailyChartConfig}
-      className="aspect-auto h-[300px] min-w-[680px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
-      initialDimension={{ width: 760, height: 300 }}
+      className="aspect-auto h-[270px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      initialDimension={{ width: 760, height: 290 }}
     >
       <AreaChart
         accessibilityLayer
@@ -283,8 +283,8 @@ const HourlyBarChart = () => {
   return (
     <ChartContainer
       config={hourlyChartConfig}
-      className="aspect-auto h-[300px] min-w-[680px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
-      initialDimension={{ width: 760, height: 300 }}
+      className="aspect-auto h-[270px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      initialDimension={{ width: 760, height: 290 }}
     >
       <BarChart
         accessibilityLayer
@@ -333,12 +333,12 @@ const HourlyBarChart = () => {
 
 const PeakHeatmapChart = () => {
   return (
-    <div className="min-w-[700px]">
+    <div>
       <div className="relative">
         <ChartContainer
           config={peakChartConfig}
-          className="aspect-auto h-[270px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
-          initialDimension={{ width: 760, height: 270 }}
+          className="aspect-auto h-[240px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+          initialDimension={{ width: 760, height: 260 }}
         >
           <ScatterChart
             accessibilityLayer
