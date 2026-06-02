@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -8,12 +8,8 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Scatter,
-  ScatterChart,
   XAxis,
   YAxis,
-  ZAxis,
-  type ScatterProps,
 } from "recharts";
 import {
   ChartContainer,
@@ -23,7 +19,7 @@ import {
 } from "@/components/ui/chart";
 import { cn } from "@/utils";
 
-type AnalysisView = "daily" | "hourly" | "peak";
+type AnalysisView = "daily" | "hourlyTotal" | "hourlyDate";
 
 type DailyParticipantData = {
   label: string;
@@ -37,36 +33,13 @@ type HourlyParticipantData = {
   fill: string;
 };
 
-type PeakParticipantData = {
-  day: string;
-  dayIndex: number;
-  hour: number;
-  count: number;
-  fill: string;
-};
-
-type HeatmapCellShapeProps = {
-  cx?: number;
-  cy?: number;
-  payload?: PeakParticipantData;
-};
-
-type PeakTooltipPayload = {
-  payload: PeakParticipantData;
-};
-
-type PeakTooltipProps = {
-  active?: boolean;
-  payload?: PeakTooltipPayload[];
-};
-
 const analysisTabs: {
   value: AnalysisView;
   label: string;
 }[] = [
   { value: "daily", label: "날짜별" },
-  { value: "hourly", label: "시간대별" },
-  { value: "peak", label: "피크 시간대" },
+  { value: "hourlyTotal", label: "시간대별(전체)" },
+  { value: "hourlyDate", label: "시간대별(날짜)" },
 ];
 
 const dailyParticipantData: DailyParticipantData[] = [
@@ -82,21 +55,7 @@ const dailyParticipantData: DailyParticipantData[] = [
 const chartColor = "#5435EB";
 const chartSoftColor = "#C8BEFA";
 const chartGridColor = "#ECECEC";
-const heatmapColors = [
-  "#F0EEFF",
-  "#E4DFFD",
-  "#D2C9FA",
-  "#B9AAF4",
-  "#9480EC",
-  "#735CE6",
-  "#5435EB",
-];
-const heatmapDays = ["월", "화", "수", "목", "금", "토", "일"];
-const heatmapHours = Array.from({ length: 24 }, (_, hour) => hour);
-const selectedPeakCell = {
-  day: "화",
-  hour: 18,
-};
+const eventDateOptions = dailyParticipantData.map((item) => item.label);
 
 const hourlyParticipantData: HourlyParticipantData[] = [
   4, 2, 1, 0, 0, 0, 15, 80, 205, 415, 635, 805, 915, 835, 720, 690, 1010, 1380,
@@ -107,34 +66,6 @@ const hourlyParticipantData: HourlyParticipantData[] = [
   count,
   fill: hour >= 17 && hour <= 20 ? chartColor : chartSoftColor,
 }));
-
-const peakParticipantData: PeakParticipantData[] = heatmapDays.flatMap(
-  (day, dayIndex) =>
-    heatmapHours.map((hour) => {
-      const eveningPeak = Math.exp(-Math.pow(hour - 18, 2) / 24);
-      const lunchPeak = Math.exp(-Math.pow(hour - 12, 2) / 18);
-      const dayFactor = [0.86, 1, 0.83, 0.8, 0.78, 0.92, 0.88][dayIndex];
-      const count = Math.round(
-        (36 + eveningPeak * 520 + lunchPeak * 180) * dayFactor
-      );
-      const cellCount =
-        day === selectedPeakCell.day && hour === selectedPeakCell.hour
-          ? 557
-          : count;
-
-      return {
-        day,
-        dayIndex,
-        hour,
-        count: cellCount,
-        fill: getHeatmapColor(cellCount),
-      };
-    })
-);
-const selectedPeakData = peakParticipantData.find(
-  (item) =>
-    item.day === selectedPeakCell.day && item.hour === selectedPeakCell.hour
-);
 
 const dailyChartConfig = {
   count: {
@@ -150,15 +81,13 @@ const hourlyChartConfig = {
   },
 } satisfies ChartConfig;
 
-const peakChartConfig = {
-  count: {
-    label: "참여자",
-    color: chartColor,
-  },
-} satisfies ChartConfig;
-
 const ParticipantAnalysisChart = () => {
   const [activeView, setActiveView] = useState<AnalysisView>("daily");
+  const [selectedDate, setSelectedDate] = useState(eventDateOptions[0]);
+  const selectedDateHourlyData = useMemo(
+    () => getHourlyDataByDate(selectedDate),
+    [selectedDate]
+  );
 
   return (
     <div className="flex h-full min-h-88 flex-col px-4 py-4">
@@ -172,35 +101,56 @@ const ParticipantAnalysisChart = () => {
           </p>
         </div>
 
-        <div
-          role="tablist"
-          aria-label="참여자 수 분석 보기"
-          className="grid h-10 w-[260px] grid-cols-3 rounded-xl bg-[#F4F4F4] p-1"
-        >
-          {analysisTabs.map((tab) => (
-            <button
-              key={tab.value}
-              type="button"
-              role="tab"
-              aria-selected={activeView === tab.value}
-              className={cn(
-                "rounded-lg px-3 text-xs font-semibold text-gomin-neutral-400 transition",
-                "focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none",
-                activeView === tab.value &&
-                  "bg-white text-gomin-black shadow-[0_1px_6px_rgba(0,0,0,0.08)]"
-              )}
-              onClick={() => setActiveView(tab.value)}
+        <div className="flex items-center gap-2">
+          {activeView === "hourlyDate" && (
+            <select
+              aria-label="날짜 선택"
+              value={selectedDate}
+              className="h-10 w-[88px] rounded-xl border border-gomin-neutral-100 bg-white px-3 text-xs font-semibold text-gomin-neutral-600 outline-none"
+              onChange={(event) => setSelectedDate(event.target.value)}
             >
-              {tab.label}
-            </button>
-          ))}
+              {eventDateOptions.map((date) => (
+                <option key={date} value={date}>
+                  {date}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <div
+            role="tablist"
+            aria-label="참여자 수 분석 보기"
+            className="grid h-10 w-[300px] grid-cols-3 rounded-xl bg-[#F4F4F4] p-1"
+          >
+            {analysisTabs.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                role="tab"
+                aria-selected={activeView === tab.value}
+                className={cn(
+                  "rounded-lg px-3 text-xs font-semibold text-gomin-neutral-400 transition",
+                  "focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none",
+                  activeView === tab.value &&
+                    "bg-white text-gomin-black shadow-[0_1px_6px_rgba(0,0,0,0.08)]"
+                )}
+                onClick={() => setActiveView(tab.value)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="mt-4 min-h-0 flex-1">
         {activeView === "daily" && <DailyAreaChart />}
-        {activeView === "hourly" && <HourlyBarChart />}
-        {activeView === "peak" && <PeakHeatmapChart />}
+        {activeView === "hourlyTotal" && (
+          <HourlyBarChart data={hourlyParticipantData} />
+        )}
+        {activeView === "hourlyDate" && (
+          <HourlyBarChart data={selectedDateHourlyData} />
+        )}
       </div>
     </div>
   );
@@ -210,7 +160,7 @@ const DailyAreaChart = () => {
   return (
     <ChartContainer
       config={dailyChartConfig}
-      className="aspect-auto h-[270px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
       initialDimension={{ width: 760, height: 290 }}
     >
       <AreaChart
@@ -279,16 +229,16 @@ const DailyAreaChart = () => {
   );
 };
 
-const HourlyBarChart = () => {
+const HourlyBarChart = ({ data }: { data: HourlyParticipantData[] }) => {
   return (
     <ChartContainer
       config={hourlyChartConfig}
-      className="aspect-auto h-[270px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
       initialDimension={{ width: 760, height: 290 }}
     >
       <BarChart
         accessibilityLayer
-        data={hourlyParticipantData}
+        data={data}
         margin={{ top: 12, right: 4, bottom: 8, left: 0 }}
       >
         <CartesianGrid vertical={false} stroke={chartGridColor} />
@@ -322,125 +272,12 @@ const HourlyBarChart = () => {
           }
         />
         <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={28}>
-          {hourlyParticipantData.map((item) => (
+          {data.map((item) => (
             <Cell key={item.hour} fill={item.fill} />
           ))}
         </Bar>
       </BarChart>
     </ChartContainer>
-  );
-};
-
-const PeakHeatmapChart = () => {
-  return (
-    <div>
-      <div className="relative">
-        <ChartContainer
-          config={peakChartConfig}
-          className="aspect-auto h-[240px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
-          initialDimension={{ width: 760, height: 260 }}
-        >
-          <ScatterChart
-            accessibilityLayer
-            margin={{ top: 14, right: 8, bottom: 28, left: -12 }}
-          >
-            <XAxis
-              type="number"
-              dataKey="hour"
-              domain={[-0.5, 23.5]}
-              ticks={[0, 3, 6, 9, 12, 15, 18, 21]}
-              axisLine={false}
-              tickLine={false}
-              tickMargin={8}
-              interval={0}
-              orientation="top"
-            />
-            <YAxis
-              type="number"
-              dataKey="dayIndex"
-              domain={[-0.5, 6.5]}
-              ticks={[0, 1, 2, 3, 4, 5, 6]}
-              axisLine={false}
-              tickLine={false}
-              tickMargin={8}
-              width={26}
-              reversed
-              tickFormatter={(value) => heatmapDays[Number(value)] ?? ""}
-            />
-            <ZAxis type="number" dataKey="count" range={[1, 1]} />
-            <ChartTooltip cursor={false} content={<PeakTooltip />} />
-            <Scatter
-              data={peakParticipantData}
-              shape={HeatmapCellShape as ScatterProps["shape"]}
-            />
-          </ScatterChart>
-        </ChartContainer>
-
-        {selectedPeakData && (
-          <div
-            className="pointer-events-none absolute top-[88px] rounded bg-[#4A4A4A] px-2.5 py-1.5 text-xs font-bold whitespace-nowrap text-white shadow-lg"
-            style={{
-              left: "calc(26px + ((100% - 34px) * 18.5 / 24))",
-              transform: "translateX(-45%)",
-            }}
-          >
-            {selectedPeakData.day} {selectedPeakData.hour}시 ·{" "}
-            {selectedPeakData.count.toLocaleString("ko-KR")}명
-          </div>
-        )}
-      </div>
-
-      <div className="mt-1 flex items-center gap-2 text-xs font-semibold text-gomin-neutral-400">
-        <span>적음</span>
-        <div className="flex gap-1">
-          {heatmapColors.map((color) => (
-            <span
-              key={color}
-              className="size-3 rounded-[3px]"
-              style={{ backgroundColor: color }}
-            />
-          ))}
-        </div>
-        <span>많음</span>
-      </div>
-    </div>
-  );
-};
-
-const HeatmapCellShape = ({
-  cx = 0,
-  cy = 0,
-  payload,
-}: HeatmapCellShapeProps) => {
-  const isSelected =
-    payload?.day === selectedPeakCell.day &&
-    payload.hour === selectedPeakCell.hour;
-
-  return (
-    <rect
-      x={cx - 13.5}
-      y={cy - 11}
-      width={27}
-      height={22}
-      rx={3}
-      fill={payload?.fill ?? heatmapColors[0]}
-      stroke={isSelected ? "#4A35C8" : "transparent"}
-      strokeWidth={isSelected ? 1.5 : 0}
-    />
-  );
-};
-
-const PeakTooltip = ({ active, payload }: PeakTooltipProps) => {
-  if (!active || !payload?.[0]) {
-    return null;
-  }
-
-  const item = payload[0].payload;
-
-  return (
-    <div className="rounded bg-[#4A4A4A] px-2.5 py-1.5 text-xs font-bold text-white shadow-lg">
-      {item.day} {item.hour}시 · {item.count.toLocaleString("ko-KR")}명
-    </div>
   );
 };
 
@@ -455,13 +292,14 @@ function formatChartTick(value: number) {
     : `${compactValue.toFixed(1)}k`;
 }
 
-function getHeatmapColor(count: number) {
-  const colorIndex = Math.min(
-    heatmapColors.length - 1,
-    Math.floor((count / 560) * heatmapColors.length)
-  );
+function getHourlyDataByDate(date: string): HourlyParticipantData[] {
+  const dateIndex = Math.max(eventDateOptions.indexOf(date), 0);
+  const factor = [0.82, 0.9, 0.86, 0.94, 0.98, 1.08, 1.04][dateIndex] ?? 1;
 
-  return heatmapColors[colorIndex];
+  return hourlyParticipantData.map((item) => ({
+    ...item,
+    count: Math.round(item.count * factor),
+  }));
 }
 
 export default ParticipantAnalysisChart;

@@ -76,8 +76,8 @@ pnpm test
 | `title`              | `text`                        | NOT NULL                            | 행사명                   |
 | `start_date`         | `date`                        | NOT NULL                            | 행사 시작일              |
 | `end_date`           | `date`                        | NOT NULL                            | 행사 종료일              |
-| `start_time`         | `timestamp without time zone` | NOT NULL                            | 행사 시작 시간           |
-| `end_time`           | `timestamp without time zone` | NOT NULL                            | 행사 종료 시간           |
+| `start_time`         | `time without time zone`      | NOT NULL                            | 행사 시작 시간           |
+| `end_time`           | `time without time zone`      | NOT NULL                            | 행사 종료 시간           |
 | `operating_remarks`  | `text`                        | nullable                            | 운영 시간 안내           |
 | `location`           | `text`                        | NOT NULL                            | 행사 위치                |
 | `location_url`       | `text`                        | nullable                            | 행사 위치 URL            |
