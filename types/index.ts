@@ -7,5 +7,5 @@ export interface Mission {
 
 export interface StepFormHandle {
   validate: () => boolean;
-  getData: () => unknown;
+  getData: () => Record<string, unknown>;
 }

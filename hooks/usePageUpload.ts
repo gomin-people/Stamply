@@ -3,7 +3,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { DragEndEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
 import {
-  useUploadAdminImageMutation,
+  uploadAdminImage,
   useDeleteAdminImageMutation,
 } from "@/features/admin/upload/adminUploadMutations";
 
@@ -23,25 +23,21 @@ const usePageUpload = () => {
   const replaceInputRef = useRef<HTMLInputElement>(null);
   const replacingId = useRef<string | null>(null); // 교체 중인 페이지 id
 
-  const { mutate: uploadImage } = useUploadAdminImageMutation();
   const { mutate: deleteImage } = useDeleteAdminImageMutation();
 
-  // Storage 업로드 후 해당 페이지의 url/path 갱신
-  const uploadAndSet = (id: string, file: File) => {
-    uploadImage(file, {
-      onSuccess: ({ url, path }) => {
-        setPages((prev) =>
-          prev.map((p) =>
-            p.id === id ? { ...p, url, path, isUploading: false } : p
-          )
-        );
-      },
-      onError: () => {
-        setPages((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, isUploading: false } : p))
-        );
-      },
-    });
+  const uploadAndSet = async (id: string, file: File) => {
+    try {
+      const { url, path } = await uploadAdminImage(file);
+      setPages((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, url, path, isUploading: false } : p
+        )
+      );
+    } catch {
+      setPages((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, isUploading: false } : p))
+      );
+    }
   };
 
   // 파일 배열을 받아 MAX_PAGES 범위 내에서 페이지 추가 후 즉시 업로드

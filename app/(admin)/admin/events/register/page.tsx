@@ -1,17 +1,23 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import { type StepFormHandle } from "@/types";
+import { useCreateEventMutation } from "@/features/admin/events/adminEventMutations";
+import type { EventCreatePayload } from "@/features/shared/types/stamply";
+import { toast } from "sonner";
 
 const TOTAL_STEPS = 3;
 
 export default function CreateEventPage() {
   const [currentStep, setCurrentStep] = useState(1);
+  const router = useRouter();
+  const { mutateAsync: createEvent, isPending } = useCreateEventMutation();
 
   const step1Ref = useRef<StepFormHandle>(null);
   const step2Ref = useRef<StepFormHandle>(null);
@@ -21,18 +27,33 @@ export default function CreateEventPage() {
 
   const handlePrev = () => setCurrentStep((s) => Math.max(1, s - 1));
 
+  // 유효성 검사 통과 못할 시 버튼 흔들리는 애니메이션을 위해 false값을 넘겨줘야해서 false 다시 넣음.
   const handleNext = () => {
     const ref = stepRefs[currentStep - 1];
-    if (!ref.current?.validate()) return;
+    if (!ref.current?.validate()) return false;
     setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     const ref = stepRefs[currentStep - 1];
     if (!ref.current?.validate()) return;
-    const allData = stepRefs.map((r) => r.current?.getData());
-    console.log("제출 데이터:", allData);
-    // TODO: submit API 호출
+
+    const [step1Data, step2Data, step3Data] = stepRefs.map((r) =>
+      r.current?.getData()
+    );
+    const payload = {
+      ...step1Data,
+      ...step2Data,
+      ...step3Data,
+    } as EventCreatePayload;
+
+    try {
+      const event = await createEvent(payload);
+      toast.success("행사 생성이 완료되었습니다!");
+      router.push(`/admin/events/${event.id}`);
+    } catch {
+      toast.error("행사 생성에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -57,9 +78,11 @@ export default function CreateEventPage() {
             currentStep={currentStep}
             totalSteps={TOTAL_STEPS}
             onPrev={handlePrev}
-            onNext={currentStep === TOTAL_STEPS ? handleComplete : handleNext}
+            onNext={handleNext}
+            onComplete={handleComplete}
             isLastStep={currentStep === TOTAL_STEPS}
-            completeLabel="행사 등록 완료"
+            completeLabel={isPending ? "행사 생성 중..." : "행사 등록 완료"}
+            disabled={isPending}
           />
         </div>
       </div>
