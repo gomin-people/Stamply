@@ -13,14 +13,14 @@ const EventPoster = ({
   width,
   height,
   src,
-  alt = '행사 포스터',
+  alt = "행사 포스터",
   className,
 }: EventPosterProps) => {
   return (
     <div
       style={{ width, height }}
       className={cn(
-        'relative rounded-[20px] shadow-card overflow-hidden shrink-0',
+        "relative rounded-[20px] shadow-card overflow-hidden shrink-0",
         className
       )}
     >
@@ -29,7 +29,7 @@ const EventPoster = ({
         alt={alt}
         fill
         sizes={`${width}px`}
-        loading="eager"
+        priority
         className="object-cover"
       />
     </div>
