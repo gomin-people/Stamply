@@ -63,8 +63,8 @@ export default function ThemeColorPicker({ h, onHueChange, keyColor }: Props) {
       </div>
 
       {/* 색상 칩 및 Hex 입력창 */}
-      <div className="flex flex-wrap items-center gap-5">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {/* 피커가 비활성화된 순수 색상 표시 칩 */}
           <div
             className="w-12 h-12 rounded-xl border border-gomin-neutral-200 shadow-sm shrink-0"
@@ -84,6 +84,11 @@ export default function ThemeColorPicker({ h, onHueChange, keyColor }: Props) {
             placeholder="#5435EB"
             className="h-12 w-32 bg-white border border-gomin-neutral-200 rounded-xl px-3 font-mono text-sm font-bold text-gomin-neutral-700 uppercase focus:outline-none focus:border-gomin-neutral-400 focus:ring-1 focus:ring-gomin-neutral-400 shadow-sm transition-all"
           />
+          <span className="text-xs font-bold text-gomin-neutral-400 leading-normal max-w-lg">
+            ※ 입력하신 색상의 색조(Hue)만 추출하여 반영하며, 모바일 화면
+            가독성을 보장하기 위해 채도와 명도는 고정된 최적의 값으로 자동
+            조정됩니다.
+          </span>
         </div>
       </div>
 
