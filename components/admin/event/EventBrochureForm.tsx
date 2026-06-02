@@ -21,7 +21,6 @@ const EventBrochureForm = forwardRef<StepFormHandle, Props>(
       addFiles,
       replaceInputRef,
       handleUploadChange,
-      handleAddChange,
       handleReplaceChange,
       handleDelete,
       handleReplace,
@@ -67,7 +66,7 @@ const EventBrochureForm = forwardRef<StepFormHandle, Props>(
         />
 
         {pages.length < MAX_PAGES && !disabled && (
-          <BrochureAddButton onChange={handleAddChange} />
+          <BrochureAddButton onChange={handleUploadChange} />
         )}
 
         <input

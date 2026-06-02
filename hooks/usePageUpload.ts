@@ -78,11 +78,6 @@ const usePageUpload = (initialUrls?: string[]) => {
     e.target.value = "";
   };
 
-  const handleAddChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) addFiles(e.target.files);
-    e.target.value = "";
-  };
-
   // 기존 파일을 새 파일로 교체: 기존 Storage 파일 삭제 후 새 파일 업로드
   const handleReplaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !replacingId.current) return;
@@ -140,7 +135,6 @@ const usePageUpload = (initialUrls?: string[]) => {
     addFiles,
     replaceInputRef,
     handleUploadChange,
-    handleAddChange,
     handleReplaceChange,
     handleDelete,
     handleReplace,

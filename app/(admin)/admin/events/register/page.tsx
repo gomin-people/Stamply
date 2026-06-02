@@ -35,6 +35,9 @@ export default function CreateEventPage() {
   };
 
   const handleComplete = async () => {
+    const ref = stepRefs[currentStep - 1];
+    if (!ref.current?.validate()) return;
+
     const [step1Data, step2Data, step3Data] = stepRefs.map((r) =>
       r.current?.getData()
     );

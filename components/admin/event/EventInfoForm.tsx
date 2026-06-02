@@ -169,6 +169,8 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               <EventOperatingHoursField
                 startTime={form.startTime}
                 endTime={form.endTime}
+                startTimeError={fieldErrors.startTime?.[0]}
+                endTimeError={fieldErrors.endTime?.[0]}
                 onChange={handleChange}
                 disabled={isDisabled("startTime")}
               />
