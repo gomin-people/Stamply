@@ -52,7 +52,7 @@ const MissionPageClient = ({
   isPreview = false,
 }: MissionPageClientProps) => {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
