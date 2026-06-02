@@ -109,13 +109,7 @@ const EventEditPage = () => {
                   isAfter
                     ? "all"
                     : isDuring
-                      ? [
-                          "startDate",
-                          "endDate",
-                          "posterImageUrl",
-                          "locationUrl",
-                          "production",
-                        ]
+                      ? ["startDate", "endDate", "posterImageUrl", "production"]
                       : undefined
                 }
               />

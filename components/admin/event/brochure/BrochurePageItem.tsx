@@ -12,6 +12,7 @@ type ItemProps = {
   index: number;
   onReplace: () => void;
   onDelete: () => void;
+  disabled?: boolean;
 };
 
 // 파일 크기(bytes)를 읽기 좋게 변환하는 함수
@@ -20,7 +21,13 @@ function formatFileSize(bytes: number): string {
   return `${Math.round(bytes / 1024)} KB`;
 }
 
-const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
+const BrochurePageItem = ({
+  page,
+  index,
+  onReplace,
+  onDelete,
+  disabled = false,
+}: ItemProps) => {
   const {
     attributes,
     listeners,
@@ -28,7 +35,7 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: page.id });
+  } = useSortable({ id: page.id, disabled });
 
   // dnd-kit는 tailwind로 제어할 수 없어서 인라인으로 써야함.
   const style = {
@@ -46,9 +53,12 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
       )}
     >
       <GripVertical
-        className="size-3.5 cursor-grab touch-none text-gomin-neutral-400 focus:outline-none"
+        className={cn(
+          "size-3.5 touch-none text-gomin-neutral-400 focus:outline-none",
+          disabled ? "cursor-not-allowed opacity-30" : "cursor-grab"
+        )}
         {...attributes}
-        {...listeners}
+        {...(!disabled && listeners)}
       />
 
       <BrochureThumbnail file={page.file} previewUrl={page.previewUrl} />
@@ -77,7 +87,8 @@ const BrochurePageItem = ({ page, index, onReplace, onDelete }: ItemProps) => {
         <button
           type="button"
           onClick={onDelete}
-          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
+          disabled={disabled}
+          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="삭제"
         >
           <Trash2 className="size-3.5 text-gomin-neutral-400" />

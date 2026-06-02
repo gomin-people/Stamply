@@ -14,7 +14,7 @@ type Props = {
 };
 
 const EventBrochureForm = forwardRef<StepFormHandle, Props>(
-  function EventBrochureForm(_props, ref) {
+  function EventBrochureForm({ disabled = false }, ref) {
     const {
       pages,
       addFiles,
@@ -46,6 +46,7 @@ const EventBrochureForm = forwardRef<StepFormHandle, Props>(
           onChange={handleUploadChange}
           onDrop={addFiles}
           isFull={pages.length >= MAX_PAGES}
+          disabled={disabled}
         />
 
         <BrochurePageStatus count={pages.length} />
@@ -55,9 +56,10 @@ const EventBrochureForm = forwardRef<StepFormHandle, Props>(
           onReplace={handleReplace}
           onDelete={handleDelete}
           onDragEnd={handleDragEnd}
+          disabled={disabled}
         />
 
-        {pages.length < MAX_PAGES && (
+        {pages.length < MAX_PAGES && !disabled && (
           <BrochureAddButton onChange={handleAddChange} />
         )}
 

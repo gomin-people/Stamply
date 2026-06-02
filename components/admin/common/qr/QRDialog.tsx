@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { Download, Printer, QrCode } from "lucide-react";
-import { getMissionCheckUrl } from "@/utils/qr";
 import QRCode from "react-qr-code";
 import {
   DialogContent,
@@ -14,16 +13,16 @@ import {
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  missionTitle: string;
-  token: string;
-  qrId: number;
+  title: string;
+  url: string;
+  filename: string;
+  description?: string;
 };
 
 const QR_SIZE = 240;
 
-export default function QRDialog({ missionTitle, token, qrId }: Props) {
+export default function QRDialog({ title, url, filename, description }: Props) {
   const svgRef = useRef<HTMLDivElement>(null);
-  const qrCodeUrl = getMissionCheckUrl(token);
 
   const handleDownload = () => {
     const svgEl = svgRef.current?.querySelector("svg");
@@ -31,7 +30,7 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
 
     const svgStr = new XMLSerializer().serializeToString(svgEl);
     const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+    const objectUrl = URL.createObjectURL(blob);
     const img = new Image();
 
     img.onload = () => {
@@ -42,15 +41,15 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, QR_SIZE, QR_SIZE);
       ctx.drawImage(img, 0, 0, QR_SIZE, QR_SIZE);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(objectUrl);
 
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
-      a.download = `${missionTitle}_${qrId}.png`;
+      a.download = filename;
       a.click();
     };
 
-    img.src = url;
+    img.src = objectUrl;
   };
 
   const handlePrint = () => {
@@ -65,7 +64,7 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${missionTitle} QR 코드</title>
+          <title>${title} QR 코드</title>
           <style>
             body {
               margin: 0;
@@ -81,7 +80,7 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
           </style>
         </head>
         <body>
-          <p>${missionTitle}</p>
+          <p>${title}</p>
           ${svgStr}
           <script>window.onload = () => { window.print(); window.close(); }<\/script>
         </body>
@@ -102,11 +101,13 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
               QR 코드
             </p>
             <DialogTitle className="text-xl font-bold text-gomin-black">
-              {missionTitle}
+              {title}
             </DialogTitle>
-            <DialogDescription className="mt-1">
-              QR 코드를 스캔하여 미션을 진행하세요.
-            </DialogDescription>
+            {description && (
+              <DialogDescription className="mt-1">
+                {description}
+              </DialogDescription>
+            )}
           </div>
         </div>
       </DialogHeader>
@@ -116,7 +117,7 @@ export default function QRDialog({ missionTitle, token, qrId }: Props) {
           ref={svgRef}
           className="rounded-2xl border border-gomin-neutral-100 bg-white p-5 shadow-sm"
         >
-          {qrCodeUrl && <QRCode value={qrCodeUrl} size={QR_SIZE} />}
+          <QRCode value={url} size={QR_SIZE} />
         </div>
       </div>
 
