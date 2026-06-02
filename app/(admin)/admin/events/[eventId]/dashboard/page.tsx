@@ -1,6 +1,7 @@
 import { Check, Gift, Users, Zap } from "lucide-react";
 import DashboardKpiCard from "@/components/admin/dashboard/DashboardKpiCard";
 import ParticipantAnalysisChart from "@/components/admin/dashboard/ParticipantAnalysisChart";
+import ParticipantDemographicsChart from "@/components/admin/dashboard/ParticipantDemographicsChart";
 
 const dashboardPanelClassName =
   "rounded-xl border border-gomin-neutral-100 bg-white";
@@ -56,7 +57,7 @@ const dashboardCounts: Record<
 
 const DashboardPage = () => {
   return (
-    <div className="p-8 pt-1">
+    <div className="px-8 pt-0 pb-8">
       <div className="mb-2 flex justify-end">
         <span className="text-sm text-gomin-neutral-400">오늘 / 전체 기준</span>
       </div>
@@ -83,9 +84,9 @@ const DashboardPage = () => {
 
           <section
             aria-label="참여자 인구통계"
-            className={`${dashboardPanelClassName} min-h-76`}
+            className={`${dashboardPanelClassName} overflow-hidden`}
           >
-            {/* 성별 분포, 연령대 분포, 설문 응답률 */}
+            <ParticipantDemographicsChart />
           </section>
         </div>
 

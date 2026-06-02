@@ -97,7 +97,7 @@ const ParticipantAnalysisChart = () => {
             참여자 수 분석
           </h2>
           <p className="text-sm font-medium text-gomin-neutral-400">
-            시간에 따른 참여 패턴을 확인하세요
+            시간에 따른 참여 패턴 확인
           </p>
         </div>
 
@@ -106,7 +106,7 @@ const ParticipantAnalysisChart = () => {
             <select
               aria-label="날짜 선택"
               value={selectedDate}
-              className="h-10 w-[88px] rounded-xl border border-gomin-neutral-100 bg-white px-3 text-xs font-semibold text-gomin-neutral-600 outline-none"
+              className="h-10 w-[88px] rounded-lg border border-gomin-neutral-100 bg-white px-3 text-xs font-semibold text-gomin-neutral-600 outline-none"
               onChange={(event) => setSelectedDate(event.target.value)}
             >
               {eventDateOptions.map((date) => (
@@ -120,7 +120,7 @@ const ParticipantAnalysisChart = () => {
           <div
             role="tablist"
             aria-label="참여자 수 분석 보기"
-            className="grid h-10 w-[300px] grid-cols-3 rounded-xl bg-[#F4F4F4] p-1"
+            className="grid h-10 w-[310px] grid-cols-3 rounded-lg bg-[#F4F4F4] p-1"
           >
             {analysisTabs.map((tab) => (
               <button
@@ -161,7 +161,7 @@ const DailyAreaChart = () => {
     <ChartContainer
       config={dailyChartConfig}
       className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
-      initialDimension={{ width: 760, height: 290 }}
+      initialDimension={{ width: 760, height: 260 }}
     >
       <AreaChart
         accessibilityLayer
@@ -234,7 +234,7 @@ const HourlyBarChart = ({ data }: { data: HourlyParticipantData[] }) => {
     <ChartContainer
       config={hourlyChartConfig}
       className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
-      initialDimension={{ width: 760, height: 290 }}
+      initialDimension={{ width: 760, height: 260 }}
     >
       <BarChart
         accessibilityLayer
