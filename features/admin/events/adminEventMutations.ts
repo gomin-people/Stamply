@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
+import { toSnakeKeys } from "@/utils/case";
 import {
   type EventCreatePayload,
   type EventUpdatePayload,
@@ -23,14 +24,14 @@ type UpdateEventVariables = {
 function createAdminEvent(payload: EventCreatePayload) {
   return requestJson<CreatedEvent>(
     "/api/v1/admin/events",
-    createJsonRequest("POST", payload)
+    createJsonRequest("POST", toSnakeKeys(payload))
   );
 }
 
 function updateAdminEvent(eventId: number, payload: EventUpdatePayload) {
   return requestJson<StamplyEvent>(
     `/api/v1/admin/events/${eventId}`,
-    createJsonRequest("PATCH", payload)
+    createJsonRequest("PATCH", toSnakeKeys(payload))
   );
 }
 

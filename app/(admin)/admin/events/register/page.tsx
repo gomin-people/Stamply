@@ -10,6 +10,7 @@ import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import { type StepFormHandle } from "@/types";
 import { useCreateEventMutation } from "@/features/admin/events/adminEventMutations";
 import type { EventCreatePayload } from "@/features/shared/types/stamply";
+import { toast } from "sonner";
 
 const TOTAL_STEPS = 3;
 
@@ -26,6 +27,7 @@ export default function CreateEventPage() {
 
   const handlePrev = () => setCurrentStep((s) => Math.max(1, s - 1));
 
+  // 유효성 검사 통과 못할 시 버튼 흔들리는 애니메이션을 위해 false값을 넘겨줘야해서 false 다시 넣음.
   const handleNext = () => {
     const ref = stepRefs[currentStep - 1];
     if (!ref.current?.validate()) return false;
@@ -45,8 +47,13 @@ export default function CreateEventPage() {
       ...step3Data,
     } as EventCreatePayload;
 
-    const event = await createEvent(payload);
-    router.push(`/admin/events/${event.id}`);
+    try {
+      const event = await createEvent(payload);
+      toast.success("행사 생성이 완료되었습니다!");
+      router.push(`/admin/events/${event.id}`);
+    } catch {
+      toast.error("행사 생성에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
