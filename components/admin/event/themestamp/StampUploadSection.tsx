@@ -22,11 +22,17 @@ export default function StampUploadSection({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 파일 확장자 검증 (허용: png, jpg, jpeg, webp)
+    // 파일 MIME 타입 및 확장자 다중 검증 (허용: png, jpg, jpeg, webp)
+    const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
     const allowedExtensions = ["png", "jpg", "jpeg", "webp"];
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    const isValidMime = allowedMimeTypes.includes(file.type);
+    const isValidExtension = fileExtension
+      ? allowedExtensions.includes(fileExtension)
+      : false;
+
+    if (!isValidMime || !isValidExtension) {
       alert(
         "지원하지 않는 파일 형식입니다. (png, jpg, jpeg, webp 이미지만 업로드 가능)"
       );
