@@ -36,7 +36,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(
     );
 
     return (
-      <div className="flex min-h-129 flex-col gap-2">
+      <div className="flex min-h-166 flex-col gap-2">
         <BrochureDropzone
           onChange={handleUploadChange}
           onDrop={addFiles}

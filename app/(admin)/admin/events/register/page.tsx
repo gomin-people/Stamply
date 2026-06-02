@@ -28,7 +28,7 @@ export default function CreateEventPage() {
 
   const handleNext = () => {
     const ref = stepRefs[currentStep - 1];
-    if (!ref.current?.validate()) return;
+    if (!ref.current?.validate()) return false;
     setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
   };
 
