@@ -53,44 +53,6 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
 
     return (
       <div className="flex flex-col lg:flex-row gap-10 p-2 text-gomin-black">
-        {/* 스타일 인젝션: 무지개 range 슬라이더 핸들의 배경을 실시간 선택한 키 컬러로 동적 반영 */}
-        <style>{`
-          input[type="range"].theme-hue-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: ${keyColor};
-            border: 3px solid #ffffff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-            cursor: pointer;
-            transition: transform 0.1s ease-in-out;
-          }
-          input[type="range"].theme-hue-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.15);
-          }
-          input[type="range"].theme-hue-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: ${keyColor};
-            border: 3px solid #ffffff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-            cursor: pointer;
-            transition: transform 0.1s ease-in-out;
-          }
-          input[type="range"].theme-hue-slider::-moz-range-thumb:hover {
-            transform: scale(1.15);
-          }
-          
-          /* 프리뷰 모바일 프레임 내부의 모든 요소들의 transition을 0s로 강제하여 드래그 시 엇박자 반응 딜레이 완벽 제거 */
-          .preview-mobile-frame * {
-            transition: none !important;
-            transition-duration: 0s !important;
-          }
-        `}</style>
-
         {/* 좌측 컨트롤 영역 */}
         <div className="flex-1 space-y-8">
           <StampUploadSection
