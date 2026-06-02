@@ -1,6 +1,7 @@
 import Footer from "@/components/admin/common/Footer";
 import Header from "@/components/admin/common/Header";
 import Sidebar from "@/components/admin/common/Sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function AdminEventsLayout({
   children,
@@ -15,6 +16,7 @@ export default function AdminEventsLayout({
         <main>{children}</main>
         <Footer />
       </div>
+      <Toaster />
     </div>
   );
 }
