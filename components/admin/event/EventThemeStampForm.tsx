@@ -35,10 +35,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
     // 부모 컴포넌트에 넘길 validate 및 getData 정의
     useImperativeHandle(ref, () => ({
       validate: () => {
-        if (!stampImage) {
-          alert("스탬프 모양 이미지를 업로드해주세요.");
-          return false;
-        }
+        // 스탬프 이미지는 선택 사항이므로 항상 통과시킵니다.
         return true;
       },
       getData: () => ({
