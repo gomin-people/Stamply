@@ -12,8 +12,10 @@ import ThemePreviewPanel from "./themestamp/ThemePreviewPanel";
  */
 const EventThemeStampForm = forwardRef<StepFormHandle>(
   function EventThemeStampForm(_, ref) {
-    // 1. 스탬프 모양 관련 상태
-    const [stampImage, setStampImage] = useState<string | null>(null);
+    // 1. 스탬프 모양 관련 상태 (브로슈어 업로드 페이지 방식을 벤치마킹한 미리보기용 + 실제 업로드용 이중 상태)
+    const [stampPreviewUrl, setStampPreviewUrl] = useState<string | null>(null);
+    const [stampFileUrl, setStampFileUrl] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     // 2. 테마 색상 단일 상태 관리 (Single Source of Truth: 오직 h 정수 상태만 보관!)
     const [h, setH] = useState(250);
@@ -35,11 +37,16 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
     // 부모 컴포넌트에 넘길 validate 및 getData 정의
     useImperativeHandle(ref, () => ({
       validate: () => {
-        // 스탬프 이미지는 선택 사항이므로 항상 통과시킵니다.
+        if (isUploading) {
+          alert(
+            "스탬프 모양 이미지가 스토리지에 업로드 중입니다. 잠시만 기다려주세요."
+          );
+          return false;
+        }
         return true;
       },
       getData: () => ({
-        stampImageUrl: stampImage,
+        stampImageUrl: stampFileUrl, // Storage 서버에 적재 완료된 실제 public HTTP URL을 최종 폼 데이터로 제출
         themeColor: keyColor,
       }),
     }));
@@ -87,14 +94,19 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
         {/* 좌측 컨트롤 영역 */}
         <div className="flex-1 space-y-8">
           <StampUploadSection
-            stampImage={stampImage}
-            onImageChange={setStampImage}
+            stampPreviewUrl={stampPreviewUrl}
+            onPreviewChange={setStampPreviewUrl}
+            onFileUrlChange={setStampFileUrl}
+            onUploadingChange={setIsUploading}
           />
           <ThemeColorPicker h={h} onHueChange={setH} keyColor={keyColor} />
         </div>
 
         {/* 우측 실시간 미리보기 영역 */}
-        <ThemePreviewPanel stampImage={stampImage} palette={palette} />
+        <ThemePreviewPanel
+          stampImage={stampPreviewUrl} // 실시간 모바일 미리보기에는 로컬 Object URL(지연 0초)을 즉시 렌더링
+          palette={palette}
+        />
       </div>
     );
   }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
@@ -13,7 +12,6 @@ const TOTAL_STEPS = 3;
 const stepComponents = [EventInfoForm, EventBrochureForm, EventThemeStampForm];
 
 export default function EventEditPage() {
-  const { eventId } = useParams<{ eventId: string }>();
   const [currentStep, setCurrentStep] = useState(1);
 
   const StepForm = stepComponents[currentStep - 1];

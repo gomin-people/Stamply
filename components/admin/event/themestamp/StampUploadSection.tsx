@@ -1,65 +1,36 @@
 "use client";
 
-import { useRef } from "react";
-import { Plus, X, Info } from "lucide-react";
+import { Plus, X, Info, Loader2 } from "lucide-react";
+import useStampUpload from "@/hooks/useStampUpload";
 
 type Props = {
-  stampImage: string | null;
-  onImageChange: (image: string | null) => void;
+  stampPreviewUrl: string | null;
+  onPreviewChange: (url: string | null) => void;
+  onFileUrlChange: (url: string | null) => void;
+  onUploadingChange: (isUploading: boolean) => void;
 };
 
 /**
- * 스탬프 업로드 UI + 핸들러 캡슐화 컴포넌트
+ * 스탬프 모양 이미지 업로드 뷰 컴포넌트
+ * 비즈니스 로직(검증, 스토리지 업로드)은 useStampUpload 훅으로 완벽히 격리되어 있습니다.
  */
 export default function StampUploadSection({
-  stampImage,
-  onImageChange,
+  stampPreviewUrl,
+  onPreviewChange,
+  onFileUrlChange,
+  onUploadingChange,
 }: Props) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // 스탬프 업로드 핸들러
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // 파일 MIME 타입 및 확장자 다중 검증 (허용: png, jpg, jpeg, webp)
-    const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
-    const allowedExtensions = ["png", "jpg", "jpeg", "webp"];
-
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
-    const isValidMime = allowedMimeTypes.includes(file.type);
-    const isValidExtension = fileExtension
-      ? allowedExtensions.includes(fileExtension)
-      : false;
-
-    if (!isValidMime || !isValidExtension) {
-      alert(
-        "지원하지 않는 파일 형식입니다. (png, jpg, jpeg, webp 이미지만 업로드 가능)"
-      );
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      onImageChange(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleUploadBoxClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleRemoveImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onImageChange(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+  const {
+    fileInputRef,
+    isUploading,
+    handleFileChange,
+    handleRemoveImage,
+    handleUploadBoxClick,
+  } = useStampUpload({
+    onPreviewChange,
+    onFileUrlChange,
+    onUploadingChange,
+  });
 
   return (
     <div className="space-y-3 text-gomin-black">
@@ -73,13 +44,32 @@ export default function StampUploadSection({
         onChange={handleFileChange}
         accept="image/*"
         className="hidden"
+        disabled={isUploading}
       />
 
-      {stampImage ? (
+      {isUploading ? (
+        <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 bg-gomin-neutral-50 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
+          {/* 업로드 중이어도 미리보기는 먼저 출력 (브로슈어와 동일 사양) */}
+          {stampPreviewUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={stampPreviewUrl}
+              alt="스탬프 모양 미리보기"
+              className="w-full h-full object-contain opacity-50"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/10 rounded-2xl flex flex-col items-center justify-center gap-1.5">
+            <Loader2 className="w-5 h-5 animate-spin text-gomin-primary-600" />
+            <span className="text-[10px] font-bold text-gomin-neutral-700">
+              업로드 중
+            </span>
+          </div>
+        </div>
+      ) : stampPreviewUrl ? (
         <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 bg-gomin-neutral-50 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={stampImage}
+            src={stampPreviewUrl}
             alt="스탬프 모양 미리보기"
             className="w-full h-full object-contain"
           />
