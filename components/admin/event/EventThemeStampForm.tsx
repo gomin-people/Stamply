@@ -47,7 +47,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
       },
       getData: () => ({
         stampImageUrl: stampFileUrl, // Storage 서버에 적재 완료된 실제 public HTTP URL을 최종 폼 데이터로 제출
-        themeColor: keyColor,
+        primaryColor: keyColor,
       }),
     }));
 

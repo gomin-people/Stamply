@@ -5,31 +5,31 @@ import { ApiError } from "@/features/shared/api/http";
 
 type UploadResult = { url: string; path: string };
 
-export function useUploadAdminImageMutation() {
-  return useMutation({
-    mutationFn: async (file: File): Promise<UploadResult> => {
-      const formData = new FormData();
-      formData.append("file", file);
+export async function uploadAdminImage(file: File): Promise<UploadResult> {
+  const formData = new FormData();
+  formData.append("file", file);
 
-      const response = await fetch("/api/v1/admin/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      const body = await response.json();
-
-      if (!response.ok) {
-        throw new ApiError(
-          body?.message ?? "이미지 업로드 실패",
-          response.status,
-          body
-        );
-      }
-
-      return body as UploadResult;
-    },
+  const response = await fetch("/api/v1/admin/upload", {
+    method: "POST",
+    body: formData,
+    credentials: "include",
   });
+
+  const body = await response.json();
+
+  if (!response.ok) {
+    throw new ApiError(
+      body?.message ?? "이미지 업로드 실패",
+      response.status,
+      body
+    );
+  }
+
+  return body as UploadResult;
+}
+
+export function useUploadAdminImageMutation() {
+  return useMutation({ mutationFn: uploadAdminImage });
 }
 
 export function useDeleteAdminImageMutation() {
