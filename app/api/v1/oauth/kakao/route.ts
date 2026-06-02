@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ADMIN_EVENT_REGISTER_PATH } from "@/constants/adminRoutes";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
 export async function GET(request: NextRequest) {
@@ -51,7 +52,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/admin?error=auth_failed`);
   }
 
-  // 세션 쿠키가 저장된 상태로 대시보드로 이동
-  // 이후 미들웨어가 쿠키를 읽어 인증 여부를 확인함
-  return NextResponse.redirect(`${origin}/admin/dashboard`);
+  // 세션 쿠키가 저장된 상태에서 RLS가 적용되는 RPC로 현재 관리자의 우선순위 행사를 조회합니다.
+  //   1순위: 진행 중인 행사 중 시작일이 가장 빠른 행사
+  //   2순위: 예정 행사 중 시작일이 가장 빠른 행사
+  //   3순위: 종료 행사 중 종료일이 가장 최근인 행사
+  // 조회 실패 시 로그인 페이지로 되돌리고, 행사가 있으면 대시보드로 없으면 등록 페이지로 이동합니다.
+  const { data: eventId, error: eventsError } = await supabase.rpc(
+    "get_priority_admin_event_id"
+  );
+
+  let redirectPath = ADMIN_EVENT_REGISTER_PATH;
+
+  if (eventsError) {
+    console.error("Error fetching events:", eventsError);
+    redirectPath = "/admin";
+  } else if (eventId != null) {
+    redirectPath = `/admin/events/${eventId}/dashboard`;
+  }
+
+  return NextResponse.redirect(`${origin}${redirectPath}`);
 }

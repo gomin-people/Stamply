@@ -2,13 +2,21 @@
 
 import { useParams, usePathname } from "next/navigation";
 import { getAdminRouteConfig } from "@/constants/adminRoutes";
-import { getAdminEventTitle } from "@/constants/adminEventMocks";
+import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
 
 const Header = () => {
   const pathname = usePathname();
   const { eventId } = useParams<{ eventId?: string }>();
   const route = getAdminRouteConfig(pathname);
-  const eventTitle = eventId ? getAdminEventTitle(eventId) : undefined;
+  const shouldFetchEvents = Boolean(
+    eventId &&
+    route?.description?.some((segment) => segment.type === "eventTitle")
+  );
+  const { data: events } = useAdminEventsQuery({ enabled: shouldFetchEvents });
+  const eventTitle = eventId
+    ? (events?.find((event) => String(event.id) === eventId)?.title ??
+      `행사 ${eventId}`)
+    : undefined;
 
   if (!route) {
     return null;

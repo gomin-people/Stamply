@@ -23,12 +23,17 @@ type AdminRouteParams = {
   eventId: string;
 };
 
+export const ADMIN_EVENT_DASHBOARD_PATH = "/admin/events/[eventId]/dashboard";
+export const ADMIN_EVENT_DETAIL_PATH = "/admin/events/[eventId]";
+export const ADMIN_EVENT_MISSIONS_PATH = "/admin/events/[eventId]/missions";
+export const ADMIN_EVENT_REGISTER_PATH = "/admin/events/register";
+
 /**
  * 관리자 페이지의 라우트별 헤더/사이드바 정보 관리
  */
 export const adminRoutes: AdminRouteConfig[] = [
   {
-    pattern: "/admin/events/[eventId]/dashboard",
+    pattern: ADMIN_EVENT_DASHBOARD_PATH,
     title: "대시보드",
     description: [
       { type: "text", text: "현재 운영 중인 행사 · " },
@@ -40,7 +45,7 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
   },
   {
-    pattern: "/admin/events/[eventId]",
+    pattern: ADMIN_EVENT_DETAIL_PATH,
     title: "행사 상세",
     description: [
       { type: "eventTitle" },
@@ -55,7 +60,7 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
   },
   {
-    pattern: "/admin/events/[eventId]/missions",
+    pattern: ADMIN_EVENT_MISSIONS_PATH,
     title: "미션 관리",
     description: [
       { type: "eventTitle" },
@@ -67,6 +72,16 @@ export const adminRoutes: AdminRouteConfig[] = [
     sidebar: {
       icon: Target,
     },
+  },
+  {
+    pattern: ADMIN_EVENT_REGISTER_PATH,
+    title: "행사 등록",
+    description: [
+      {
+        type: "text",
+        text: "새로운 팝업 스탬프 투어를 등록합니다. 모든 정보는 저장 후에도 수정 가능합니다.",
+      },
+    ],
   },
 ];
 
@@ -82,12 +97,22 @@ const getAdminRoutePath = (pattern: string, params: AdminRouteParams) => {
   return pattern.replace(/\[eventId\]/g, params.eventId);
 };
 
+const getDynamicSegmentCount = (pattern: string) =>
+  pattern.match(/\[[^\]]+\]/g)?.length ?? 0;
+
 /**
  * 현재 경로에 해당하는 관리자 라우트 설정
  */
 export const getAdminRouteConfig = (pathname: string) => {
   return [...adminRoutes]
-    .sort((a, b) => b.pattern.length - a.pattern.length)
+    .sort((a, b) => {
+      const dynamicDiff =
+        getDynamicSegmentCount(a.pattern) - getDynamicSegmentCount(b.pattern);
+
+      if (dynamicDiff !== 0) return dynamicDiff;
+
+      return b.pattern.length - a.pattern.length;
+    })
     .find((route) => patternToRegex(route.pattern).test(pathname));
 };
 

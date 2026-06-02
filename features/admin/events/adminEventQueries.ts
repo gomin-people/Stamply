@@ -52,10 +52,11 @@ function getEventDashboard(eventId: number) {
  *
  * @returns React Query 어드민 행사 목록
  */
-export function useAdminEventsQuery() {
+export function useAdminEventsQuery(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["admin", "events", "list"],
     queryFn: getAdminEvents,
+    enabled: options?.enabled ?? true,
   });
 }
 

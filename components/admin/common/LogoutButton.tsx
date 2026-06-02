@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAdminLogoutMutation } from "@/features/admin/logout/adminLogoutMutations";
 import { useRouter } from "next/navigation";
+import { useClearSelectedEventId } from "@/stores/admin";
 
 type Props = {
   disabled?: boolean;
@@ -9,11 +10,13 @@ type Props = {
 
 export default function Logout({ disabled = false }: Props) {
   const router = useRouter();
+  const clearSelectedEventId = useClearSelectedEventId();
   const { mutate: logout } = useAdminLogoutMutation();
 
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
+        clearSelectedEventId();
         router.replace("/admin");
       },
       onError: (error) => console.error("[handleLogout] :", error),

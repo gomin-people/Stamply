@@ -9,6 +9,7 @@ export const adminStore = create(
       },
       (set) => ({
         setSelectedEventId: (id: string) => set({ selectedEventId: id }),
+        clearSelectedEventId: () => set({ selectedEventId: null }),
       })
     ),
     {
@@ -25,3 +26,6 @@ export const useSelectedEventId = () =>
 
 export const useSetSelectedEventId = () =>
   adminStore((store) => store.setSelectedEventId);
+
+export const useClearSelectedEventId = () =>
+  adminStore((store) => store.clearSelectedEventId);
