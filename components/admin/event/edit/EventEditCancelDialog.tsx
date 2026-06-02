@@ -16,10 +16,7 @@ const EventEditCancelDialog = ({ onConfirm }: Props) => {
   return (
     <DialogContent className="sm:max-w-lg" showCloseButton={false}>
       <DialogHeader>
-        <p className="mb-1 text-xs font-medium text-gomin-primary-600">
-          변경 취소
-        </p>
-        <DialogTitle className="text-xl font-bold text-gomin-black">
+        <DialogTitle className="text-xl font-bold text-gomin-black mt-3">
           변경사항을 취소하시겠습니까?
         </DialogTitle>
         <DialogDescription className="mt-1">
