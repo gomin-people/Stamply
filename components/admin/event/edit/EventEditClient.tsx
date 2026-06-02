@@ -70,9 +70,13 @@ export default function EventEditClient() {
       ...step3Data,
     } as EventUpdatePayload;
 
-    await updateEvent({ eventId: eventIdNum, payload });
-    toast.success("변경사항이 저장되었습니다.");
-    setMode("view");
+    try {
+      await updateEvent({ eventId: eventIdNum, payload });
+      toast.success("변경사항이 저장되었습니다.");
+      setMode("view");
+    } catch {
+      toast.error("저장에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const entryQr = event?.qrCodes?.find((qr) => qr.type === "ENTRY");

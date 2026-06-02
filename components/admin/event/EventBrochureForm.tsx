@@ -7,6 +7,7 @@ import BrochurePageList from "./brochure/BrochurePageList";
 import BrochureAddButton from "./brochure/BrochureAddButton";
 import usePageUpload, { MAX_PAGES } from "@/hooks/usePageUpload";
 import { type StepFormHandle } from "@/types";
+import { toast } from "sonner";
 
 type Props = {
   initialData?: { brochureImageUrl?: string[] };
@@ -30,7 +31,13 @@ const EventBrochureForm = forwardRef<StepFormHandle, Props>(
     useImperativeHandle(
       ref,
       () => ({
-        validate: () => true,
+        validate: () => {
+          if (pages.some((p) => p.isUploading)) {
+            toast.warning("이미지 업로드가 완료될 때까지 기다려주세요.");
+            return false;
+          }
+          return true;
+        },
         getData: () => ({
           brochureImageUrl: pages
             .filter((p) => p.url !== null)
