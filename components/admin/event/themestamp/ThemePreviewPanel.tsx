@@ -43,8 +43,6 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
     [stampImage]
   );
 
-  const previewMissions = useMemo(() => PREVIEW_MISSIONS, []);
-
   // 실시간 미리보기에 주입할 CSS 변수 정의
   const previewThemeVars = {
     "--primary-700": palette["700"],
@@ -81,7 +79,7 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
           <MissionPageClient
             event={previewEvent}
             eventId="preview"
-            initialMissions={previewMissions}
+            initialMissions={PREVIEW_MISSIONS}
             isPreview={true}
           />
         </div>
