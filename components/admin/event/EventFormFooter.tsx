@@ -10,6 +10,7 @@ type Props = {
   totalSteps: number;
   onPrev?: () => void;
   onNext?: () => boolean | void;
+  onComplete?: () => void;
   isLastStep?: boolean;
   completeLabel?: string;
   disabled?: boolean;
@@ -20,13 +21,18 @@ export default function EventFormFooter({
   totalSteps,
   onPrev,
   onNext,
+  onComplete,
   isLastStep = false,
-  completeLabel = "등록 완료",
+  completeLabel = "행사 등록 완료",
   disabled = false,
 }: Props) {
   const [shake, setShake] = useState(0);
 
   const handleNext = () => {
+    if (isLastStep) {
+      onComplete?.();
+      return;
+    }
     const result = onNext?.();
     if (result === false) {
       setShake((s) => s + 1);

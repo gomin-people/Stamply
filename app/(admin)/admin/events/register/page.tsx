@@ -78,7 +78,8 @@ export default function CreateEventPage() {
             currentStep={currentStep}
             totalSteps={TOTAL_STEPS}
             onPrev={handlePrev}
-            onNext={currentStep === TOTAL_STEPS ? handleComplete : handleNext}
+            onNext={handleNext}
+            onComplete={handleComplete}
             isLastStep={currentStep === TOTAL_STEPS}
             completeLabel={isPending ? "행사 생성 중..." : "행사 등록 완료"}
             disabled={isPending}
