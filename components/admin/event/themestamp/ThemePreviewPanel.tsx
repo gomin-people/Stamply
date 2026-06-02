@@ -30,7 +30,7 @@ const PREVIEW_MISSIONS = [
 ];
 
 /**
- * 실시간 모바일 유저 화면 미리보기 패널 컴포넌트
+ * 실시간 모바일 참가자 화면 미리보기 패널 컴포넌트
  */
 export default function ThemePreviewPanel({ stampImage, palette }: Props) {
   // preview용 props 객체들의 참조 고정 (React.memo 최적화 매칭)
@@ -57,10 +57,10 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
 
   return (
     <div className="w-full lg:w-[400px] bg-[#EBE7FD]/50 p-6 rounded-[32px] flex flex-col items-center justify-center shrink-0 shadow-inner border border-[#E1DBFA]">
-      {/* 유저 화면 미리보기 뱃지 */}
+      {/* 참가자 화면 미리보기 뱃지 */}
       <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[11px] font-extrabold text-[#5435EB] shadow-sm mb-5 select-none border border-[#ECE7FC]">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        유저 화면 미리보기
+        참가자 화면 미리보기
       </div>
 
       {/* 모바일 폰 프레임 */}
@@ -87,7 +87,7 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
 
       {/* 실시간 적용 안내 문구 */}
       <p className="mt-4 text-[11px] font-bold text-gomin-neutral-500 text-center leading-relaxed">
-        선택한 테마 색상이 유저 화면에
+        선택한 테마 색상이 참가자 화면에
         <br />
         실시간으로 적용됩니다
       </p>
