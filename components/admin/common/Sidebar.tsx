@@ -68,9 +68,9 @@ const Sidebar = () => {
           type="button"
           variant="outline"
           onClick={cancelCreate}
-          className="mt-13 h-14 w-full cursor-pointer gap-3 rounded-xl px-3 font-semibold text-md border-gomin-neutral-300 hover:border-gomin-neutral-500 text-gomin-neutral-600 shadow-none bg-gomin-neutral-100 hover:bg-gomin-neutral-200"
+          className="mt-13 h-14 w-full cursor-pointer gap-3 rounded-xl px-3 pr-7 font-semibold text-md text-red-500 shadow-none hover:bg-red-100 border-red-500 hover:text-red-500"
         >
-          <X className="size-5 text-gomin-neutral-700 hover:text-gomin-black" />
+          <X className="size-5 text-red-500 " />
           생성 취소
         </Button>
       ) : null}
