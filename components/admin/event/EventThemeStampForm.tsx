@@ -52,7 +52,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
     }));
 
     return (
-      <div className="flex flex-col lg:flex-row gap-10 p-2 text-gomin-black">
+      <div className="flex flex-row gap-10 text-gomin-black h-[712px]">
         {/* 좌측 컨트롤 영역 */}
         <div className="flex-1 space-y-8">
           <StampUploadSection

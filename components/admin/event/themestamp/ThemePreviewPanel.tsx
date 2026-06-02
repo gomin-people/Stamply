@@ -56,24 +56,23 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
   } as React.CSSProperties;
 
   return (
-    <div className="w-full lg:w-[400px] bg-[#EBE7FD]/50 p-6 rounded-[32px] flex flex-col items-center justify-center shrink-0 shadow-inner border border-[#E1DBFA]">
+    <div className="w-full lg:w-[320px] bg-[#EBE7FD]/50 h-[650px] p-5 rounded-[28px] flex flex-col items-center justify-center shadow-inner border border-[#E1DBFA]">
       {/* 참가자 화면 미리보기 뱃지 */}
-      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[11px] font-extrabold text-[#5435EB] shadow-sm mb-5 select-none border border-[#ECE7FC]">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[11px] font-extrabold text-[#5435EB] shadow-sm mb-4 select-none border border-[#ECE7FC]">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
         참가자 화면 미리보기
       </div>
 
       {/* 모바일 폰 프레임 */}
       <div
-        className="preview-mobile-frame w-[280px] h-[550px] bg-white rounded-[36px] shadow-2xl border-[6px] border-white overflow-hidden relative flex items-center justify-center pointer-events-none select-none"
+        className="preview-mobile-frame w-[240px] h-fit bg-white rounded-[32px] shadow-2xl border-[5px] border-white overflow-hidden relative flex items-center justify-center pointer-events-none select-none"
         style={previewThemeVars}
       >
-        {/* 표준 모바일 규격 해상도로 1:1 렌더링 후 scale 하드웨어 가속 축소 */}
+        {/* 표준 모바일 규격 해상도로 1:1 렌더링 후 zoom으로 물리적 리사이징 축소 */}
         <div
           className="w-[390px] h-[760px] bg-white flex flex-col shrink-0"
           style={{
-            transform: "scale(0.718)",
-            transformOrigin: "center",
+            zoom: 0.6,
           }}
         >
           <MissionPageClient
