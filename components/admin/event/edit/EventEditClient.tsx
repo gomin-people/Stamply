@@ -59,7 +59,11 @@ export default function EventEditClient() {
 
   const handleEditSave = async () => {
     const isValid = stepRefs.every((r) => r.current?.validate());
-    if (!isValid) return;
+    if (!isValid) {
+      setCurrentStep(1);
+      toast.warning("필수 항목을 확인해주세요.");
+      return;
+    }
 
     const [step1Data, step2Data, step3Data] = stepRefs.map((r) =>
       r.current?.getData()
