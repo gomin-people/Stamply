@@ -81,7 +81,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle>(
           }
           
           /* 프리뷰 모바일 프레임 내부의 모든 요소들의 transition을 0s로 강제하여 드래그 시 엇박자 반응 딜레이 완벽 제거 */
-          .pointer-events-none * {
+          .preview-mobile-frame * {
             transition: none !important;
             transition-duration: 0s !important;
           }

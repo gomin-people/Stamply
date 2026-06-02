@@ -67,7 +67,7 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
 
       {/* 모바일 폰 프레임 */}
       <div
-        className="w-[280px] h-[550px] bg-white rounded-[36px] shadow-2xl border-[6px] border-white overflow-hidden relative flex items-center justify-center pointer-events-none select-none"
+        className="preview-mobile-frame w-[280px] h-[550px] bg-white rounded-[36px] shadow-2xl border-[6px] border-white overflow-hidden relative flex items-center justify-center pointer-events-none select-none"
         style={previewThemeVars}
       >
         {/* 표준 모바일 규격 해상도로 1:1 렌더링 후 scale 하드웨어 가속 축소 */}
