@@ -67,12 +67,16 @@ const BrochurePageItem = ({
         <span className="text-[11px] font-semibold uppercase tracking-widest text-gomin-primary-700">
           PAGE {String(index + 1).padStart(2, "0")}
         </span>
-        <span className="truncate text-[13px] font-medium text-gomin-black">
-          {page.file.name}
-        </span>
-        <span className="text-[11px] font-medium text-gomin-neutral-400">
-          {formatFileSize(page.file.size)}
-        </span>
+        {page.file && (
+          <>
+            <span className="truncate text-[13px] font-medium text-gomin-black">
+              {page.file.name}
+            </span>
+            <span className="text-[11px] font-medium text-gomin-neutral-400">
+              {formatFileSize(page.file.size)}
+            </span>
+          </>
+        )}
       </div>
 
       <div className="flex items-center gap-1.5">

@@ -45,7 +45,7 @@ const EventFormFooter = ({
   const [shake, setShake] = useState(0);
 
   const handleNext = () => {
-    if (isLastStep) {
+    if (isLastStep && !mode) {
       onComplete?.();
       return;
     }

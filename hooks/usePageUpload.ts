@@ -11,15 +11,24 @@ const MAX_PAGES = 10;
 
 export type UploadPage = {
   id: string;
-  file: File;
-  previewUrl: string; // blob URL (미리보기용)
+  file?: File;
+  previewUrl: string; // blob URL 또는 기존 이미지 URL
   url: string | null; // Storage 업로드 완료 후 URL
   path: string | null; // Storage 경로 (삭제 시 사용)
   isUploading: boolean;
 };
 
-const usePageUpload = () => {
-  const [pages, setPages] = useState<UploadPage[]>([]);
+const usePageUpload = (initialUrls?: string[]) => {
+  const [pages, setPages] = useState<UploadPage[]>(
+    () =>
+      initialUrls?.map((url) => ({
+        id: crypto.randomUUID(),
+        previewUrl: url,
+        url,
+        path: null,
+        isUploading: false,
+      })) ?? []
+  );
   const replaceInputRef = useRef<HTMLInputElement>(null);
   const replacingId = useRef<string | null>(null); // 교체 중인 페이지 id
 

@@ -62,7 +62,7 @@ export default function MissionItem({
             onClick={() =>
               onViewQR({
                 title: mission.title,
-                description: mission.description,
+                description: mission.description ?? "",
                 token: qrCode.token,
                 id: qrCode.id,
               })

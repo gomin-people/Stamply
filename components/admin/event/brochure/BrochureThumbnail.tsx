@@ -1,7 +1,7 @@
 "use client";
 
 type ThumbnailProps = {
-  file: File;
+  file?: File;
   previewUrl: string;
 };
 
@@ -10,7 +10,7 @@ const BrochureThumbnail = ({ file, previewUrl }: ThumbnailProps) => (
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img
       src={previewUrl}
-      alt={file.name}
+      alt={file?.name ?? ""}
       className="h-full w-full object-cover"
     />
   </div>
