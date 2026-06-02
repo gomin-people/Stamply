@@ -79,25 +79,26 @@ const BrochurePageItem = ({
         )}
       </div>
 
-      <div className="flex items-center gap-1.5">
-        <button
-          type="button"
-          onClick={onReplace}
-          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
-          aria-label="교체"
-        >
-          <RefreshCw className="size-3.5 text-gomin-neutral-400" />
-        </button>
-        <button
-          type="button"
-          onClick={onDelete}
-          disabled={disabled}
-          className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100 disabled:cursor-not-allowed disabled:opacity-40"
-          aria-label="삭제"
-        >
-          <Trash2 className="size-3.5 text-gomin-neutral-400" />
-        </button>
-      </div>
+      {!disabled && (
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={onReplace}
+            className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
+            aria-label="교체"
+          >
+            <RefreshCw className="size-3.5 text-gomin-neutral-400" />
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
+            aria-label="삭제"
+          >
+            <Trash2 className="size-3.5 text-gomin-neutral-400" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

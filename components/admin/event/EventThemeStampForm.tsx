@@ -14,10 +14,11 @@ type InitialData = {
 
 type Props = {
   initialData?: InitialData;
+  disabled?: boolean;
 };
 
 const EventThemeStampForm = forwardRef<StepFormHandle, Props>(
-  function EventThemeStampForm({ initialData }, ref) {
+  function EventThemeStampForm({ initialData, disabled = false }, ref) {
     const [stampPreviewUrl, setStampPreviewUrl] = useState<string | null>(
       initialData?.stampImageUrl ?? null
     );
@@ -73,8 +74,14 @@ const EventThemeStampForm = forwardRef<StepFormHandle, Props>(
             onPreviewChange={setStampPreviewUrl}
             onFileUrlChange={setStampFileUrl}
             onUploadingChange={setIsUploading}
+            disabled={disabled}
           />
-          <ThemeColorPicker h={h} onHueChange={setH} keyColor={keyColor} />
+          <ThemeColorPicker
+            h={h}
+            onHueChange={setH}
+            keyColor={keyColor}
+            disabled={disabled}
+          />
         </div>
 
         {/* 우측 실시간 미리보기 영역 */}

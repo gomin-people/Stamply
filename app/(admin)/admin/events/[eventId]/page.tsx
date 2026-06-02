@@ -106,7 +106,7 @@ const EventEditPage = () => {
                     : undefined
                 }
                 disabledFields={
-                  isAfter
+                  mode === "view" || isAfter
                     ? "all"
                     : isDuring
                       ? ["startDate", "endDate", "posterImageUrl", "production"]
@@ -118,7 +118,7 @@ const EventEditPage = () => {
               <EventBrochureForm
                 key={formKey}
                 ref={step2Ref}
-                disabled={isAfter || isDuring}
+                disabled={mode === "view" || isAfter || isDuring}
                 initialData={
                   event?.brochureImageUrl
                     ? { brochureImageUrl: event.brochureImageUrl }
@@ -130,6 +130,7 @@ const EventEditPage = () => {
               <EventThemeStampForm
                 key={formKey}
                 ref={step3Ref}
+                disabled={mode === "view" || isAfter || isDuring}
                 initialData={
                   event
                     ? {

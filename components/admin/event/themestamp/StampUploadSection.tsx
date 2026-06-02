@@ -8,6 +8,7 @@ type Props = {
   onPreviewChange: (url: string | null) => void;
   onFileUrlChange: (url: string | null) => void;
   onUploadingChange: (isUploading: boolean) => void;
+  disabled?: boolean;
 };
 
 /**
@@ -19,6 +20,7 @@ export default function StampUploadSection({
   onPreviewChange,
   onFileUrlChange,
   onUploadingChange,
+  disabled = false,
 }: Props) {
   const {
     fileInputRef,
@@ -73,15 +75,17 @@ export default function StampUploadSection({
             alt="스탬프 모양 미리보기"
             className="w-full h-full object-contain"
           />
-          <button
-            type="button"
-            onClick={handleRemoveImage}
-            className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md border border-gomin-neutral-100 flex items-center justify-center text-gomin-neutral-500 hover:text-gomin-black hover:scale-105 transition-all cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {!disabled && (
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md border border-gomin-neutral-100 flex items-center justify-center text-gomin-neutral-500 hover:text-gomin-black hover:scale-105 transition-all cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
-      ) : (
+      ) : !disabled ? (
         <div
           onClick={handleUploadBoxClick}
           className="w-[150px] h-[150px] rounded-2xl border-2 border-dashed border-gomin-neutral-200 bg-gomin-neutral-50/50 hover:bg-gomin-neutral-50 hover:border-gomin-neutral-300 flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-all p-3 text-center select-none"
@@ -100,7 +104,7 @@ export default function StampUploadSection({
             </p>
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* 느낌표 안내 문구 */}
       <div className="flex items-center gap-2.5 p-4 rounded-2xl bg-gomin-primary-100/50 border border-gomin-primary-100 text-gomin-primary-700/90 max-w-lg">

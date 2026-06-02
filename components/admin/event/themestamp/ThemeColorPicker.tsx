@@ -8,12 +8,18 @@ type Props = {
   h: number;
   onHueChange: (hue: number) => void;
   keyColor: string;
+  disabled?: boolean;
 };
 
 /**
  * 테마 컬러 피커 (슬라이더 + Hex 직접 입력 + 안내 문구) 컴포넌트
  */
-export default function ThemeColorPicker({ h, onHueChange, keyColor }: Props) {
+export default function ThemeColorPicker({
+  h,
+  onHueChange,
+  keyColor,
+  disabled = false,
+}: Props) {
   // 텍스트 필드 포커스 여부 및 입력 중인 문자열 상태 (슬라이더 드래그 시 렌더링 병목 및 피드백 루프 원천 차단)
   const [isFocused, setIsFocused] = useState(false);
   const [typingValue, setTypingValue] = useState("");
@@ -50,11 +56,12 @@ export default function ThemeColorPicker({ h, onHueChange, keyColor }: Props) {
           min="0"
           max="360"
           value={h}
+          disabled={disabled}
           onChange={(e) => {
             const newH = Number(e.target.value);
             onHueChange(newH);
           }}
-          className="theme-hue-slider w-full h-[18px] rounded-full appearance-none cursor-pointer outline-none shadow-inner border border-black/5"
+          className="theme-hue-slider w-full h-[18px] rounded-full appearance-none outline-none shadow-inner border border-black/5 disabled:cursor-not-allowed disabled:opacity-50"
           style={
             {
               background:
@@ -84,8 +91,9 @@ export default function ThemeColorPicker({ h, onHueChange, keyColor }: Props) {
               setIsFocused(false);
             }}
             onChange={(e) => handleHexInputChange(e.target.value)}
+            disabled={disabled}
             placeholder="#5435EB"
-            className="h-12 w-32 bg-white border border-gomin-neutral-200 rounded-xl px-3 font-mono text-sm font-bold text-gomin-neutral-700 uppercase focus:outline-none focus:border-gomin-neutral-400 focus:ring-1 focus:ring-gomin-neutral-400 shadow-sm transition-all"
+            className="h-12 w-32 bg-white border border-gomin-neutral-200 rounded-xl px-3 font-mono text-sm font-bold text-gomin-neutral-700 uppercase focus:outline-none focus:border-gomin-neutral-400 focus:ring-1 focus:ring-gomin-neutral-400 shadow-sm transition-all disabled:cursor-not-allowed disabled:opacity-50"
           />
           <span className="text-xs font-bold text-gomin-neutral-400 leading-normal max-w-lg">
             ※ 입력하신 색상의 색조(Hue)만 추출하여 반영하며, 모바일 화면
