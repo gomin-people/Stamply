@@ -1,5 +1,6 @@
 import { Check, Gift, Users, Zap } from "lucide-react";
 import DashboardKpiCard from "@/components/admin/dashboard/DashboardKpiCard";
+import ParticipantAnalysisChart from "@/components/admin/dashboard/ParticipantAnalysisChart";
 
 const dashboardPanelClassName =
   "rounded-xl border border-gomin-neutral-100 bg-white";
@@ -75,9 +76,9 @@ const DashboardPage = () => {
         <div className="col-span-8 flex flex-col gap-4">
           <section
             aria-label="참여자 수 분석"
-            className={`${dashboardPanelClassName} min-h-88`}
+            className={`${dashboardPanelClassName} overflow-hidden`}
           >
-            {/* 날짜별/시간대별/피크 시간대 참여자 추이 차트 */}
+            <ParticipantAnalysisChart />
           </section>
 
           <section
