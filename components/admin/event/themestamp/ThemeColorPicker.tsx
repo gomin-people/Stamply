@@ -93,8 +93,8 @@ export default function ThemeColorPicker({ h, onHueChange, keyColor }: Props) {
       </div>
 
       {/* 느낌표 안내 문구 */}
-      <div className="flex items-start gap-2.5 p-4 rounded-2xl bg-gomin-primary-100/50 border border-gomin-primary-100 text-gomin-primary-700/90">
-        <Info className="w-5 h-5 shrink-0 mt-0.5" />
+      <div className="flex items-center gap-2.5 p-4 rounded-2xl bg-gomin-primary-100/50 border border-gomin-primary-100 text-gomin-primary-700/90">
+        <Info className="w-5 h-5 shrink-0" />
         <p className="text-xs font-bold leading-normal">
           선택한 테마 색상은 진입 페이지, 설문조사 등 행사의 모든 페이지에 일괄
           적용됩니다.
