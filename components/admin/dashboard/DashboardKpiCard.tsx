@@ -30,7 +30,7 @@ const DashboardKpiCard = ({
     >
       <div
         className={cn(
-          "flex size-12 items-center justify-center rounded-xl",
+          "flex size-12 items-center justify-center rounded-xl mx-1",
           colorClassNames.icon
         )}
       >

@@ -86,16 +86,15 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     ([, config]) => config.theme ?? config.color
   );
 
-  if (!colorConfig.length) {
-    return null;
-  }
-
   return (
     <style
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
+${
+  colorConfig.length
+    ? `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -105,6 +104,15 @@ ${colorConfig
     return color ? `  --color-${key}: ${color};` : null;
   })
   .join("\n")}
+}
+`
+    : ""
+}
+${prefix} [data-chart=${id}] .recharts-wrapper:focus,
+${prefix} [data-chart=${id}] .recharts-surface:focus,
+${prefix} [data-chart=${id}] .recharts-surface *:focus,
+${prefix} [data-chart=${id}] [tabindex]:focus {
+  outline: none !important;
 }
 `
           )

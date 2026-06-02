@@ -32,8 +32,8 @@ type AgeData = {
 const totalParticipants = 24381;
 
 const genderData: GenderData[] = [
-  { label: "여성", value: 58, color: "#5435EB" },
-  { label: "남성", value: 38, color: "#FF5C85" },
+  { label: "여성", value: 58, color: "#FF5C85" },
+  { label: "남성", value: 38, color: "#5435EB" },
   { label: "기타", value: 4, color: "#FFB547" },
 ];
 
@@ -87,11 +87,11 @@ const ParticipantDemographicsChart = () => {
 const GenderDonutChart = () => {
   return (
     <div className="w-full">
-      <div className="relative mx-auto h-[186px] w-[220px]">
+      <div className="relative mx-auto h-[190px] w-[220px]">
         <ChartContainer
           config={genderChartConfig}
-          className="aspect-auto h-[186px] w-[220px]"
-          initialDimension={{ width: 220, height: 186 }}
+          className="aspect-auto h-[190px] w-[220px]"
+          initialDimension={{ width: 220, height: 190 }}
         >
           <PieChart accessibilityLayer>
             <ChartTooltip
@@ -110,8 +110,8 @@ const GenderDonutChart = () => {
               data={genderData}
               dataKey="value"
               nameKey="label"
-              innerRadius={56}
-              outerRadius={92}
+              innerRadius={54}
+              outerRadius={86}
               startAngle={90}
               endAngle={-270}
               stroke="none"

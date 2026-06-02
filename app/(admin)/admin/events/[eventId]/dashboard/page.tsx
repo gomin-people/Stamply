@@ -1,5 +1,6 @@
 import { Check, Gift, Users, Zap } from "lucide-react";
 import DashboardKpiCard from "@/components/admin/dashboard/DashboardKpiCard";
+import MissionCompletionStatus from "@/components/admin/dashboard/MissionCompletionStatus";
 import ParticipantAnalysisChart from "@/components/admin/dashboard/ParticipantAnalysisChart";
 import ParticipantDemographicsChart from "@/components/admin/dashboard/ParticipantDemographicsChart";
 
@@ -55,6 +56,70 @@ const dashboardCounts: Record<
   rewardClaimed: { today: 9847, total: 14109 },
 };
 
+const missionCompletionData = [
+  {
+    id: 1,
+    title:
+      "슈가버블 · 솜사탕 스탬프슈가버블 · 솜사탕 스탬프슈가버블 · 솜사탕 스탬프",
+    completedCount: 7128712,
+    completionRate: 92.4,
+  },
+  {
+    id: 2,
+    title: "노티드 · 도넛 미션",
+    completedCount: 6802,
+    completionRate: 88.1,
+  },
+  {
+    id: 3,
+    title: "블루보틀 · 컵 디자인",
+    completedCount: 6302,
+    completionRate: 81.7,
+  },
+  {
+    id: 4,
+    title: "어메이즈 · 포토부스",
+    completedCount: 5887,
+    completionRate: 76.3,
+  },
+  {
+    id: 5,
+    title: "마뗑킴 · 시즌 굿즈",
+    completedCount: 5244,
+    completionRate: 68.0,
+  },
+  {
+    id: 6,
+    title: "아우어홈 · 인증샷 챌린지",
+    completedCount: 4189,
+    completionRate: 54.3,
+  },
+  {
+    id: 7,
+    title: "젠틀몬스터 · QR 미션",
+    completedCount: 3521,
+    completionRate: 45.7,
+  },
+  {
+    id: 8,
+    title: "코오롱 · 친환경 굿즈 수령",
+    completedCount: 2108,
+    completionRate: 27.4,
+  },
+  {
+    id: 9,
+    title: "탬버린즈 · 향기 카드",
+    completedCount: 1784,
+    completionRate: 23.2,
+  },
+  {
+    id: 10,
+    title: "아더에러 · 스타일 체크",
+    completedCount: 1216,
+    completionRate: 15.8,
+  },
+];
+
 const DashboardPage = () => {
   return (
     <div className="px-8 pt-0 pb-8">
@@ -93,9 +158,9 @@ const DashboardPage = () => {
         <div className="col-span-4 flex flex-col gap-4">
           <section
             aria-label="미션별 완료 현황"
-            className={`${dashboardPanelClassName} min-h-168`}
+            className={`${dashboardPanelClassName} overflow-visible`}
           >
-            {/* 미션명, 완료자 수, 완료율, 진행률 바 */}
+            <MissionCompletionStatus missions={missionCompletionData} />
           </section>
         </div>
       </div>
