@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useRouter } from "next/navigation";
 import BrochureButton from "@/components/user/mission/BrochureButton";
 import ViewToggle from "@/components/user/mission/ViewToggle";
@@ -33,6 +33,7 @@ type MissionPageClientProps = {
   event: EventData;
   eventId: string;
   initialMissions: InitialMission[];
+  isPreview?: boolean;
 };
 
 type ViewMode = "list" | "grid";
@@ -48,36 +49,42 @@ const MissionPageClient = ({
   event,
   eventId,
   initialMissions,
+  isPreview = false,
 }: MissionPageClientProps) => {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
-  const { data, isError } = useParticipantMissionsQuery();
+  const { data, isError } = useParticipantMissionsQuery({
+    enabled: !isPreview,
+  });
 
   // 1순위: 로그인/참여 완료 세션 정보가 반영된 React Query 실시간 데이터
   // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
-  const missions: ClientMission[] = data
-    ? (data.missions as ParticipantMission[]).map((m: ParticipantMission) => ({
-        id: m.id,
-        title: m.title,
-        description: m.description ?? "",
-        isStamped: m.isCompleted,
-      }))
-    : initialMissions.map((m: InitialMission) => ({
-        id: m.id,
-        title: m.title,
-        description: m.description ?? "",
-        isStamped: !!m.isCompleted,
-      }));
+  const missions: ClientMission[] =
+    data && !isPreview
+      ? (data.missions as ParticipantMission[]).map(
+          (m: ParticipantMission) => ({
+            id: m.id,
+            title: m.title,
+            description: m.description ?? "",
+            isStamped: m.isCompleted,
+          })
+        )
+      : initialMissions.map((m: InitialMission) => ({
+          id: m.id,
+          title: m.title,
+          description: m.description ?? "",
+          isStamped: !!m.isCompleted,
+        }));
 
   // 미완료된 미션 수 계산
   const incompleteCount = missions.filter((m) => !m.isStamped).length;
   const isAllCompleted = incompleteCount === 0;
 
-  const hasError = isError;
-  const isMissionsEmpty = missions.length === 0;
+  const hasError = isError && !isPreview;
+  const isMissionsEmpty = missions.length === 0 && !isPreview;
   const showBrochureAndActionButtons = !hasError && !isMissionsEmpty;
 
   // QR 체크 안내 또는 완료 페이지 이동
@@ -98,7 +105,9 @@ const MissionPageClient = ({
   const eventName = event?.title || event?.name || `이벤트 #${eventId}`;
 
   return (
-    <div className="flex flex-col min-h-screen bg-gomin-white pb-28">
+    <div
+      className={`flex flex-col relative bg-gomin-white ${isPreview ? "h-full pb-20" : "min-h-screen pb-28"}`}
+    >
       <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
@@ -191,6 +200,7 @@ const MissionPageClient = ({
         <FloatingActionButton
           isAllCompleted={isAllCompleted}
           onClick={handleAction}
+          isPreview={isPreview}
         />
       )}
 
@@ -204,4 +214,4 @@ const MissionPageClient = ({
   );
 };
 
-export default MissionPageClient;
+export default memo(MissionPageClient);

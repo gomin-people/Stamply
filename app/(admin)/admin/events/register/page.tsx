@@ -5,7 +5,7 @@ import EventFormStepper from "@/components/admin/event/EventFormStepper";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
-import EventStep3Form from "@/components/admin/event/EventStep3Form";
+import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import { type StepFormHandle } from "@/types";
 
 const TOTAL_STEPS = 3;
@@ -48,7 +48,7 @@ export default function CreateEventPage() {
             <EventBrochureForm ref={step2Ref} />
           </div>
           <div className={currentStep !== 3 ? "hidden" : ""}>
-            <EventStep3Form ref={step3Ref} />
+            <EventThemeStampForm ref={step3Ref} />
           </div>
         </div>
 
