@@ -78,14 +78,26 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
     setIsPosterUploading(true);
   };
 
-  const handlePosterUploadSuccess = (url: string) => {
-    setIsPosterUploading(false);
-    setForm((prev) => ({ ...prev, posterImageUrl: url }));
-  };
+    const handlePosterUploadSuccess = (url: string) => {
+      setIsPosterUploading(false);
+      const nextForm = { ...form, posterImageUrl: url };
+      setForm(nextForm);
 
-  const handlePosterRemove = () => {
-    setForm((prev) => ({ ...prev, posterImageUrl: "" }));
-  };
+      if (zodError) {
+        const result = eventInfoSchema.safeParse(nextForm);
+        setZodError(result.error ?? null);
+      }
+    };
+
+    const handlePosterRemove = () => {
+      const nextForm = { ...form, posterImageUrl: "" };
+      setForm(nextForm);
+
+      if (zodError) {
+        const result = eventInfoSchema.safeParse(nextForm);
+        setZodError(result.error ?? null);
+      }
+    };
 
   const validate = useCallback(() => {
     const result = eventInfoSchema.safeParse(form);
