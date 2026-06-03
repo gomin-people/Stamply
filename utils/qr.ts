@@ -10,13 +10,11 @@ type GetQrScanTargetOptions = {
  * @returns 도메인이 포함된 전체 URL
  */
 export function getMissionCheckUrl(token: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  return `${baseUrl}/api/v1/qr/mission-check/${token}`;
+  return `${getCurrentOrigin()}/api/v1/qr/mission-check/${token}`;
 }
 
 export function getEntryQrUrl(token: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  return `${baseUrl}/api/v1/qr/entry/${token}`;
+  return `${getCurrentOrigin()}/api/v1/qr/entry/${token}`;
 }
 
 /**
