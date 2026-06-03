@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 type Props = {
   value: string;
   error?: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 const EventTitleField = memo(function EventTitleField({
   value,
   error,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -27,6 +29,7 @@ const EventTitleField = memo(function EventTitleField({
         placeholder="행사명을 입력해주세요."
         maxLength={20}
         aria-invalid={!!error}
+        disabled={disabled}
       />
       <div className="h-3">
         <FieldError>{error}</FieldError>

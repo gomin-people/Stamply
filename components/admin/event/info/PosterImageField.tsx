@@ -18,6 +18,8 @@ import {
 
 type Props = {
   error?: string;
+  initialImageUrl?: string;
+  disabled?: boolean;
   onUploadStart: () => void;
   onUploadSuccess: (url: string) => void;
   onRemove: () => void;
@@ -25,11 +27,15 @@ type Props = {
 
 const PosterImageField = memo(function PosterImageField({
   error,
+  initialImageUrl,
+  disabled,
   onUploadStart,
   onUploadSuccess,
   onRemove,
 }: Props) {
-  const [posterPreview, setPosterPreview] = useState<string | null>(null);
+  const [posterPreview, setPosterPreview] = useState<string | null>(
+    initialImageUrl ?? null
+  );
   const [posterPath, setPosterPath] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | undefined>();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,7 +80,7 @@ const PosterImageField = memo(function PosterImageField({
         포스터 이미지
         <span className="text-destructive">*</span>
       </FieldTitle>
-      <div className="relative aspect-[2/3] w-full">
+      <div className="relative aspect-2/3 w-full">
         {posterPreview ? (
           <div className="relative h-full w-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -83,22 +89,24 @@ const PosterImageField = memo(function PosterImageField({
               alt="포스터 미리보기"
               className="h-full w-full rounded-lg object-cover"
             />
-            <Button
-              type="button"
-              variant="secondary"
-              size="icon"
-              onClick={handleRemove}
-              className="absolute right-2 top-2 h-6 w-6 rounded-full bg-background/80 hover:bg-background shadow-md"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">삭제</span>
-            </Button>
+            {!disabled && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                onClick={handleRemove}
+                className="absolute right-2 top-2 h-6 w-6 rounded-full bg-background/80 hover:bg-background shadow-md"
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">삭제</span>
+              </Button>
+            )}
           </div>
         ) : (
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
+            disabled={isUploading || disabled}
             className={cn(
               "flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50 disabled:opacity-50",
               error ? "border-destructive" : "border-input"
@@ -114,6 +122,7 @@ const PosterImageField = memo(function PosterImageField({
         accept="image/jpg,image/jpeg,image/png"
         className="hidden"
         onChange={handleFileChange}
+        disabled={disabled}
       />
       <FieldDescription className="text-xs">
         2 : 3 비율 · 1080 × 1620 권장

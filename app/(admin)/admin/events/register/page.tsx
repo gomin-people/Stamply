@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
@@ -10,7 +11,6 @@ import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import { type StepFormHandle } from "@/types";
 import { useCreateEventMutation } from "@/features/admin/events/adminEventMutations";
 import type { EventCreatePayload } from "@/features/shared/types/stamply";
-import { toast } from "sonner";
 
 const TOTAL_STEPS = 3;
 

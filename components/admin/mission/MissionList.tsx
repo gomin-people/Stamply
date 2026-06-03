@@ -6,7 +6,8 @@ import type { AdminMissionDetail } from "@/types/models/admin";
 import MissionItem from "@/components/admin/mission/MissionItem";
 import MissionDialog from "@/components/admin/mission/MissionDialog";
 import MissionDeleteDialog from "@/components/admin/mission/MissionDeleteDialog";
-import QRDialog from "@/components/admin/mission/QRDialog";
+import QRDialog from "@/components/admin/common/qr/QRDialog";
+import { getMissionCheckUrl } from "@/utils/qr";
 import { Mission } from "@/types";
 import {
   useDeleteAdminMissionMutation,
@@ -25,6 +26,7 @@ export default function MissionList({ missions }: Props) {
   const [deletingMission, setDeletingMission] = useState<Mission | null>(null);
   const [viewingQR, setViewingQR] = useState<{
     title: string;
+    description: string;
     token: string;
     id: number;
   } | null>(null);
@@ -130,9 +132,10 @@ export default function MissionList({ missions }: Props) {
       >
         {viewingQR && (
           <QRDialog
-            missionTitle={viewingQR.title}
-            token={viewingQR.token}
-            qrId={viewingQR.id}
+            title={viewingQR.title}
+            url={getMissionCheckUrl(viewingQR.token)}
+            filename={`${viewingQR.title}_${viewingQR.id}.png`}
+            description={viewingQR.description}
           />
         )}
       </Dialog>

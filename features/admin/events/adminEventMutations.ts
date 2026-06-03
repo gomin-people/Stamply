@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import { toSnakeKeys } from "@/utils/case";
 import {
@@ -59,9 +59,15 @@ export function useCreateEventMutation() {
  * @returns React Query 행사 수정 mutation
  */
 export function useUpdateEventMutation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ eventId, payload }: UpdateEventVariables) =>
       updateAdminEvent(eventId, payload),
+    onSuccess: (_, { eventId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "events", "detail", eventId],
+      });
+    },
   });
 }
 

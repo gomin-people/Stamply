@@ -41,7 +41,6 @@ const EVENT_REQUIRED_FIELDS = [
   "start_time",
   "end_time",
   "location",
-  "production",
   "poster_image_url",
 ] as const;
 

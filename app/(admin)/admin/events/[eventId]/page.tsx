@@ -1,44 +1,28 @@
-"use client";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { fetchAdminEvent } from "@/features/admin/events/adminEventQueries";
+import EventEditClient from "@/components/admin/event/edit/EventEditClient";
 
-import { useState } from "react";
-import EventFormStepper from "@/components/admin/event/EventFormStepper";
-import EventFormFooter from "@/components/admin/event/EventFormFooter";
-import EventInfoForm from "@/components/admin/event/EventInfoForm";
-import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
-import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
+export default async function EventEditPage({
+  params,
+}: {
+  params: Promise<{ eventId: string }>;
+}) {
+  const eventId = await params.then(({ eventId }) => Number(eventId));
 
-const TOTAL_STEPS = 3;
+  const queryClient = new QueryClient();
 
-const stepComponents = [EventInfoForm, EventBrochureForm, EventThemeStampForm];
-
-export default function EventEditPage() {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const StepForm = stepComponents[currentStep - 1];
-
-  const handlePrev = () => setCurrentStep((s) => Math.max(1, s - 1));
-  const handleNext = () => setCurrentStep((s) => Math.min(TOTAL_STEPS, s + 1));
+  await queryClient.prefetchQuery({
+    queryKey: ["admin", "events", "detail", eventId],
+    queryFn: () => fetchAdminEvent(eventId),
+  });
 
   return (
-    <div className="p-8">
-      <div className="rounded-xl border border-gomin-neutral-100 bg-white">
-        <EventFormStepper currentStep={currentStep} />
-
-        <div className="p-8">
-          <StepForm />
-        </div>
-
-        <div className="px-8 pb-8">
-          <EventFormFooter
-            currentStep={currentStep}
-            totalSteps={TOTAL_STEPS}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            isLastStep={currentStep === TOTAL_STEPS}
-            completeLabel="행사 수정 완료"
-          />
-        </div>
-      </div>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <EventEditClient />
+    </HydrationBoundary>
   );
 }

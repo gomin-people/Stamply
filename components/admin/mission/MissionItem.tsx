@@ -10,7 +10,12 @@ type Props = {
   mission: AdminMissionDetail;
   index: number;
   onToggleActive: (missionId: number, checked: boolean) => void;
-  onViewQR: (info: { title: string; token: string; id: number }) => void;
+  onViewQR: (info: {
+    title: string;
+    description: string;
+    token: string;
+    id: number;
+  }) => void;
   onEdit: (mission: AdminMissionDetail) => void;
   onDelete: (mission: Mission) => void;
 };
@@ -57,6 +62,7 @@ export default function MissionItem({
             onClick={() =>
               onViewQR({
                 title: mission.title,
+                description: mission.description ?? "",
                 token: qrCode.token,
                 id: qrCode.id,
               })

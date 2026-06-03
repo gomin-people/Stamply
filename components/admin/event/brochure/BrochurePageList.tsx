@@ -20,9 +20,16 @@ type Props = {
   onReplace: (id: string) => void;
   onDelete: (id: string) => void;
   onDragEnd: (event: DragEndEvent) => void;
+  disabled?: boolean;
 };
 
-const BrochurePageList = ({ pages, onReplace, onDelete, onDragEnd }: Props) => {
+const BrochurePageList = ({
+  pages,
+  onReplace,
+  onDelete,
+  onDragEnd,
+  disabled = false,
+}: Props) => {
   const sensors = useSensors(useSensor(PointerSensor));
 
   return (
@@ -43,6 +50,7 @@ const BrochurePageList = ({ pages, onReplace, onDelete, onDragEnd }: Props) => {
               index={index}
               onReplace={() => onReplace(page.id)}
               onDelete={() => onDelete(page.id)}
+              disabled={disabled}
             />
           ))}
         </div>

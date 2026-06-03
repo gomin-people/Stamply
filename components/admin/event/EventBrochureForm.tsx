@@ -7,25 +7,36 @@ import BrochurePageList from "./brochure/BrochurePageList";
 import BrochureAddButton from "./brochure/BrochureAddButton";
 import usePageUpload, { MAX_PAGES } from "@/hooks/usePageUpload";
 import { type StepFormHandle } from "@/types";
+import { toast } from "sonner";
 
-const EventBrochureForm = forwardRef<StepFormHandle>(
-  function EventBrochureForm(_, ref) {
+type Props = {
+  initialData?: { brochureImageUrl?: string[] };
+  disabled?: boolean;
+};
+
+const EventBrochureForm = forwardRef<StepFormHandle, Props>(
+  function EventBrochureForm({ initialData, disabled = false }, ref) {
     const {
       pages,
       addFiles,
       replaceInputRef,
       handleUploadChange,
-      handleAddChange,
       handleReplaceChange,
       handleDelete,
       handleReplace,
       handleDragEnd,
-    } = usePageUpload();
+    } = usePageUpload(initialData?.brochureImageUrl);
 
     useImperativeHandle(
       ref,
       () => ({
-        validate: () => true,
+        validate: () => {
+          if (pages.some((p) => p.isUploading)) {
+            toast.warning("이미지 업로드가 완료될 때까지 기다려주세요.");
+            return false;
+          }
+          return true;
+        },
         getData: () => ({
           brochureImageUrl: pages
             .filter((p) => p.url !== null)
@@ -41,6 +52,7 @@ const EventBrochureForm = forwardRef<StepFormHandle>(
           onChange={handleUploadChange}
           onDrop={addFiles}
           isFull={pages.length >= MAX_PAGES}
+          disabled={disabled}
         />
 
         <BrochurePageStatus count={pages.length} />
@@ -50,10 +62,11 @@ const EventBrochureForm = forwardRef<StepFormHandle>(
           onReplace={handleReplace}
           onDelete={handleDelete}
           onDragEnd={handleDragEnd}
+          disabled={disabled}
         />
 
-        {pages.length < MAX_PAGES && (
-          <BrochureAddButton onChange={handleAddChange} />
+        {pages.length < MAX_PAGES && !disabled && (
+          <BrochureAddButton onChange={handleUploadChange} />
         )}
 
         <input

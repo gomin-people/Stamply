@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input";
 type Props = {
   value: string;
   error?: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 const EventContactEmailField = memo(function EventContactEmailField({
   value,
   error,
+  disabled,
   onChange,
 }: Props) {
   return (
@@ -30,6 +32,7 @@ const EventContactEmailField = memo(function EventContactEmailField({
           className="pl-8"
           maxLength={254}
           aria-invalid={!!error}
+          disabled={disabled}
         />
       </div>
       <div className="h-3">
