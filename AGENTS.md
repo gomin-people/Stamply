@@ -58,9 +58,12 @@ pnpm test
 확인 기준:
 
 - 2026-06-01 06:10:30 UTC에 Supabase SQL Editor에서 `pg_catalog`, `information_schema`, `pg_policies`, `storage.buckets`를 조회한 결과를 기준으로 작성한다.
+- 2026-06-03에 Supabase SQL Editor에서 `pg_class`, `pg_policies`, `information_schema.role_table_grants`, `pg_publication_rel`을 추가 조회한 결과를 RLS/권한/Realtime 판단 기준에 반영한다.
 - 로컬 `supabase/migrations/` 디렉터리는 현재 비어 있다.
-- 모든 테이블은 `public` 스키마의 일반 테이블(`relkind = r`)이다.
-- 모든 테이블은 RLS가 활성화되어 있고(`rls_enabled = true`), 강제 RLS는 꺼져 있다(`rls_forced = false`).
+- 모든 앱 테이블은 `public` 스키마의 일반 테이블(`relkind = r`)이다.
+- `public` 스키마의 모든 앱 테이블은 RLS가 활성화되어 있고(`rls_enabled = true`), 강제 RLS는 꺼져 있다(`rls_forced = false`).
+- `realtime.messages`는 파티션 테이블(`relkind = p`)이며 RLS가 활성화되어 있고, 강제 RLS는 꺼져 있다.
+- `realtime.schema_migrations`, `realtime.subscription`은 RLS가 활성화되어 있지 않다.
 - `public` 스키마에 view와 사용자 정의 trigger는 없다.
 
 ### 테이블
@@ -211,6 +214,17 @@ pnpm test
 | `qr_codes` | `Enable select for authenticated users only` | `SELECT` | `authenticated` | `true`                   | -                        |
 
 조회 결과 기준으로 `mission_completions`, `participant_users`, `user_info`에는 명시적 RLS 정책이 없다. 이 테이블 접근 경로를 바꿀 때는 service role 사용 여부와 RLS 동작을 먼저 검증한다.
+
+### 권한 및 Realtime 참고사항
+
+- `information_schema.role_table_grants` 조회 기준으로 `public` 앱 테이블에 `anon`, `authenticated`, `service_role`의 테이블 권한이 넓게 부여되어 있다.
+- 하지만 `public` 앱 테이블은 RLS가 활성화되어 있으므로 실제 클라이언트 접근 가능 여부는 GRANT만이 아니라 RLS 정책에 의해 결정된다.
+- 현재 `missions`, `qr_codes`는 `authenticated` SELECT 정책의 `USING`이 `true`라 인증 사용자가 모든 row를 조회할 수 있는 정책 상태다. 이 테이블의 브라우저 직접 조회 경로를 만들 때는 행사 소유자/참여자 기준으로 정책을 좁힐지 먼저 검토한다.
+- 현재 `participant_users`, `mission_completions`, `user_info`에는 명시적 RLS 정책이 없으므로 `anon`/`authenticated` 클라이언트 직접 조회는 정책상 허용되지 않는 것으로 봐야 한다.
+- 관리자 통계처럼 `participant_users`, `mission_completions`를 집계해야 하는 기능은 Route Handler에서 세션 클라이언트로 `events` 소유권을 먼저 확인한 뒤, 서버 전용 service role 클라이언트로 집계하는 방식을 우선한다.
+- Supabase Realtime Broadcast private channel을 사용하려면 `realtime.messages`에 topic 접근을 제한하는 RLS 정책을 추가하거나 현재 정책 상태를 검증해야 한다. 조회 결과 기준으로 `realtime.messages`에는 명시적 정책이 없다.
+- `supabase_realtime` publication 조회 결과 현재 등록된 public 테이블이 없었다. Postgres Changes 직접 구독을 쓰려면 대상 테이블 publication 등록과 RLS/payload 노출 검증이 필요하다.
+- 관리자 대시보드 KPI는 Postgres Changes 직접 구독보다 Broadcast 기반 invalidation을 우선 검토한다. 이때 브라우저는 row payload를 직접 받지 않고, Broadcast 신호를 받은 뒤 `/dashboard/kpis` API를 다시 요청한다.
 
 ### RPC
 

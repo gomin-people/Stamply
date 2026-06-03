@@ -63,11 +63,9 @@ const ParticipantDemographicsChart = () => {
   return (
     <div className="flex h-full min-h-74 flex-col px-4 py-4">
       <div className="flex flex-row items-end gap-3">
-        <h2 className="text-lg font-semibold text-gomin-black">
-          참여자 인구 통계
-        </h2>
+        <h2 className="text-lg font-semibold text-gomin-black">달성자 통계</h2>
         <p className="text-sm font-medium text-gomin-neutral-400">
-          성별 및 연령대 분포
+          달성자 성별 및 연령대 분포
         </p>
       </div>
 

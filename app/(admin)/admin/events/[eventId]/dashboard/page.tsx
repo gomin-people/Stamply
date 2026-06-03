@@ -123,10 +123,7 @@ const missionCompletionData = [
 const DashboardPage = () => {
   return (
     <div className="px-8 pt-0 pb-8">
-      <div className="mb-2 flex justify-end">
-        <span className="text-sm text-gomin-neutral-400">오늘 / 전체 기준</span>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 mt-8">
         {dashboardCardMeta.map((card) => (
           <DashboardKpiCard
             key={card.key}
@@ -148,7 +145,7 @@ const DashboardPage = () => {
           </section>
 
           <section
-            aria-label="참여자 인구통계"
+            aria-label="달성자 통계"
             className={`${dashboardPanelClassName} overflow-hidden`}
           >
             <ParticipantDemographicsChart />
