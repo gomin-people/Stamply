@@ -46,6 +46,11 @@ const conflictResponse = {
   content: jsonContent,
 };
 
+const notImplementedResponse = {
+  description: "아직 구현되지 않은 요청입니다.",
+  content: jsonContent,
+};
+
 const eventIdParameter = {
   name: "eventId",
   in: "path",
@@ -252,6 +257,70 @@ const openApiDocument = {
           "200": okResponse,
           "400": badRequestResponse,
           "404": notFoundResponse,
+          "500": errorResponse,
+        },
+      },
+    },
+    "/api/v1/admin/events/{eventId}/dashboard/kpis": {
+      get: {
+        tags: ["관리자 대시보드"],
+        summary: "대시보드 KPI 카드 조회",
+        operationId: "getAdminEventDashboardKpis",
+        parameters: [eventIdParameter],
+        responses: {
+          "200": okResponse,
+          "400": badRequestResponse,
+          "401": unauthorizedResponse,
+          "404": notFoundResponse,
+          "501": notImplementedResponse,
+          "500": errorResponse,
+        },
+      },
+    },
+    "/api/v1/admin/events/{eventId}/dashboard/participant-analysis": {
+      get: {
+        tags: ["관리자 대시보드"],
+        summary: "대시보드 참여자 수 분석 조회",
+        operationId: "getAdminEventDashboardParticipantAnalysis",
+        parameters: [eventIdParameter],
+        responses: {
+          "200": okResponse,
+          "400": badRequestResponse,
+          "401": unauthorizedResponse,
+          "404": notFoundResponse,
+          "501": notImplementedResponse,
+          "500": errorResponse,
+        },
+      },
+    },
+    "/api/v1/admin/events/{eventId}/dashboard/achiever-statistics": {
+      get: {
+        tags: ["관리자 대시보드"],
+        summary: "대시보드 달성자 통계 조회",
+        operationId: "getAdminEventDashboardAchieverStatistics",
+        parameters: [eventIdParameter],
+        responses: {
+          "200": okResponse,
+          "400": badRequestResponse,
+          "401": unauthorizedResponse,
+          "404": notFoundResponse,
+          "501": notImplementedResponse,
+          "500": errorResponse,
+        },
+      },
+    },
+    "/api/v1/admin/events/{eventId}/dashboard/missions": {
+      get: {
+        tags: ["관리자 대시보드"],
+        summary: "대시보드 미션별 완료 현황 조회",
+        operationId: "getAdminEventDashboardMissions",
+        parameters: [eventIdParameter],
+        responses: {
+          "200": okResponse,
+          "400": badRequestResponse,
+          "401": unauthorizedResponse,
+          "404": notFoundResponse,
+          "501": notImplementedResponse,
           "500": errorResponse,
         },
       },
