@@ -7,18 +7,9 @@ import {
   fetchAdminDashboardMissions,
   fetchAdminDashboardParticipantAnalysis,
 } from "./adminDashboardApi";
+import { adminDashboardQueryKeys } from "@/constants/adminDashboardQueryKeys";
 
-// 어드민 대시보드 React Query key 모음
-export const adminDashboardQueryKeys = {
-  kpis: (eventId: number | null | undefined) =>
-    ["admin", "events", eventId, "dashboard", "kpis"] as const,
-  participantAnalysis: (eventId: number | null | undefined) =>
-    ["admin", "events", eventId, "dashboard", "participant-analysis"] as const,
-  achieverStatistics: (eventId: number | null | undefined) =>
-    ["admin", "events", eventId, "dashboard", "achiever-statistics"] as const,
-  missions: (eventId: number | null | undefined) =>
-    ["admin", "events", eventId, "dashboard", "missions"] as const,
-};
+const DASHBOARD_QUERY_STALE_TIME = 60000;
 
 /**
  * 어드민 대시보드 KPI 카드 데이터를 조회합니다.
@@ -31,6 +22,8 @@ export function useAdminDashboardKpisQuery(eventId: number | null | undefined) {
     queryKey: adminDashboardQueryKeys.kpis(eventId),
     queryFn: () => fetchAdminDashboardKpis(eventId as number),
     enabled: isValidEventId(eventId),
+    staleTime: DASHBOARD_QUERY_STALE_TIME,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -47,6 +40,8 @@ export function useAdminDashboardParticipantAnalysisQuery(
     queryKey: adminDashboardQueryKeys.participantAnalysis(eventId),
     queryFn: () => fetchAdminDashboardParticipantAnalysis(eventId as number),
     enabled: isValidEventId(eventId),
+    staleTime: DASHBOARD_QUERY_STALE_TIME,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -63,6 +58,8 @@ export function useAdminDashboardAchieverStatisticsQuery(
     queryKey: adminDashboardQueryKeys.achieverStatistics(eventId),
     queryFn: () => fetchAdminDashboardAchieverStatistics(eventId as number),
     enabled: isValidEventId(eventId),
+    staleTime: DASHBOARD_QUERY_STALE_TIME,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -79,6 +76,8 @@ export function useAdminDashboardMissionsQuery(
     queryKey: adminDashboardQueryKeys.missions(eventId),
     queryFn: () => fetchAdminDashboardMissions(eventId as number),
     enabled: isValidEventId(eventId),
+    staleTime: DASHBOARD_QUERY_STALE_TIME,
+    refetchOnWindowFocus: false,
   });
 }
 

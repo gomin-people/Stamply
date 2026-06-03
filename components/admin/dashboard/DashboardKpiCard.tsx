@@ -1,3 +1,4 @@
+import { Info } from "lucide-react";
 import { cn, formatNumber } from "@/utils";
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
     icon: string;
     value: string;
   };
+  info: string;
 };
 
 const DashboardKpiCard = ({
@@ -18,6 +20,7 @@ const DashboardKpiCard = ({
   icon,
   countData,
   colorClassNames,
+  info,
 }: Props) => {
   const todayCount = formatNumber(countData.today);
   const totalCount = formatNumber(countData.total);
@@ -26,8 +29,20 @@ const DashboardKpiCard = ({
   return (
     <section
       aria-label={title}
-      className="flex min-h-30 items-center gap-4 rounded-xl border border-gomin-neutral-100 bg-white p-4"
+      className="relative flex min-h-30 items-center gap-4 rounded-xl border border-gomin-neutral-100 bg-white p-4 pr-11"
     >
+      <div className="group/info absolute top-4 right-4">
+        <button
+          type="button"
+          aria-label={`${title} 기준: ${info}`}
+          className="grid size-6 place-items-center rounded-full border border-gomin-neutral-100 bg-white text-gomin-neutral-400 transition hover:border-gomin-primary-300 hover:text-gomin-primary-700 focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none"
+        >
+          <Info className="size-3.5" aria-hidden="true" />
+        </button>
+        <div className="pointer-events-none absolute top-8 right-0 z-10 w-56 rounded-lg border border-gomin-neutral-100 bg-white px-3 py-2 text-xs leading-5 font-medium text-gomin-neutral-600 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition group-hover/info:opacity-100 group-focus-within/info:opacity-100">
+          {info}
+        </div>
+      </div>
       <div
         className={cn(
           "flex size-12 items-center justify-center rounded-xl mx-1",
