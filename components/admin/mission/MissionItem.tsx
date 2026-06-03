@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import type { AdminMissionDetail } from "@/types/models/admin";
 import type { Mission } from "@/types";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type Props = {
   mission: AdminMissionDetail;
   index: number;
+  disabled?: boolean;
   onToggleActive: (missionId: number, checked: boolean) => void;
   onViewQR: (info: {
     title: string;
@@ -23,17 +26,38 @@ type Props = {
 export default function MissionItem({
   mission,
   index,
+  disabled = false,
   onToggleActive,
   onViewQR,
   onEdit,
   onDelete,
 }: Props) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: mission.id, disabled });
+
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      suppressHydrationWarning
+      style={{
+        gridTemplateColumns: "40px 60px 1fr 2fr 110px 72px 90px",
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
       className="grid items-center px-6 py-5 border-b border-gomin-neutral-100 last:border-b-0 hover:bg-gomin-neutral-100/30"
-      style={{ gridTemplateColumns: "40px 60px 1fr 2fr 110px 72px 90px" }}
     >
-      <div className="cursor-grab text-gomin-neutral-300">
+      <div
+        ref={setActivatorNodeRef}
+        {...listeners}
+        className="cursor-grab text-gomin-neutral-300"
+      >
         <GripVertical className="w-4 h-4" />
       </div>
       <div className="text-sm text-gomin-neutral-600">{index + 1}</div>

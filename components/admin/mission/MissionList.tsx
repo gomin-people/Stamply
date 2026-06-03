@@ -11,16 +11,39 @@ import { getMissionCheckUrl } from "@/utils/qr";
 import { Mission } from "@/types";
 import {
   useDeleteAdminMissionMutation,
+  useReorderAdminMissionsMutation,
   useUpdateAdminMissionMutation,
 } from "@/features/admin/missions/adminMissionMutations";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 type Props = {
   missions: AdminMissionDetail[];
 };
 
 export default function MissionList({ missions }: Props) {
+  const [prevMissions, setPrevMissions] = useState(missions);
+  const [items, setItems] = useState<AdminMissionDetail[]>(() =>
+    [...missions].sort((a, b) => a.sortOrder - b.sortOrder)
+  );
+
+  // missions prop이 바뀌면 렌더 중 동기 업데이트 (useEffect 대신 권장 패턴)
+  if (prevMissions !== missions) {
+    setPrevMissions(missions);
+    setItems([...missions].sort((a, b) => a.sortOrder - b.sortOrder));
+  }
   const [editingMission, setEditingMission] =
     useState<AdminMissionDetail | null>(null);
   const [deletingMission, setDeletingMission] = useState<Mission | null>(null);
@@ -30,17 +53,47 @@ export default function MissionList({ missions }: Props) {
     token: string;
     id: number;
   } | null>(null);
+
   const { mutateAsync: deleteAdminMissionAsync } =
     useDeleteAdminMissionMutation();
   const { mutateAsync: updateAdminMissionAsync } =
     useUpdateAdminMissionMutation();
+  const { mutateAsync: reorderAdminMissionsAsync, isPending: isReordering } =
+    useReorderAdminMissionsMutation();
   const eventId = Number(useParams().eventId);
   const queryClient = useQueryClient();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      // Switch, Button 클릭과 드래그 충돌 방지
+      activationConstraint: { distance: 8 },
+    })
+  );
 
   const invalidateMissions = () => {
     queryClient.invalidateQueries({
       queryKey: ["admin", "events", eventId, "missions"],
     });
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = items.findIndex((m) => m.id === active.id);
+    const newIndex = items.findIndex((m) => m.id === over.id);
+    const reordered = arrayMove(items, oldIndex, newIndex);
+
+    setItems(reordered); // 낙관적 업데이트
+    try {
+      await reorderAdminMissionsAsync({
+        eventId,
+        missionIds: reordered.map((m) => m.id),
+      });
+    } catch (e) {
+      console.error(e);
+      setItems(items); // 실패 시 롤백
+    }
   };
 
   const handleDelete = async (missionId: number) => {
@@ -83,7 +136,7 @@ export default function MissionList({ missions }: Props) {
     }
   };
 
-  if (missions.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-gomin-neutral-400">
         <p className="text-sm">미션을 추가해주세요.</p>
@@ -93,17 +146,25 @@ export default function MissionList({ missions }: Props) {
 
   return (
     <>
-      {missions.map((mission, index) => (
-        <MissionItem
-          key={mission.id}
-          mission={mission}
-          index={index}
-          onToggleActive={handleToggleActive}
-          onViewQR={setViewingQR}
-          onEdit={setEditingMission}
-          onDelete={setDeletingMission}
-        />
-      ))}
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={items.map((m) => m.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {items.map((mission, index) => (
+            <MissionItem
+              key={mission.id}
+              mission={mission}
+              index={index}
+              disabled={isReordering}
+              onToggleActive={handleToggleActive}
+              onViewQR={setViewingQR}
+              onEdit={setEditingMission}
+              onDelete={setDeletingMission}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
 
       <Dialog
         open={editingMission !== null}
