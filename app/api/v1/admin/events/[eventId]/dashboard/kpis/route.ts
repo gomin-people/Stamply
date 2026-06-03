@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import dashboardKpis from "@/mocks/dashboard/kpis.json";
-import { badRequest, ok, parsePositiveInteger } from "@/utils/api";
+import { badRequest, ok, parsePositiveInteger, serverError } from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
+import { supabase } from "@/utils/supabase/server";
 
 // 어드민 대시보드 KPI route parameter 타입
 type AdminDashboardKpisRouteContext = {
@@ -39,8 +39,13 @@ export async function GET(
     return ok(dashboardKpis);
   }
 
-  return NextResponse.json(
-    { message: "대시보드 KPI Supabase 집계는 5번 단계에서 구현합니다." },
-    { status: 501 }
-  );
+  const { data, error } = await supabase.rpc("get_admin_dashboard_kpis", {
+    p_event_id: eventId,
+  });
+
+  if (error) {
+    return serverError("대시보드 KPI 집계 조회 실패", error);
+  }
+
+  return ok(data);
 }

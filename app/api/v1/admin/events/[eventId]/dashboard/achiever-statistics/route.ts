@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import achieverStatisticsData from "@/mocks/dashboard/achiever-statistics.json";
-import { badRequest, ok, parsePositiveInteger } from "@/utils/api";
+import { badRequest, ok, parsePositiveInteger, serverError } from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
+import { supabase } from "@/utils/supabase/server";
 
 // 어드민 대시보드 달성자 통계 route parameter 타입
 type AdminDashboardAchieverStatisticsRouteContext = {
@@ -42,10 +42,21 @@ export async function GET(
     return ok(achieverStatisticsData);
   }
 
-  return NextResponse.json(
-    {
-      message: "대시보드 달성자 통계 Supabase 집계는 5번 단계에서 구현합니다.",
-    },
-    { status: 501 }
+  const { data, error } = await supabase
+    .from("admin_dashboard_achiever_statistics")
+    .select("total_achievers, gender, age_range")
+    .eq("events_id", eventId)
+    .maybeSingle();
+
+  if (error) {
+    return serverError("대시보드 달성자 통계 조회 실패", error);
+  }
+
+  return ok(
+    data ?? {
+      total_achievers: 0,
+      gender: [],
+      age_range: [],
+    }
   );
 }
