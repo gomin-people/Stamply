@@ -30,7 +30,21 @@ type HourlyParticipantData = {
   hour: number;
   label: string;
   count: number;
+};
+
+type HourlyParticipantBarData = HourlyParticipantData & {
   fill: string;
+};
+
+type HourlyDateFactor = {
+  label: string;
+  factor: number;
+};
+
+type Props = {
+  daily: DailyParticipantData[];
+  hourlyTotal: HourlyParticipantData[];
+  hourlyDateFactors: HourlyDateFactor[];
 };
 
 const analysisTabs: {
@@ -42,30 +56,9 @@ const analysisTabs: {
   { value: "hourlyDate", label: "시간대별(날짜)" },
 ];
 
-const dailyParticipantData: DailyParticipantData[] = [
-  { label: "6/1", count: 1810 },
-  { label: "6/2", count: 2330 },
-  { label: "6/3", count: 2140 },
-  { label: "6/4", count: 3120 },
-  { label: "6/5", count: 3680 },
-  { label: "6/6", count: 4290 },
-  { label: "6/7", count: 4800 },
-];
-
 const chartColor = "#5435EB";
 const chartSoftColor = "#C8BEFA";
 const chartGridColor = "#ECECEC";
-const eventDateOptions = dailyParticipantData.map((item) => item.label);
-
-const hourlyParticipantData: HourlyParticipantData[] = [
-  4, 2, 1, 0, 0, 0, 15, 80, 205, 415, 635, 805, 915, 835, 720, 690, 1010, 1380,
-  1620, 1490, 980, 540, 255, 115,
-].map((count, hour) => ({
-  hour,
-  label: `${hour}시`,
-  count,
-  fill: hour >= 17 && hour <= 20 ? chartColor : chartSoftColor,
-}));
 
 const dailyChartConfig = {
   count: {
@@ -81,12 +74,21 @@ const hourlyChartConfig = {
   },
 } satisfies ChartConfig;
 
-const ParticipantAnalysisChart = () => {
+const ParticipantAnalysisChart = ({
+  daily,
+  hourlyTotal,
+  hourlyDateFactors,
+}: Props) => {
   const [activeView, setActiveView] = useState<AnalysisView>("daily");
-  const [selectedDate, setSelectedDate] = useState(eventDateOptions[0]);
+  const eventDateOptions = daily.map((item) => item.label);
+  const [selectedDate, setSelectedDate] = useState(eventDateOptions[0] ?? "");
+  const hourlyTotalData = useMemo(
+    () => withHourlyFill(hourlyTotal),
+    [hourlyTotal]
+  );
   const selectedDateHourlyData = useMemo(
-    () => getHourlyDataByDate(selectedDate),
-    [selectedDate]
+    () => getHourlyDataByDate(selectedDate, hourlyTotal, hourlyDateFactors),
+    [selectedDate, hourlyTotal, hourlyDateFactors]
   );
 
   return (
@@ -144,9 +146,9 @@ const ParticipantAnalysisChart = () => {
       </div>
 
       <div className="mt-4 min-h-0 flex-1">
-        {activeView === "daily" && <DailyAreaChart />}
+        {activeView === "daily" && <DailyAreaChart data={daily} />}
         {activeView === "hourlyTotal" && (
-          <HourlyBarChart data={hourlyParticipantData} />
+          <HourlyBarChart data={hourlyTotalData} />
         )}
         {activeView === "hourlyDate" && (
           <HourlyBarChart data={selectedDateHourlyData} />
@@ -156,7 +158,7 @@ const ParticipantAnalysisChart = () => {
   );
 };
 
-const DailyAreaChart = () => {
+const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
   return (
     <ChartContainer
       config={dailyChartConfig}
@@ -165,7 +167,7 @@ const DailyAreaChart = () => {
     >
       <AreaChart
         accessibilityLayer
-        data={dailyParticipantData}
+        data={data}
         margin={{ top: 12, right: 8, bottom: 8, left: 0 }}
       >
         <defs>
@@ -229,7 +231,7 @@ const DailyAreaChart = () => {
   );
 };
 
-const HourlyBarChart = ({ data }: { data: HourlyParticipantData[] }) => {
+const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
   return (
     <ChartContainer
       config={hourlyChartConfig}
@@ -292,13 +294,28 @@ function formatChartTick(value: number) {
     : `${compactValue.toFixed(1)}k`;
 }
 
-function getHourlyDataByDate(date: string): HourlyParticipantData[] {
-  const dateIndex = Math.max(eventDateOptions.indexOf(date), 0);
-  const factor = [0.82, 0.9, 0.86, 0.94, 0.98, 1.08, 1.04][dateIndex] ?? 1;
+function getHourlyDataByDate(
+  date: string,
+  hourlyTotal: HourlyParticipantData[],
+  hourlyDateFactors: HourlyDateFactor[]
+): HourlyParticipantBarData[] {
+  const factor =
+    hourlyDateFactors.find((item) => item.label === date)?.factor ?? 1;
 
-  return hourlyParticipantData.map((item) => ({
+  return withHourlyFill(
+    hourlyTotal.map((item) => ({
+      ...item,
+      count: Math.round(item.count * factor),
+    }))
+  );
+}
+
+function withHourlyFill(
+  data: HourlyParticipantData[]
+): HourlyParticipantBarData[] {
+  return data.map((item) => ({
     ...item,
-    count: Math.round(item.count * factor),
+    fill: item.hour >= 17 && item.hour <= 20 ? chartColor : chartSoftColor,
   }));
 }
 

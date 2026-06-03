@@ -29,21 +29,11 @@ type AgeData = {
   color: string;
 };
 
-const totalParticipants = 24381;
-
-const genderData: GenderData[] = [
-  { label: "여성", value: 58, color: "#FF5C85" },
-  { label: "남성", value: 38, color: "#5435EB" },
-  { label: "기타", value: 4, color: "#FFB547" },
-];
-
-const ageData: AgeData[] = [
-  { label: "10대", percent: 8, color: "#C8BEFA" },
-  { label: "20대", percent: 42, color: "#5435EB" },
-  { label: "30대", percent: 31, color: "#7C65EA" },
-  { label: "40대", percent: 14, color: "#9B83EA" },
-  { label: "50대+", percent: 5, color: "#DDD5FB" },
-];
+type Props = {
+  totalAchievers: number;
+  genderData: GenderData[];
+  ageData: AgeData[];
+};
 
 const genderChartConfig = {
   value: {
@@ -59,7 +49,11 @@ const ageChartConfig = {
   },
 } satisfies ChartConfig;
 
-const ParticipantDemographicsChart = () => {
+const ParticipantDemographicsChart = ({
+  totalAchievers,
+  genderData,
+  ageData,
+}: Props) => {
   return (
     <div className="flex h-full min-h-74 flex-col px-4 py-4">
       <div className="flex flex-row items-end gap-3">
@@ -71,18 +65,27 @@ const ParticipantDemographicsChart = () => {
 
       <div className="mt-4 grid grid-cols-3 gap-8">
         <div className="col-span-1 min-w-0">
-          <GenderDonutChart />
+          <GenderDonutChart
+            totalAchievers={totalAchievers}
+            genderData={genderData}
+          />
         </div>
 
         <div className="col-span-2 min-w-0">
-          <AgeBarChart />
+          <AgeBarChart ageData={ageData} />
         </div>
       </div>
     </div>
   );
 };
 
-const GenderDonutChart = () => {
+const GenderDonutChart = ({
+  totalAchievers,
+  genderData,
+}: {
+  totalAchievers: number;
+  genderData: GenderData[];
+}) => {
   return (
     <div className="w-full">
       <div className="relative mx-auto h-[190px] w-[220px]">
@@ -124,7 +127,7 @@ const GenderDonutChart = () => {
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
           <div className="text-center">
             <div className="text-2xl font-semibold text-gomin-black">
-              {totalParticipants.toLocaleString("ko-KR")}
+              {totalAchievers.toLocaleString("ko-KR")}
             </div>
           </div>
         </div>
@@ -147,7 +150,7 @@ const GenderDonutChart = () => {
   );
 };
 
-const AgeBarChart = () => {
+const AgeBarChart = ({ ageData }: { ageData: AgeData[] }) => {
   return (
     <ChartContainer
       config={ageChartConfig}

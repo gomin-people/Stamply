@@ -1,0 +1,47 @@
+{
+  "totalAchievers": 24381,
+  "gender": [
+    {
+      "label": "여성",
+      "value": 58,
+      "color": "#FF5C85"
+    },
+    {
+      "label": "남성",
+      "value": 38,
+      "color": "#5435EB"
+    },
+    {
+      "label": "기타",
+      "value": 4,
+      "color": "#FFB547"
+    }
+  ],
+  "ageRange": [
+    {
+      "label": "10대",
+      "percent": 8,
+      "color": "#C8BEFA"
+    },
+    {
+      "label": "20대",
+      "percent": 42,
+      "color": "#5435EB"
+    },
+    {
+      "label": "30대",
+      "percent": 31,
+      "color": "#7C65EA"
+    },
+    {
+      "label": "40대",
+      "percent": 14,
+      "color": "#9B83EA"
+    },
+    {
+      "label": "50대+",
+      "percent": 5,
+      "color": "#DDD5FB"
+    }
+  ]
+}
