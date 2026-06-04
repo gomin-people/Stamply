@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, file, { contentType: file.type });
+    .upload(path, file, { contentType: file.type, cacheControl: "31536000" });
 
   if (error) return serverError("이미지 업로드 실패", error);
 
