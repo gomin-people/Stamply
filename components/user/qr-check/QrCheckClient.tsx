@@ -374,7 +374,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
             onClick={handleBack}
             style={PRIMARY_700_BACKGROUND_STYLE}
           >
-            돌아가기
+            {isBackNavigating ? "이동 중..." : "돌아가기"}
           </button>
         </div>
       </div>
