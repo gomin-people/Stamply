@@ -51,12 +51,12 @@ export default function MissionItem({
         transform: CSS.Transform.toString(transform),
         transition,
       }}
-      className="grid items-center px-6 py-5 border-b border-gomin-neutral-100 last:border-b-0 hover:bg-gomin-neutral-100/30"
+      className={`grid items-center px-6 py-5 border-b border-gomin-neutral-100 last:border-b-0 hover:bg-gomin-neutral-100/30 transition-opacity ${disabled ? "opacity-40 pointer-events-none" : ""}`}
     >
       <div
         ref={setActivatorNodeRef}
         {...listeners}
-        className="cursor-grab text-gomin-neutral-300"
+        className="cursor-grab text-gomin-neutral-300 select-none"
       >
         <GripVertical className="w-4 h-4" />
       </div>
