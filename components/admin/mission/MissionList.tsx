@@ -90,6 +90,7 @@ export default function MissionList({ missions }: Props) {
         eventId,
         missionIds: reordered.map((m) => m.id),
       });
+      invalidateMissions();
     } catch (e) {
       console.error(e);
       setItems(items); // 실패 시 롤백
