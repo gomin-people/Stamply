@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Download, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import QRDialog from "@/components/admin/common/qr/QRDialog";
 import { getEntryQrUrl } from "@/utils/qr";
 
@@ -11,9 +16,15 @@ type Props = {
   token: string;
   qrId: number;
   onDeleteTrigger?: () => void;
+  disabled?: boolean;
 };
 
-const EntryQrCard = ({ token, qrId, onDeleteTrigger }: Props) => {
+const EntryQrCard = ({
+  token,
+  qrId,
+  onDeleteTrigger,
+  disabled = false,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const [clickCount, setClickCount] = useState(0);
 
@@ -55,14 +66,26 @@ const EntryQrCard = ({ token, qrId, onDeleteTrigger }: Props) => {
           </p>
         </div>
 
-        <Button
-          size={null}
-          className="relative shrink-0 gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5 py-2.5 text-[14px] font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0"
-          onClick={() => setOpen(true)}
-        >
-          <Download className="size-3.5" />
-          QR 다운로드
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span tabIndex={disabled ? 0 : undefined}>
+              <Button
+                size={null}
+                className="relative shrink-0 gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5 py-2.5 text-[14px] font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0"
+                onClick={() => setOpen(true)}
+                disabled={disabled}
+              >
+                <Download className="size-3.5" />
+                QR 다운로드
+              </Button>
+            </span>
+          </TooltipTrigger>
+          {disabled && (
+            <TooltipContent>
+              종료된 행사의 QR은 다운로드할 수 없습니다
+            </TooltipContent>
+          )}
+        </Tooltip>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

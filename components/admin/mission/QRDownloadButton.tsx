@@ -2,6 +2,11 @@
 
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Download } from "lucide-react";
 import QRCode from "react-qr-code";
 import type { AdminMissionDetail } from "@/types/models/admin";
@@ -9,6 +14,7 @@ import { getMissionCheckUrl } from "@/utils/qr";
 
 type Props = {
   missions: AdminMissionDetail[];
+  disabled?: boolean;
 };
 
 const QR_SIZE = 256;
@@ -38,7 +44,10 @@ function svgToPng(svgElement: SVGElement): Promise<string> {
   });
 }
 
-export default function QRDownloadButton({ missions }: Props) {
+export default function QRDownloadButton({
+  missions,
+  disabled = false,
+}: Props) {
   const [isDownloading, setIsDownloading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -90,14 +99,25 @@ export default function QRDownloadButton({ missions }: Props) {
         )}
       </div>
 
-      <Button
-        variant="outline"
-        onClick={handleDownload}
-        disabled={isDownloading || !hasQRCodes}
-      >
-        <Download />
-        {isDownloading ? "다운로드 중..." : "QR 일괄 다운로드"}
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span tabIndex={disabled ? 0 : undefined}>
+            <Button
+              variant="outline"
+              onClick={handleDownload}
+              disabled={isDownloading || !hasQRCodes || disabled}
+            >
+              <Download />
+              {isDownloading ? "다운로드 중..." : "QR 일괄 다운로드"}
+            </Button>
+          </span>
+        </TooltipTrigger>
+        {disabled && (
+          <TooltipContent>
+            종료된 행사의 QR은 다운로드할 수 없습니다
+          </TooltipContent>
+        )}
+      </Tooltip>
     </>
   );
 }

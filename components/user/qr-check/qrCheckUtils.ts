@@ -29,7 +29,7 @@ export const isCameraPermissionDeniedError = (error: unknown) => {
   );
 };
 
-export const getMissionUnavailablePath = (message: string | null) =>
+export const getUserUnavailablePath = (message: string | null) =>
   message === "존재하지 않는 미션입니다."
-    ? "/mission-unavailable?reason=not-found"
-    : "/mission-unavailable";
+    ? "/user-unavailable?reason=not-found"
+    : "/user-unavailable";

@@ -3,16 +3,18 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useAdminMissionsQuery } from "@/features/admin/missions/adminMissionQueries";
+import { useAdminEventQuery } from "@/features/admin/events/adminEventQueries";
 import MissionFilter from "@/components/admin/mission/MissionFilter";
+import MissionAddButton from "@/components/admin/mission/MissionAddButton";
+import MissionList from "@/components/admin/mission/MissionList";
+import { Button } from "@/components/ui/button";
 import type { AdminMissionDetail } from "@/types/models/admin";
+import { getEventOperationStatus } from "@/utils/event-status";
 
 const QRDownloadButton = dynamic(
   () => import("@/components/admin/mission/QRDownloadButton"),
   { ssr: false }
 );
-import MissionAddButton from "@/components/admin/mission/MissionAddButton";
-import MissionList from "@/components/admin/mission/MissionList";
-import { Button } from "@/components/ui/button";
 
 type Props = {
   eventId: number;
@@ -27,6 +29,7 @@ export default function MissionClient({ eventId }: Props) {
     refetch,
     isFetching,
   } = useAdminMissionsQuery(eventId);
+  const { data: event } = useAdminEventQuery(eventId);
   const isDisabled = isReordering || isFetching;
 
   const filteredMissions = useMemo(() => {
@@ -40,6 +43,10 @@ export default function MissionClient({ eventId }: Props) {
   }, [missions, filter]);
 
   const totalCount = missions?.length ?? 0;
+  const isAfter =
+    !!event &&
+    getEventOperationStatus(event.startDate, event.endDate) === "after";
+
   const handleToggle = (value: string) => {
     setFilter(value);
   };
@@ -51,7 +58,7 @@ export default function MissionClient({ eventId }: Props) {
           <MissionFilter toggleValue={handleToggle} disabled={isDisabled} />
           <div className="flex items-center gap-2">
             <MissionAddButton disabled={totalCount >= 10} />
-            <QRDownloadButton missions={filteredMissions} />
+            <QRDownloadButton missions={filteredMissions} disabled={isAfter} />
           </div>
         </div>
 
@@ -79,6 +86,7 @@ export default function MissionClient({ eventId }: Props) {
           <MissionList
             missions={filteredMissions ?? []}
             isFetching={isDisabled}
+            isAfter={isAfter}
             onReorderingChange={setIsReordering}
           />
         )}
