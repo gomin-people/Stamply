@@ -37,7 +37,10 @@ const LayoutHeader = () => {
     return null;
   }
 
-  return <Header showBackButton={true} />;
+  // qr-required 페이지에서는 백버튼을 노출하지 않습니다.
+  const showBackButton = pathname !== "/qr-required";
+
+  return <Header showBackButton={showBackButton} />;
 };
 
 export default LayoutHeader;
