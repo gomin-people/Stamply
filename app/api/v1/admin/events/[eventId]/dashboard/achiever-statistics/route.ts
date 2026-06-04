@@ -1,4 +1,3 @@
-import achieverStatisticsData from "@/mocks/dashboard/achiever-statistics.json";
 import { badRequest, ok, parsePositiveInteger, serverError } from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
 import { supabase } from "@/utils/supabase/server";
@@ -36,10 +35,6 @@ export async function GET(
 
   if ("response" in authorization) {
     return authorization.response;
-  }
-
-  if (process.env.DASHBOARD_DATA_SOURCE === "local-json") {
-    return ok(achieverStatisticsData);
   }
 
   const { data, error } = await supabase

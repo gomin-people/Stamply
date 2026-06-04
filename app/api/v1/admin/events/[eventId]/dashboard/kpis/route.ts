@@ -1,4 +1,3 @@
-import dashboardKpis from "@/mocks/dashboard/kpis.json";
 import { badRequest, ok, parsePositiveInteger, serverError } from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
 import { supabase } from "@/utils/supabase/server";
@@ -33,10 +32,6 @@ export async function GET(
 
   if ("response" in authorization) {
     return authorization.response;
-  }
-
-  if (process.env.DASHBOARD_DATA_SOURCE === "local-json") {
-    return ok(dashboardKpis);
   }
 
   const { data, error } = await supabase.rpc("get_admin_dashboard_kpis", {

@@ -1,4 +1,3 @@
-import dashboardMissions from "@/mocks/dashboard/missions.json";
 import {
   badRequest,
   notFound,
@@ -48,10 +47,6 @@ export async function GET(
 
   if ("response" in authorization) {
     return authorization.response;
-  }
-
-  if (process.env.DASHBOARD_DATA_SOURCE === "local-json") {
-    return ok(dashboardMissions);
   }
 
   const { data: event, error: eventError } = await supabase

@@ -1,4 +1,3 @@
-import participantAnalysisData from "@/mocks/dashboard/participant-analysis.json";
 import {
   badRequest,
   notFound,
@@ -46,10 +45,6 @@ export async function GET(
 
   if ("response" in authorization) {
     return authorization.response;
-  }
-
-  if (process.env.DASHBOARD_DATA_SOURCE === "local-json") {
-    return ok(participantAnalysisData);
   }
 
   const { data: event, error: eventError } = await supabase
