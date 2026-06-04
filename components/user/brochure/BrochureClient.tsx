@@ -30,11 +30,7 @@ const BrochureClient = ({ images }: Props) => {
   };
 
   const handleNext = () => {
-    if (currentIndex === images.length - 1) {
-      if (!fromMission) {
-        router.push(`/event/${eventId}/mission`);
-      }
-    } else {
+    if (currentIndex < images.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     }
   };
@@ -60,7 +56,7 @@ const BrochureClient = ({ images }: Props) => {
         />
       )}
 
-      {!fromMission && <BrochureGuideOverlay />}
+      {!fromMission && images.length > 1 && <BrochureGuideOverlay />}
       {fromMission && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50 flex justify-center">
           <BrochureEventButton className="mt-4" />
