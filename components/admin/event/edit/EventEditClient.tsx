@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/dialog";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
@@ -11,9 +11,16 @@ import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import EntryQrCard from "@/components/admin/event/edit/EntryQrCard";
 import EventEditCancelDialog from "@/components/admin/event/edit/EventEditCancelDialog";
+import EventDeleteDialog from "@/components/admin/event/edit/EventDeleteDialog";
 import { type StepFormHandle } from "@/types";
-import { useAdminEventQuery } from "@/features/admin/events/adminEventQueries";
-import { useUpdateEventMutation } from "@/features/admin/events/adminEventMutations";
+import {
+  useAdminEventQuery,
+  useAdminEventsQuery,
+} from "@/features/admin/events/adminEventQueries";
+import {
+  useUpdateEventMutation,
+  useDeleteEventMutation,
+} from "@/features/admin/events/adminEventMutations";
 import type { EventUpdatePayload } from "@/features/shared/types/stamply";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useEventOperationStatus } from "@/hooks/useEventOperationStatus";
@@ -23,14 +30,18 @@ const TOTAL_STEPS = 3;
 export default function EventEditClient() {
   const { eventId } = useParams<{ eventId: string }>();
   const eventIdNum = Number(eventId);
+  const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
   const { data: event, isLoading } = useAdminEventQuery(eventIdNum);
+  const { data: events = [] } = useAdminEventsQuery();
   const { mutateAsync: updateEvent, isPending } = useUpdateEventMutation();
+  const { mutateAsync: deleteEvent } = useDeleteEventMutation();
 
   const operationStatus = useEventOperationStatus(
     event?.startDate,
@@ -55,6 +66,21 @@ export default function EventEditClient() {
     setMode("view");
     setCancelDialogOpen(false);
     setFormKey((k) => k + 1);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteEvent(eventIdNum);
+      toast.success("행사가 삭제되었습니다.");
+      const nextEvent = events.find((e) => e.id !== eventIdNum);
+      router.replace(
+        nextEvent ? `/admin/events/${nextEvent.id}` : "/admin/events/register"
+      );
+    } catch {
+      toast.error("삭제에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setDeleteDialogOpen(false);
+    }
   };
 
   const handleEditSave = async () => {
@@ -92,7 +118,13 @@ export default function EventEditClient() {
   return (
     <div className="mx-auto w-full max-w-7xl px-10 py-8">
       <div className="flex flex-col gap-4">
-        {entryQr && <EntryQrCard token={entryQr.token} qrId={entryQr.id} />}
+        {entryQr && (
+          <EntryQrCard
+            token={entryQr.token}
+            qrId={entryQr.id}
+            onDeleteTrigger={() => setDeleteDialogOpen(true)}
+          />
+        )}
 
         <div className="rounded-xl border border-gomin-neutral-100 bg-white">
           <EventFormStepper currentStep={currentStep} />
@@ -170,6 +202,10 @@ export default function EventEditClient() {
 
       <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <EventEditCancelDialog onConfirm={handleCancelConfirm} />
+      </Dialog>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <EventDeleteDialog onConfirm={handleDeleteConfirm} />
       </Dialog>
     </div>
   );

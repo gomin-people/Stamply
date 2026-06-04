@@ -9,6 +9,7 @@ export async function GET() {
   );
   kakaoAuthUrl.searchParams.set("response_type", "code");
   kakaoAuthUrl.searchParams.set("scope", "openid profile_nickname");
+  kakaoAuthUrl.searchParams.set("prompt", "login");
 
   return NextResponse.redirect(kakaoAuthUrl.toString());
 }
