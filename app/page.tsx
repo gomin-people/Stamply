@@ -65,7 +65,7 @@ export default function Home() {
               />
               <div className="flex flex-col items-center gap-2">
                 <Image
-                  src="/images/entry_qr.png"
+                  src="/qr/entry_qr_1.png"
                   alt="입장 QR"
                   width={200}
                   height={200}
@@ -82,7 +82,7 @@ export default function Home() {
                   <div className="flex gap-4 justify-center">
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/mission1.png"
+                        src="/qr/mission1_1.png"
                         alt="미션 QR 1"
                         width={130}
                         height={130}
@@ -92,7 +92,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/mission2.png"
+                        src="/qr/mission1_2.png"
                         alt="미션 QR 2"
                         width={130}
                         height={130}
@@ -104,7 +104,7 @@ export default function Home() {
                   <div className="flex gap-4 justify-center">
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/mission3.png"
+                        src="/qr/mission1_3.png"
                         alt="미션 QR 3"
                         width={130}
                         height={130}
@@ -114,7 +114,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/mission4.png"
+                        src="/qr/mission1_4.png"
                         alt="미션 QR 4"
                         width={130}
                         height={130}
@@ -126,7 +126,7 @@ export default function Home() {
                   <div className="flex gap-4 justify-center">
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/mission5.png"
+                        src="/qr/mission1_5.png"
                         alt="미션 QR 5"
                         width={130}
                         height={130}
@@ -136,7 +136,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/mission6.png"
+                        src="/qr/mission1_6.png"
                         alt="미션 QR 6"
                         width={130}
                         height={130}
@@ -161,7 +161,7 @@ export default function Home() {
               />
               <div className="flex flex-col items-center gap-2">
                 <Image
-                  src="/images/entry_qr_30.png"
+                  src="/qr/entry_qr_30.png"
                   alt="입장 QR 30"
                   width={200}
                   height={200}
@@ -178,7 +178,7 @@ export default function Home() {
                   <div className="flex gap-4 justify-center">
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/30_mission1.png"
+                        src="/qr/mission30_1.png"
                         alt="미션 QR 1"
                         width={130}
                         height={130}
@@ -188,7 +188,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/30_mission2.png"
+                        src="/qr/mission30_2.png"
                         alt="미션 QR 2"
                         width={130}
                         height={130}
@@ -200,7 +200,7 @@ export default function Home() {
                   <div className="flex gap-4 justify-center">
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/30_mission3.png"
+                        src="/qr/mission30_3.png"
                         alt="미션 QR 3"
                         width={130}
                         height={130}
@@ -210,7 +210,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col items-center gap-1.5">
                       <Image
-                        src="/images/30_mission4.png"
+                        src="/qr/mission30_4.png"
                         alt="미션 QR 4"
                         width={130}
                         height={130}
