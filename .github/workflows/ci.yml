@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  # PR에서는 merge 전에 기본 검증만 수행한다.
+  pull_request:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  # 같은 브랜치에 새 커밋이 올라오면 이전 CI는 취소한다.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Lint, Test and Build
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+      # 빌드 시 Supabase 서버 클라이언트 초기화가 실패하지 않도록 placeholder를 둔다.
+      # 실제 Preview/Production 배포 환경 변수는 Vercel에서 별도로 관리한다.
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY || 'ci-placeholder-service-role-key' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # pnpm store를 캐시해서 반복 실행 시 의존성 설치 시간을 줄인다.
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build

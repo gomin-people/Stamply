@@ -1,0 +1,111 @@
+"use client";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createJsonRequest, requestJson } from "@/features/shared/api/http";
+import { toSnakeKeys } from "@/utils/case";
+import {
+  type EventCreatePayload,
+  type EventUpdatePayload,
+  type QrCode,
+  type StamplyEvent,
+} from "@/features/shared/types/stamply";
+
+// 행사 생성 응답 타입
+type CreatedEvent = StamplyEvent & {
+  qrCodes: QrCode[];
+};
+
+// 행사 수정 mutation 요청 변수 타입
+type UpdateEventVariables = {
+  eventId: number;
+  payload: EventUpdatePayload;
+};
+
+function createAdminEvent(payload: EventCreatePayload) {
+  return requestJson<CreatedEvent>(
+    "/api/v1/admin/events",
+    createJsonRequest("POST", toSnakeKeys(payload))
+  );
+}
+
+function updateAdminEvent(eventId: number, payload: EventUpdatePayload) {
+  return requestJson<StamplyEvent>(
+    `/api/v1/admin/events/${eventId}`,
+    createJsonRequest("PATCH", toSnakeKeys(payload))
+  );
+}
+
+function deleteAdminEvent(eventId: number) {
+  return requestJson<{ id: number }>(
+    `/api/v1/admin/events/${eventId}`,
+    createJsonRequest("DELETE")
+  );
+}
+
+/**
+ * 어드민 행사 생성 mutation입니다.
+ *
+ * @returns React Query 행사 생성 mutation
+ */
+export function useCreateEventMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createAdminEvent,
+    onSuccess: async (createdEvent) => {
+      await queryClient.cancelQueries({
+        queryKey: ["admin", "events", "list"],
+      });
+
+      queryClient.setQueryData<StamplyEvent[]>(
+        ["admin", "events", "list"],
+        (events = []) => {
+          const hasCreatedEvent = events.some(
+            (event) => event.id === createdEvent.id
+          );
+
+          if (hasCreatedEvent) {
+            return events.map((event) =>
+              event.id === createdEvent.id ? createdEvent : event
+            );
+          }
+
+          return [createdEvent, ...events];
+        }
+      );
+
+      void queryClient.invalidateQueries({
+        queryKey: ["admin", "events", "list"],
+      });
+    },
+  });
+}
+
+/**
+ * 어드민 행사 수정 mutation입니다.
+ *
+ * @returns React Query 행사 수정 mutation
+ */
+export function useUpdateEventMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ eventId, payload }: UpdateEventVariables) =>
+      updateAdminEvent(eventId, payload),
+    onSuccess: (_, { eventId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "events", "detail", eventId],
+      });
+    },
+  });
+}
+
+/**
+ * 어드민 행사 삭제 mutation입니다.
+ *
+ * @returns React Query 행사 삭제 mutation
+ */
+export function useDeleteEventMutation() {
+  return useMutation({
+    mutationFn: deleteAdminEvent,
+  });
+}
