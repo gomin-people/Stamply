@@ -113,7 +113,9 @@ const MissionPageClient = ({
 
   // 설문조사 완료 여부 (성별/연령대 입력 여부)
   const isSurveyCompleted =
-    data && !isPreview ? data.participant.isSurveyCompleted : false;
+    data && !isPreview
+      ? !!data.participant.gender && !!data.participant.ageRange
+      : false;
 
   // 리워드 수령 완료 여부
   const isRewardClaimed =

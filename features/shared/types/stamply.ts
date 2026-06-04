@@ -61,7 +61,6 @@ export type Participant = {
   gender: Gender | null;
   ageRange: string | null;
   isRewardClaimed: boolean;
-  isSurveyCompleted: boolean;
 };
 
 // 미션 완료 API 응답 타입

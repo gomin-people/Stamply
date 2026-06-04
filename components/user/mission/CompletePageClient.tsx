@@ -31,7 +31,7 @@ const CompletePageClient = () => {
           setIsCompleteModalOpen(false);
           router.push(`/event/${eventId}`);
         },
-        onError: (err) => {
+        onError: (err: Error) => {
           console.error("Reward claim failed:", err);
           alert("수령 확인 처리에 실패했습니다. 다시 시도해 주세요.");
         },
