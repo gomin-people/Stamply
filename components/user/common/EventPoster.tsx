@@ -29,7 +29,7 @@ const EventPoster = ({
         alt={alt}
         fill
         sizes={`${width}px`}
-        priority
+        preload
         className="object-cover"
       />
     </div>
