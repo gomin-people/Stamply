@@ -11,6 +11,7 @@ import SurveyModal from "@/components/user/mission/SurveyModal";
 import {
   useParticipantMissionsQuery,
   type ParticipantMission,
+  type ParticipantMissions,
 } from "@/features/participant/missions/participantMissionQueries";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
@@ -55,9 +56,36 @@ const MissionPageClient = ({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
+  // 서버에서 prefetch한 initialMissions를 initialData로 변환해 클라이언트 첫 API 호출을 차단한다.
+  // Mission 타입 필수 필드 중 서버 초기 응답에 없는 값은 기본값으로 채운다.
+  const initialData: ParticipantMissions | undefined =
+    !isPreview && initialMissions.length > 0
+      ? {
+          participant: {} as ParticipantMissions["participant"],
+          missions: initialMissions.map((m) => ({
+            id: m.id,
+            eventsId: 0,
+            title: m.title,
+            description: m.description,
+            sortOrder: 0,
+            isActive: true,
+            createdAt: "",
+            updatedAt: "",
+            isCompleted: m.isCompleted,
+            completedAt: null,
+            token: null,
+          })),
+          summary: {
+            totalCount: initialMissions.length,
+            completedCount: initialMissions.filter((m) => m.isCompleted).length,
+          },
+        }
+      : undefined;
+
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
   const { data, isError } = useParticipantMissionsQuery({
     enabled: !isPreview,
+    initialData,
   });
 
   // 1순위: 로그인/참여 완료 세션 정보가 반영된 React Query 실시간 데이터

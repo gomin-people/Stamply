@@ -1,7 +1,5 @@
-import { redirect } from "next/navigation";
 import CompletePageClient from "@/components/user/mission/CompletePageClient";
-import { getEntryEvent } from "@/features/qr/entry/api/entry";
-import { resolveRequest } from "@/features/shared/api/http";
+import { getEntryEventAndParticipant } from "@/features/qr/entry/api/entry";
 
 type PageProps = {
   params: Promise<{ eventId: string }>;
@@ -10,18 +8,9 @@ type PageProps = {
 export default async function CompletePage({ params }: PageProps) {
   const { eventId: eventIdParam } = await params;
 
-  // 1. getEntryEvent를 사용하여 유저 세션 검증 (실패 시 내부적으로 redirect)
-  await getEntryEvent(eventIdParam);
-
-  // 2. 참여자 세션 쿠키를 담아 API 요청을 전송하여 권한 유효성 엄격 검증
-  const { url, init } = await resolveRequest("/api/v1/participant/missions", {
-    next: { revalidate: 0 },
-  });
-  const missionsRes = await fetch(url, init);
-
-  if (!missionsRes.ok) {
-    redirect("/qr-required");
-  }
+  // 세션 검증 및 이벤트 정보, 참여자 정보 획득
+  // getEntryEventAndParticipant 내부에서 쿠키 유효성, 참여자 존재 여부, 행사 일치 여부를 모두 검증한다.
+  await getEntryEventAndParticipant(eventIdParam);
 
   return <CompletePageClient />;
 }
