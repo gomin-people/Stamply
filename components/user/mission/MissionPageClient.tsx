@@ -137,7 +137,6 @@ const MissionPageClient = ({
   };
 
   const handleSurveySubmitSuccess = () => {
-    setIsSurveyOpen(false);
     router.push(`/event/${eventId}/complete`);
   };
 
