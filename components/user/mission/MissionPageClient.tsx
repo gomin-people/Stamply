@@ -111,6 +111,10 @@ const MissionPageClient = ({
   const incompleteCount = missions.filter((m) => !m.isStamped).length;
   const isAllCompleted = incompleteCount === 0;
 
+  // 설문조사 완료 여부 (성별/연령대 입력 여부)
+  const isSurveyCompleted =
+    data && !isPreview ? data.participant.isSurveyCompleted : false;
+
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
   const showBrochureAndActionButtons = !hasError && !isMissionsEmpty;
@@ -118,7 +122,11 @@ const MissionPageClient = ({
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
     if (isAllCompleted) {
-      setIsSurveyOpen(true);
+      if (isSurveyCompleted) {
+        router.push(`/event/${eventId}/complete`);
+      } else {
+        setIsSurveyOpen(true);
+      }
     } else {
       window.location.assign(`/event/${eventId}/qr-check`);
     }
@@ -234,7 +242,7 @@ const MissionPageClient = ({
 
       {/* 설문조사 모달 */}
       <SurveyModal
-        isOpen={isSurveyOpen}
+        isOpen={isSurveyOpen && !isSurveyCompleted}
         onClose={() => setIsSurveyOpen(false)}
         onSubmitSuccess={handleSurveySubmitSuccess}
       />

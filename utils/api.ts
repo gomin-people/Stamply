@@ -17,6 +17,7 @@ export type ParticipantRow = JsonObject & {
   gender: "MALE" | "FEMALE" | "UNKNOWN" | null;
   age_range: string | null;
   is_reward_claimed: boolean;
+  is_survey_completed: boolean;
 };
 
 /**
@@ -350,8 +351,13 @@ export async function getCurrentParticipant(request: NextRequest): Promise<
     return { response };
   }
 
+  const participant: ParticipantRow = {
+    ...(data as Record<string, unknown>),
+    is_survey_completed: !!data.gender && !!data.age_range,
+  } as ParticipantRow;
+
   return {
-    participant: data as ParticipantRow,
+    participant,
     eventUserId,
   };
 }

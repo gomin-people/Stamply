@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import {
   type Participant,
@@ -20,7 +20,12 @@ function submitParticipantSurvey(payload: SurveyPayload) {
  * @returns React Query 설문 저장 mutation
  */
 export function useSubmitSurveyMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: submitParticipantSurvey,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["participant"] });
+    },
   });
 }
