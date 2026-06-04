@@ -1,6 +1,9 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useIsEditMode, useSetPendingHref } from "@/stores/admin";
 
 type SidebarNavItem = {
   label: string;
@@ -15,6 +18,18 @@ interface SidebarNavProps {
 
 // 관리자 사이드바 라우트 메뉴 목록
 export default function SidebarNav({ items, pathname }: SidebarNavProps) {
+  const router = useRouter();
+  const isEditMode = useIsEditMode();
+  const setPendingHref = useSetPendingHref();
+
+  const handleNavClick = (href: string) => {
+    if (isEditMode && pathname !== href) {
+      setPendingHref(href);
+    } else {
+      router.push(href);
+    }
+  };
+
   return (
     <nav className="mt-6 space-y-1">
       <Separator className="mb-4 bg-gomin-neutral-100" />
@@ -24,18 +39,18 @@ export default function SidebarNav({ items, pathname }: SidebarNavProps) {
         const isActive = pathname === item.href;
 
         return (
-          <Link
+          <button
             key={item.href}
-            href={item.href}
-            className={`flex items-center gap-2 rounded-lg px-3 py-3 text-sm transition-[background-color,color,box-shadow,transform] duration-150 ease-out ${
+            onClick={() => handleNavClick(item.href)}
+            className={`flex w-full items-center gap-2 rounded-lg px-3 py-3 text-sm transition-[background-color,color,box-shadow,transform] duration-150 ease-out ${
               isActive
-                ? " bg-gomin-primary-700 text-gomin-white shadow-lg shadow-gomin-primary-700/30"
+                ? "bg-gomin-primary-700 text-gomin-white shadow-lg shadow-gomin-primary-700/30"
                 : "text-gomin-neutral-700 hover:bg-gomin-neutral-100 hover:text-gomin-black"
             }`}
           >
             <Icon className="h-4 w-4" />
             {item.label}
-          </Link>
+          </button>
         );
       })}
     </nav>

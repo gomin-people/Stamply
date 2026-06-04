@@ -13,7 +13,12 @@ import StamplyLogo from "@/components/admin/common/StamplyLogo";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
-import { useSelectedEventId, useSetSelectedEventId } from "@/stores/admin";
+import {
+  useSelectedEventId,
+  useSetSelectedEventId,
+  useIsEditMode,
+  useSetPendingHref,
+} from "@/stores/admin";
 
 // 관리자 이벤트 화면의 사이드바와 행사 등록 취소 이동 버튼 렌더링
 const Sidebar = () => {
@@ -23,6 +28,8 @@ const Sidebar = () => {
   const route = getAdminRouteConfig(pathname);
   const selectedEventId = useSelectedEventId();
   const setSelectedEventId = useSetSelectedEventId();
+  const isEditMode = useIsEditMode();
+  const setPendingHref = useSetPendingHref();
   const { data: events = [] } = useAdminEventsQuery({ enabled: !eventId });
   const firstEvent = useMemo(
     () => [...events].sort(compareEventsByDisplayPriority)[0],
@@ -44,12 +51,16 @@ const Sidebar = () => {
 
   const items = eventId ? getAdminSidebarItems(eventId) : [];
   const cancelCreate = () => {
-    if (!cancelTargetEventId) {
-      return;
-    }
+    if (!cancelTargetEventId) return;
 
-    setSelectedEventId(cancelTargetEventId);
-    router.push(`/admin/events/${cancelTargetEventId}/dashboard`);
+    const href = `/admin/events/${cancelTargetEventId}/dashboard`;
+
+    if (isEditMode) {
+      setPendingHref(href);
+    } else {
+      setSelectedEventId(cancelTargetEventId);
+      router.push(href);
+    }
   };
 
   return (
