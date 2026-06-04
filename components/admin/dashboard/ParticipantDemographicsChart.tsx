@@ -30,7 +30,7 @@ type AgeData = {
 };
 
 type Props = {
-  totalAchievers: number;
+  totalRespondents: number;
   genderData: GenderData[];
   ageData: AgeData[];
 };
@@ -50,7 +50,7 @@ const ageChartConfig = {
 } satisfies ChartConfig;
 
 const ParticipantDemographicsChart = ({
-  totalAchievers,
+  totalRespondents,
   genderData,
   ageData,
 }: Props) => {
@@ -66,7 +66,7 @@ const ParticipantDemographicsChart = ({
       <div className="mt-4 grid grid-cols-3 gap-8">
         <div className="col-span-1 min-w-0">
           <GenderDonutChart
-            totalAchievers={totalAchievers}
+            totalRespondents={totalRespondents}
             genderData={genderData}
           />
         </div>
@@ -80,10 +80,10 @@ const ParticipantDemographicsChart = ({
 };
 
 const GenderDonutChart = ({
-  totalAchievers,
+  totalRespondents,
   genderData,
 }: {
-  totalAchievers: number;
+  totalRespondents: number;
   genderData: GenderData[];
 }) => {
   return (
@@ -127,7 +127,7 @@ const GenderDonutChart = ({
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
           <div className="text-center">
             <div className="text-2xl font-semibold text-gomin-black">
-              {totalAchievers.toLocaleString("ko-KR")}
+              {totalRespondents.toLocaleString("ko-KR")}
             </div>
           </div>
         </div>

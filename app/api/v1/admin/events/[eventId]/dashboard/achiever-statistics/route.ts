@@ -39,7 +39,7 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("admin_dashboard_achiever_statistics")
-    .select("total_achievers, gender, age_range")
+    .select("total_achievers, total_respondents, gender, age_range")
     .eq("events_id", eventId)
     .maybeSingle();
 
@@ -50,6 +50,7 @@ export async function GET(
   return ok(
     data ?? {
       total_achievers: 0,
+      total_respondents: 0,
       gender: [],
       age_range: [],
     }

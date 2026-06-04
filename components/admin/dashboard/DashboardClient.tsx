@@ -165,7 +165,7 @@ const DashboardClient = ({ eventId }: Props) => {
             className={`${dashboardPanelClassName} overflow-hidden`}
           >
             <ParticipantDemographicsChart
-              totalAchievers={achieverStatistics?.totalAchievers ?? 0}
+              totalRespondents={achieverStatistics?.totalRespondents ?? 0}
               genderData={achieverStatistics?.gender ?? []}
               ageData={achieverStatistics?.ageRange ?? []}
             />

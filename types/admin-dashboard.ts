@@ -60,6 +60,7 @@ export type AdminDashboardAgeRangeStatistic = {
 // 달성자 통계 응답 타입
 export type AdminDashboardAchieverStatisticsResponse = {
   totalAchievers: number;
+  totalRespondents: number;
   gender: AdminDashboardGenderStatistic[];
   ageRange: AdminDashboardAgeRangeStatistic[];
 };
