@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import Button from "@/components/sample/Button";
+import { useModalHistoryBack } from "@/hooks/useModalHistoryBack";
 
 type Mission = {
   id: number;
@@ -27,6 +28,8 @@ export default function MissionDetailModal({
   onClose,
   mission,
 }: MissionDetailModalProps) {
+  useModalHistoryBack(isOpen, onClose);
+
   return (
     <Dialog
       open={isOpen}
