@@ -48,8 +48,36 @@ function deleteAdminEvent(eventId: number) {
  * @returns React Query 행사 생성 mutation
  */
 export function useCreateEventMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: createAdminEvent,
+    onSuccess: async (createdEvent) => {
+      await queryClient.cancelQueries({
+        queryKey: ["admin", "events", "list"],
+      });
+
+      queryClient.setQueryData<StamplyEvent[]>(
+        ["admin", "events", "list"],
+        (events = []) => {
+          const hasCreatedEvent = events.some(
+            (event) => event.id === createdEvent.id
+          );
+
+          if (hasCreatedEvent) {
+            return events.map((event) =>
+              event.id === createdEvent.id ? createdEvent : event
+            );
+          }
+
+          return [createdEvent, ...events];
+        }
+      );
+
+      void queryClient.invalidateQueries({
+        queryKey: ["admin", "events", "list"],
+      });
+    },
   });
 }
 
