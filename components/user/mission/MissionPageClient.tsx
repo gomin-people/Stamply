@@ -115,6 +115,10 @@ const MissionPageClient = ({
   const isSurveyCompleted =
     data && !isPreview ? data.participant.isSurveyCompleted : false;
 
+  // 리워드 수령 완료 여부
+  const isRewardClaimed =
+    data && !isPreview ? data.participant.isRewardClaimed : false;
+
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
   const showBrochureAndActionButtons = !hasError && !isMissionsEmpty;
@@ -237,6 +241,7 @@ const MissionPageClient = ({
           isAllCompleted={isAllCompleted}
           onClick={handleAction}
           isPreview={isPreview}
+          isRewardClaimed={isRewardClaimed}
         />
       )}
 

@@ -48,7 +48,6 @@ export default function SurveyModal({
       {
         gender,
         ageRange,
-        isRewardClaimed: true,
       },
       {
         onSuccess: () => {
