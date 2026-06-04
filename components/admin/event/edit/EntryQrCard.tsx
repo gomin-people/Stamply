@@ -10,10 +10,22 @@ import { getEntryQrUrl } from "@/utils/qr";
 type Props = {
   token: string;
   qrId: number;
+  onDeleteTrigger?: () => void;
 };
 
-const EntryQrCard = ({ token, qrId }: Props) => {
+const EntryQrCard = ({ token, qrId, onDeleteTrigger }: Props) => {
   const [open, setOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleEntryBadgeClick = () => {
+    const next = clickCount + 1;
+    if (next >= 3) {
+      setClickCount(0);
+      onDeleteTrigger?.();
+    } else {
+      setClickCount(next);
+    }
+  };
   const qrUrl = getEntryQrUrl(token);
 
   return (
@@ -30,7 +42,10 @@ const EntryQrCard = ({ token, qrId }: Props) => {
             <span className="text-sm font-semibold text-gomin-black">
               행사 입장 QR 코드
             </span>
-            <span className="rounded-full bg-gomin-primary-700 px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-white">
+            <span
+              className="rounded-full bg-gomin-primary-700 px-2 py-0.5 text-[10px] font-medium uppercase tracking-widest text-white cursor-default select-none"
+              onClick={handleEntryBadgeClick}
+            >
               Entry
             </span>
           </div>
