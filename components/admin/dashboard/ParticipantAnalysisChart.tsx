@@ -80,15 +80,25 @@ const ParticipantAnalysisChart = ({
   hourlyDateFactors,
 }: Props) => {
   const [activeView, setActiveView] = useState<AnalysisView>("daily");
-  const eventDateOptions = daily.map((item) => item.label);
-  const [selectedDate, setSelectedDate] = useState(eventDateOptions[0] ?? "");
+  const eventDateOptions = useMemo(
+    () => daily.map((item) => item.label),
+    [daily]
+  );
+  const [selectedDate, setSelectedDate] = useState(() =>
+    getLastDateOption(eventDateOptions)
+  );
+  const selectedDateValue =
+    selectedDate !== "" && eventDateOptions.includes(selectedDate)
+      ? selectedDate
+      : getLastDateOption(eventDateOptions);
   const hourlyTotalData = useMemo(
     () => withHourlyFill(hourlyTotal),
     [hourlyTotal]
   );
   const selectedDateHourlyData = useMemo(
-    () => getHourlyDataByDate(selectedDate, hourlyTotal, hourlyDateFactors),
-    [selectedDate, hourlyTotal, hourlyDateFactors]
+    () =>
+      getHourlyDataByDate(selectedDateValue, hourlyTotal, hourlyDateFactors),
+    [selectedDateValue, hourlyTotal, hourlyDateFactors]
   );
 
   return (
@@ -107,7 +117,7 @@ const ParticipantAnalysisChart = ({
           {activeView === "hourlyDate" && (
             <select
               aria-label="날짜 선택"
-              value={selectedDate}
+              value={selectedDateValue}
               className="h-10 w-[88px] rounded-lg border border-gomin-neutral-100 bg-white px-3 text-xs font-semibold text-gomin-neutral-600 outline-none"
               onChange={(event) => setSelectedDate(event.target.value)}
             >
@@ -159,6 +169,8 @@ const ParticipantAnalysisChart = ({
 };
 
 const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
+  const yAxisScale = useMemo(() => getCountChartScale(data), [data]);
+
   return (
     <ChartContainer
       config={dailyChartConfig}
@@ -195,8 +207,8 @@ const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
           tickLine={false}
           tickMargin={4}
           width={38}
-          domain={[0, 5000]}
-          ticks={[0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000]}
+          domain={yAxisScale.domain}
+          ticks={yAxisScale.ticks}
           tickFormatter={formatChartTick}
         />
         <ChartTooltip
@@ -232,6 +244,8 @@ const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
 };
 
 const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
+  const yAxisScale = useMemo(() => getCountChartScale(data), [data]);
+
   return (
     <ChartContainer
       config={hourlyChartConfig}
@@ -256,8 +270,8 @@ const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
           tickLine={false}
           tickMargin={4}
           width={38}
-          domain={[0, 1800]}
-          ticks={[0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800]}
+          domain={yAxisScale.domain}
+          ticks={yAxisScale.ticks}
           tickFormatter={formatChartTick}
         />
         <ChartTooltip
@@ -282,6 +296,55 @@ const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
     </ChartContainer>
   );
 };
+
+function getCountChartScale(data: Array<{ count: number }>) {
+  const maxCount = data.reduce(
+    (maxValue, item) => Math.max(maxValue, item.count),
+    0
+  );
+
+  if (maxCount <= 0) {
+    return {
+      domain: [0, 5] as [number, number],
+      ticks: [0, 1, 2, 3, 4, 5],
+    };
+  }
+
+  const step = getNiceStep(maxCount / 4);
+  const domainMax = Math.max(5, Math.ceil(maxCount / step) * step);
+  const ticks = Array.from(
+    { length: Math.floor(domainMax / step) + 1 },
+    (_, index) => index * step
+  );
+
+  return {
+    domain: [0, domainMax] as [number, number],
+    ticks,
+  };
+}
+
+function getNiceStep(value: number) {
+  if (value <= 1) {
+    return 1;
+  }
+
+  const magnitude = 10 ** Math.floor(Math.log10(value));
+  const normalizedValue = value / magnitude;
+
+  if (normalizedValue <= 1) {
+    return magnitude;
+  }
+
+  if (normalizedValue <= 2) {
+    return magnitude * 2;
+  }
+
+  if (normalizedValue <= 5) {
+    return magnitude * 5;
+  }
+
+  return magnitude * 10;
+}
 
 function formatChartTick(value: number) {
   if (value < 1000) {
@@ -308,6 +371,10 @@ function getHourlyDataByDate(
       count: Math.round(item.count * factor),
     }))
   );
+}
+
+function getLastDateOption(dateOptions: string[]) {
+  return dateOptions[dateOptions.length - 1] ?? "";
 }
 
 function withHourlyFill(

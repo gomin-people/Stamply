@@ -1,7 +1,19 @@
 import dashboardMissions from "@/mocks/dashboard/missions.json";
-import { badRequest, ok, parsePositiveInteger, serverError } from "@/utils/api";
+import {
+  badRequest,
+  notFound,
+  ok,
+  parsePositiveInteger,
+  serverError,
+} from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
+import {
+  type AdminDashboardDateWindow,
+  getAdminDashboardDateWindow,
+} from "@/utils/admin-dashboard-date";
 import { supabase } from "@/utils/supabase/server";
+
+const MISSION_COMPLETIONS_PAGE_SIZE = 1000;
 
 // 어드민 대시보드 미션별 완료 현황 route parameter 타입
 type AdminDashboardMissionsRouteContext = {
@@ -42,10 +54,45 @@ export async function GET(
     return ok(dashboardMissions);
   }
 
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("start_date,end_date")
+    .eq("id", eventId)
+    .maybeSingle();
+
+  if (eventError) {
+    return serverError("대시보드 미션 현황 행사 기간 조회 실패", eventError);
+  }
+
+  if (!event) {
+    return notFound("행사를 찾을 수 없습니다.");
+  }
+
+  const dashboardDateWindow = getAdminDashboardDateWindow(
+    event.start_date,
+    event.end_date
+  );
+
+  let participantCountQuery = supabase
+    .from("participant_users")
+    .select("id", { count: "exact", head: true })
+    .eq("events_id", eventId);
+
+  if (dashboardDateWindow) {
+    participantCountQuery = participantCountQuery
+      .gte("created_at", dashboardDateWindow.startsAt)
+      .lt("created_at", dashboardDateWindow.endsBefore);
+  } else {
+    participantCountQuery = participantCountQuery.lt(
+      "created_at",
+      "0001-01-01 00:00:00"
+    );
+  }
+
   const [
     { data: missions, error: missionsError },
     { count: participantCount, error: participantCountError },
-    { data: completions, error: completionsError },
+    { data: completionMissionIds, error: completionsError },
   ] = await Promise.all([
     supabase
       .from("missions")
@@ -53,14 +100,8 @@ export async function GET(
       .eq("events_id", eventId)
       .order("sort_order", { ascending: true })
       .order("id", { ascending: true }),
-    supabase
-      .from("participant_users")
-      .select("id", { count: "exact", head: true })
-      .eq("events_id", eventId),
-    supabase
-      .from("mission_completions")
-      .select("missions_id")
-      .eq("events_id", eventId),
+    participantCountQuery,
+    fetchCompletionMissionIds(eventId, dashboardDateWindow),
   ]);
 
   if (missionsError) {
@@ -80,15 +121,8 @@ export async function GET(
 
   const completionCounts = new Map<number, number>();
 
-  for (const completion of completions ?? []) {
-    const missionId = completion.missions_id;
-
-    if (typeof missionId === "number") {
-      completionCounts.set(
-        missionId,
-        (completionCounts.get(missionId) ?? 0) + 1
-      );
-    }
+  for (const missionId of completionMissionIds ?? []) {
+    completionCounts.set(missionId, (completionCounts.get(missionId) ?? 0) + 1);
   }
 
   const denominator = participantCount ?? 0;
@@ -108,3 +142,45 @@ export async function GET(
       }) ?? [],
   });
 }
+
+const fetchCompletionMissionIds = async (
+  eventId: number,
+  dashboardDateWindow: AdminDashboardDateWindow | null
+) => {
+  const missionIds: number[] = [];
+
+  for (let from = 0; ; from += MISSION_COMPLETIONS_PAGE_SIZE) {
+    let query = supabase
+      .from("mission_completions")
+      .select("missions_id")
+      .eq("events_id", eventId);
+
+    if (dashboardDateWindow) {
+      query = query
+        .gte("completed_at", dashboardDateWindow.startsAt)
+        .lt("completed_at", dashboardDateWindow.endsBefore);
+    } else {
+      query = query.lt("completed_at", "0001-01-01 00:00:00");
+    }
+
+    const { data, error } = await query
+      .order("id", { ascending: true })
+      .range(from, from + MISSION_COMPLETIONS_PAGE_SIZE - 1);
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    const rows = data ?? [];
+
+    for (const row of rows) {
+      if (typeof row.missions_id === "number") {
+        missionIds.push(row.missions_id);
+      }
+    }
+
+    if (rows.length < MISSION_COMPLETIONS_PAGE_SIZE) {
+      return { data: missionIds, error: null };
+    }
+  }
+};

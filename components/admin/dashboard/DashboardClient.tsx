@@ -127,7 +127,7 @@ const DashboardClient = ({ eventId }: Props) => {
   const kpis = kpisData ?? emptyKpis;
 
   return (
-    <div className="px-8 pt-0 pb-8">
+    <div className="px-8 pt-0">
       <div className="grid grid-cols-4 gap-4 mt-8">
         {dashboardCardMeta.map((card) => (
           <DashboardKpiCard

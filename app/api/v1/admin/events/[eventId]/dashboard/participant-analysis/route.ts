@@ -7,6 +7,10 @@ import {
   serverError,
 } from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
+import {
+  getAdminDashboardDateLabels,
+  getAdminDashboardDateWindow,
+} from "@/utils/admin-dashboard-date";
 import { supabase } from "@/utils/supabase/server";
 
 // 어드민 대시보드 참여자 수 분석 route parameter 타입
@@ -48,20 +52,11 @@ export async function GET(
     return ok(participantAnalysisData);
   }
 
-  const [
-    { data: event, error: eventError },
-    { data: participants, error: participantsError },
-  ] = await Promise.all([
-    supabase
-      .from("events")
-      .select("start_date,end_date")
-      .eq("id", eventId)
-      .maybeSingle(),
-    supabase
-      .from("participant_users")
-      .select("created_at")
-      .eq("events_id", eventId),
-  ]);
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("start_date,end_date")
+    .eq("id", eventId)
+    .maybeSingle();
 
   if (eventError) {
     return serverError("대시보드 참여자 분석 행사 기간 조회 실패", eventError);
@@ -71,6 +66,34 @@ export async function GET(
     return notFound("행사를 찾을 수 없습니다.");
   }
 
+  const dateLabels = getAdminDashboardDateLabels(
+    event.start_date,
+    event.end_date
+  );
+  const dashboardDateWindow = getAdminDashboardDateWindow(
+    event.start_date,
+    event.end_date
+  );
+
+  let participantsQuery = supabase
+    .from("participant_users")
+    .select("created_at")
+    .eq("events_id", eventId);
+
+  if (dashboardDateWindow) {
+    participantsQuery = participantsQuery
+      .gte("created_at", dashboardDateWindow.startsAt)
+      .lt("created_at", dashboardDateWindow.endsBefore);
+  } else {
+    participantsQuery = participantsQuery.lt(
+      "created_at",
+      "0001-01-01 00:00:00"
+    );
+  }
+
+  const { data: participants, error: participantsError } =
+    await participantsQuery;
+
   if (participantsError) {
     return serverError(
       "대시보드 참여자 분석 원천 데이터 조회 실패",
@@ -78,18 +101,24 @@ export async function GET(
     );
   }
 
-  const dateLabels = getDateLabels(event.start_date, event.end_date);
   const dailyCounts = new Map(dateLabels.map((label) => [label, 0]));
   const hourlyCounts = new Map(
     Array.from({ length: 24 }, (_, hour) => [hour, 0])
   );
+  let includedParticipantCount = 0;
 
   for (const participant of participants ?? []) {
     const dateLabel = getTimestampDateLabel(participant.created_at);
+
+    if (!dailyCounts.has(dateLabel)) {
+      continue;
+    }
+
     const hour = getTimestampHour(participant.created_at);
 
     dailyCounts.set(dateLabel, (dailyCounts.get(dateLabel) ?? 0) + 1);
     hourlyCounts.set(hour, (hourlyCounts.get(hour) ?? 0) + 1);
+    includedParticipantCount += 1;
   }
 
   const daily = Array.from(dailyCounts.entries()).map(([label, count]) => ({
@@ -103,11 +132,12 @@ export async function GET(
       label: `${hour}시`,
       count,
     }));
-  const totalParticipantCount = participants?.length ?? 0;
   const hourlyDateFactors = daily.map((item) => ({
     label: item.label,
     factor:
-      totalParticipantCount === 0 ? 0 : item.count / totalParticipantCount,
+      includedParticipantCount === 0
+        ? 0
+        : item.count / includedParticipantCount,
   }));
 
   return ok({
@@ -116,35 +146,6 @@ export async function GET(
     hourly_date_factors: hourlyDateFactors,
   });
 }
-
-const getDateLabels = (startDate: string, endDate: string) => {
-  const start = parseDateOnly(startDate);
-  const end = parseDateOnly(endDate);
-
-  if (!start || !end || start > end) {
-    return [];
-  }
-
-  const labels: string[] = [];
-  const current = new Date(start);
-
-  while (current <= end && labels.length < 370) {
-    labels.push(formatDateLabel(current));
-    current.setDate(current.getDate() + 1);
-  }
-
-  return labels;
-};
-
-const parseDateOnly = (value: string) => {
-  const [year, month, day] = value.split("-").map(Number);
-
-  if (!year || !month || !day) {
-    return null;
-  }
-
-  return new Date(year, month - 1, day);
-};
 
 const getTimestampDateLabel = (value: string) => {
   const [datePart] = value.split("T");
@@ -163,6 +164,3 @@ const getTimestampHour = (value: string) => {
 
   return Number.isInteger(hour) && hour >= 0 && hour <= 23 ? hour : 0;
 };
-
-const formatDateLabel = (date: Date) =>
-  `${date.getMonth() + 1}/${date.getDate()}`;
