@@ -212,9 +212,11 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasScannedRef = useRef(false);
+  const isBackNavigatingRef = useRef(false);
   const releaseScanLockTimeoutRef = useRef<number | null>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("loading");
   const [isMissionChecking, setIsMissionChecking] = useState(false);
+  const [isBackNavigating, setIsBackNavigating] = useState(false);
   const [loadingDotCount, setLoadingDotCount] = useState(1);
   const { guideMessage, showQrGuideMessage, showUnsupportedQrMessage } =
     useQrGuideMessage();
@@ -224,6 +226,10 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
    * 현재 행사 미션 페이지 이동
    */
   const handleBack = () => {
+    if (isBackNavigatingRef.current) return;
+
+    isBackNavigatingRef.current = true;
+    setIsBackNavigating(true);
     router.push(`/event/${eventId}/mission`);
   };
 
@@ -363,11 +369,12 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
       <div className="absolute inset-x-0 bottom-[calc(3rem+env(safe-area-inset-bottom))] px-6">
         <div className="mx-auto w-72 max-w-[78vw]">
           <button
-            className="max-w-none w-full h-14 rounded-[20px] text-white font-sans font-extrabold text-lg transition-all duration-300 active:scale-[0.97] hover:scale-[1.01] flex items-center justify-center gap-2"
+            className="max-w-none w-full h-14 rounded-[20px] text-white font-sans font-extrabold text-lg transition-all duration-300 active:scale-[0.97] hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-80 flex items-center justify-center gap-2"
+            disabled={isBackNavigating}
             onClick={handleBack}
             style={PRIMARY_700_BACKGROUND_STYLE}
           >
-            돌아가기
+            {isBackNavigating ? "이동 중..." : "돌아가기"}
           </button>
         </div>
       </div>
