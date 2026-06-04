@@ -12,11 +12,11 @@ import {
   useAdminDashboardMissionsQuery,
   useAdminDashboardParticipantAnalysisQuery,
 } from "@/features/admin/dashboard/adminDashboardQueries";
+import { useDashboardKpiBroadcast } from "@/hooks/useDashboardKpiBroadcast";
 import type {
   AdminDashboardKpiKey,
   AdminDashboardKpisResponse,
 } from "@/types/admin-dashboard";
-import { createBrowserSupabaseClient } from "@/utils/supabase/browser";
 
 type Props = {
   eventId: number;
@@ -121,8 +121,14 @@ const DashboardClient = ({ eventId }: Props) => {
     refetchParticipantAnalysis,
   ]);
 
-  useDashboardKpiBroadcast(eventId, refetchKpis);
-  useAlignedMinuteRefetch(refetchAllDashboardData, isValidEventId(eventId));
+  const isEventIdValid = isValidEventId(eventId);
+
+  useDashboardKpiBroadcast({
+    eventId,
+    enabled: isEventIdValid,
+    onInvalidate: refetchKpis,
+  });
+  useAlignedMinuteRefetch(refetchAllDashboardData, isEventIdValid);
 
   const kpis = kpisData ?? emptyKpis;
 
@@ -177,62 +183,6 @@ const DashboardClient = ({ eventId }: Props) => {
       </div>
     </div>
   );
-};
-
-const useDashboardKpiBroadcast = (
-  eventId: number,
-  onInvalidate: () => void
-) => {
-  useEffect(() => {
-    if (
-      !isValidEventId(eventId) ||
-      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    ) {
-      return;
-    }
-
-    const supabase = createBrowserSupabaseClient();
-    const topic = `dashboard-kpis:${eventId}`;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
-    let isDisposed = false;
-
-    const subscribe = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.access_token) {
-        await supabase.realtime.setAuth(session.access_token);
-      } else {
-        await supabase.realtime.setAuth();
-      }
-
-      if (isDisposed) {
-        return;
-      }
-
-      channel = supabase
-        .channel(topic, { config: { private: true } })
-        .on("broadcast", { event: "invalidate" }, () => {
-          onInvalidate();
-        });
-
-      channel.subscribe();
-    };
-
-    void subscribe().catch(() => {
-      // Realtime 실패 시에도 매 분 00초 fallback polling이 KPI를 보정합니다.
-    });
-
-    return () => {
-      isDisposed = true;
-
-      if (channel) {
-        void supabase.removeChannel(channel);
-      }
-    };
-  }, [eventId, onInvalidate]);
 };
 
 const useAlignedMinuteRefetch = (callback: () => void, enabled: boolean) => {
