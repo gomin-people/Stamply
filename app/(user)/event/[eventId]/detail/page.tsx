@@ -67,7 +67,6 @@ const EventDetailPage = () => {
         <EventDateTimeCard
           startDate={event.startDate || ""}
           endDate={event.endDate || ""}
-          operatingRemarks={event.operatingRemarks}
           startTime={event.startTime}
           endTime={event.endTime}
         />
@@ -101,7 +100,7 @@ const EventDetailPage = () => {
         {/* 카드 5: 비고 */}
         <InfoCard label="비고">
           <p className="text-[14px] text-gomin-neutral-700 font-semibold whitespace-pre-line leading-relaxed">
-            {event.notice || "특이사항이 없습니다."}
+            {event.operatingRemarks || "특이사항이 없습니다."}
           </p>
         </InfoCard>
       </div>
