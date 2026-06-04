@@ -17,7 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
 import type { StamplyEvent } from "@/features/shared/types/stamply";
-import { useSetSelectedEventId } from "@/stores/admin";
+import {
+  useSetSelectedEventId,
+  useIsEditMode,
+  useSetPendingHref,
+} from "@/stores/admin";
 
 type Props = {
   eventId: string;
@@ -118,6 +122,8 @@ const EventSelector = ({ eventId }: Props) => {
     null
   );
   const setSelectedEventId = useSetSelectedEventId();
+  const isEditMode = useIsEditMode();
+  const setPendingHref = useSetPendingHref();
   const { data: events = [], isError, isLoading } = useAdminEventsQuery();
   const sortedEvents = useMemo(
     () => [...events].sort(compareEventsByDisplayPriority),
@@ -139,20 +145,27 @@ const EventSelector = ({ eventId }: Props) => {
   }, [selectedEvent, setSelectedEventId]);
 
   const selectEvent = (nextEventId: string) => {
-    if (nextEventId !== eventId) {
-      setSelectedEventId(nextEventId);
+    if (nextEventId === eventId) return;
 
-      router.push(
-        pathname.replace(
-          `/admin/events/${eventId}`,
-          `/admin/events/${nextEventId}`
-        )
-      );
+    const href = pathname.replace(
+      `/admin/events/${eventId}`,
+      `/admin/events/${nextEventId}`
+    );
+
+    if (isEditMode) {
+      setPendingHref(href);
+    } else {
+      setSelectedEventId(nextEventId);
+      router.push(href);
     }
   };
 
   const createEvent = () => {
-    router.push(ADMIN_EVENT_REGISTER_PATH);
+    if (isEditMode) {
+      setPendingHref(ADMIN_EVENT_REGISTER_PATH);
+    } else {
+      router.push(ADMIN_EVENT_REGISTER_PATH);
+    }
   };
 
   const activateScrollTarget = (target: string) => {

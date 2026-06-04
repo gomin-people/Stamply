@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/dialog";
@@ -24,6 +24,11 @@ import {
 import type { EventUpdatePayload } from "@/features/shared/types/stamply";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useEventOperationStatus } from "@/hooks/useEventOperationStatus";
+import {
+  useSetIsEditMode,
+  useSetPendingHref,
+  usePendingHref,
+} from "@/stores/admin";
 
 const TOTAL_STEPS = 3;
 
@@ -37,6 +42,16 @@ export default function EventEditClient() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);
+
+  const setIsEditMode = useSetIsEditMode();
+  const setPendingHref = useSetPendingHref();
+  const pendingHref = usePendingHref();
+
+  useEffect(() => {
+    setIsEditMode(mode === "edit");
+    return () => { setIsEditMode(false); };
+  }, [mode, setIsEditMode]);
+
 
   const { data: event, isLoading } = useAdminEventQuery(eventIdNum);
   const { data: events = [] } = useAdminEventsQuery();
@@ -81,6 +96,19 @@ export default function EventEditClient() {
     } finally {
       setDeleteDialogOpen(false);
     }
+  };
+
+  const handleLeaveConfirm = () => {
+    setMode("view");
+    setFormKey((k) => k + 1);
+    if (pendingHref) {
+      setPendingHref(null);
+      router.push(pendingHref);
+    }
+  };
+
+  const handleLeaveDialogClose = (open: boolean) => {
+    if (!open) setPendingHref(null);
   };
 
   const handleEditSave = async () => {
@@ -206,6 +234,10 @@ export default function EventEditClient() {
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <EventDeleteDialog onConfirm={handleDeleteConfirm} />
+      </Dialog>
+
+      <Dialog open={!!pendingHref} onOpenChange={handleLeaveDialogClose}>
+        <EventEditCancelDialog onConfirm={handleLeaveConfirm} />
       </Dialog>
     </div>
   );
