@@ -21,6 +21,13 @@ export default function SidebarNav({ items, pathname }: SidebarNavProps) {
   const isEditMode = useIsEditMode();
   const setPendingHref = useSetPendingHref();
 
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    if (isEditMode && pathname !== href) {
+      e.preventDefault();
+      setPendingHref(href);
+    }
+  };
+
   return (
     <nav className="mt-6 space-y-1">
       <Separator className="mb-4 bg-gomin-neutral-100" />
@@ -33,12 +40,7 @@ export default function SidebarNav({ items, pathname }: SidebarNavProps) {
           <Link
             key={item.href}
             href={item.href}
-            onClick={(e) => {
-              if (isEditMode && pathname !== item.href) {
-                e.preventDefault();
-                setPendingHref(item.href);
-              }
-            }}
+            onClick={(e) => handleNavClick(e, item.href)}
             className={`flex items-center gap-2 rounded-lg px-3 py-3 text-sm transition-[background-color,color,box-shadow,transform] duration-150 ease-out ${
               isActive
                 ? " bg-gomin-primary-700 text-gomin-white shadow-lg shadow-gomin-primary-700/30"
