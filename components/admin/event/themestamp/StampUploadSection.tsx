@@ -50,17 +50,19 @@ export default function StampUploadSection({
       />
 
       {isUploading ? (
-        <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 bg-gomin-neutral-50 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
+        <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
+          {/* 안쪽에만 체크무늬 배경과 rounded overflow-hidden 적용 */}
+          <div className="absolute inset-0 bg-checkerboard rounded-2xl overflow-hidden z-0" />
           {/* 업로드 중이어도 미리보기는 먼저 출력 (브로슈어와 동일 사양) */}
           {stampPreviewUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={stampPreviewUrl}
               alt="스탬프 모양 미리보기"
-              className="w-full h-full object-contain opacity-50"
+              className="w-full h-full object-contain opacity-50 relative z-10"
             />
           )}
-          <div className="absolute inset-0 bg-black/10 rounded-2xl flex flex-col items-center justify-center gap-1.5">
+          <div className="absolute inset-0 bg-black/10 rounded-2xl flex flex-col items-center justify-center gap-1.5 z-20">
             <Loader2 className="w-5 h-5 animate-spin text-gomin-primary-600" />
             <span className="text-[10px] font-bold text-gomin-neutral-700">
               업로드 중
@@ -68,18 +70,20 @@ export default function StampUploadSection({
           </div>
         </div>
       ) : stampPreviewUrl ? (
-        <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 bg-gomin-neutral-50 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
+        <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
+          {/* 안쪽에만 체크무늬 배경과 rounded overflow-hidden 적용 */}
+          <div className="absolute inset-0 bg-checkerboard rounded-2xl overflow-hidden z-0" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={stampPreviewUrl}
             alt="스탬프 모양 미리보기"
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain relative z-10"
           />
           {!disabled && (
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md border border-gomin-neutral-100 flex items-center justify-center text-gomin-neutral-500 hover:text-gomin-black hover:scale-105 transition-all cursor-pointer"
+              className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md border border-gomin-neutral-100 flex items-center justify-center text-gomin-neutral-500 hover:text-gomin-black hover:scale-105 transition-all cursor-pointer z-20"
             >
               <X className="w-4 h-4" />
             </button>
