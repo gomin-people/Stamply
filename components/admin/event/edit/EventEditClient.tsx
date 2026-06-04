@@ -23,7 +23,7 @@ import {
 } from "@/features/admin/events/adminEventMutations";
 import type { EventUpdatePayload } from "@/features/shared/types/stamply";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import { useEventOperationStatus } from "@/hooks/useEventOperationStatus";
+import { getEventOperationStatus } from "@/utils/event-status";
 import {
   useSetIsEditMode,
   useSetPendingHref,
@@ -58,10 +58,9 @@ export default function EventEditClient() {
   const { mutateAsync: updateEvent, isPending } = useUpdateEventMutation();
   const { mutateAsync: deleteEvent } = useDeleteEventMutation();
 
-  const operationStatus = useEventOperationStatus(
-    event?.startDate,
-    event?.endDate
-  );
+  const operationStatus = event
+    ? getEventOperationStatus(event.startDate, event.endDate)
+    : null;
   const isAfter = operationStatus === "after";
   const isDuring = operationStatus === "during";
 
@@ -151,6 +150,7 @@ export default function EventEditClient() {
             token={entryQr.token}
             qrId={entryQr.id}
             onDeleteTrigger={() => setDeleteDialogOpen(true)}
+            disabled={isAfter}
           />
         )}
 

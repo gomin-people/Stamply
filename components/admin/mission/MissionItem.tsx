@@ -12,6 +12,7 @@ type Props = {
   mission: AdminMissionDetail;
   index: number;
   disabled?: boolean;
+  qrDisabled?: boolean;
   onToggleActive: (missionId: number, checked: boolean) => void;
   onViewQR: (info: {
     title: string;
@@ -27,6 +28,7 @@ export default function MissionItem({
   mission,
   index,
   disabled = false,
+  qrDisabled = false,
   onToggleActive,
   onViewQR,
   onEdit,
@@ -83,6 +85,7 @@ export default function MissionItem({
             key={qrCode.id}
             variant="outline"
             size="icon-sm"
+            disabled={qrDisabled}
             onClick={() =>
               onViewQR({
                 title: mission.title,

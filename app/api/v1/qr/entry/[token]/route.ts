@@ -8,6 +8,7 @@ import {
   setParticipantCookie,
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
+import { getEventOperationStatus } from "@/utils/event-status";
 
 // 입장 QR route parameter 타입
 type EntryRouteContext = {
@@ -66,6 +67,23 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
 
   if (!event) {
     return notFound("행사를 찾을 수 없습니다.");
+  }
+
+  const operationStatus = getEventOperationStatus(
+    event.start_date,
+    event.end_date
+  );
+
+  if (operationStatus === "before") {
+    return NextResponse.redirect(
+      new URL("/user-unavailable?reason=event-not-started", request.url)
+    );
+  }
+
+  if (operationStatus === "after") {
+    return NextResponse.redirect(
+      new URL("/user-unavailable?reason=event-ended", request.url)
+    );
   }
 
   const currentEventUserId = getParticipantEventUserId(request);

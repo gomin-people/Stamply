@@ -32,12 +32,14 @@ import {
 type Props = {
   missions: AdminMissionDetail[];
   isFetching?: boolean;
+  isAfter?: boolean;
   onReorderingChange?: (isReordering: boolean) => void;
 };
 
 export default function MissionList({
   missions,
   isFetching,
+  isAfter = false,
   onReorderingChange,
 }: Props) {
   const [prevMissions, setPrevMissions] = useState(missions);
@@ -167,6 +169,7 @@ export default function MissionList({
               mission={mission}
               index={index}
               disabled={isReordering || isFetching}
+              qrDisabled={isAfter}
               onToggleActive={handleToggleActive}
               onViewQR={setViewingQR}
               onEdit={setEditingMission}

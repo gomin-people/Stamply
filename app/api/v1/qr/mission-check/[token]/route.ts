@@ -13,7 +13,7 @@ import {
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
 
-const MISSION_UNAVAILABLE_PATH = "/mission-unavailable";
+const MISSION_UNAVAILABLE_PATH = "/user-unavailable";
 const INACTIVE_MISSION_MESSAGE = "비활성화된 미션입니다.";
 const MISSION_NOT_FOUND_MESSAGE = "존재하지 않는 미션입니다.";
 
