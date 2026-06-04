@@ -7,10 +7,13 @@ import {
 } from "@/utils/api";
 import { authorizeAdminEvent } from "@/utils/admin-event-auth";
 import {
+  type AdminDashboardDateWindow,
   getAdminDashboardDateLabels,
   getAdminDashboardDateWindow,
 } from "@/utils/admin-dashboard-date";
 import { supabase } from "@/utils/supabase/server";
+
+const PARTICIPANTS_PAGE_SIZE = 1000;
 
 // 어드민 대시보드 참여자 수 분석 route parameter 타입
 type AdminDashboardParticipantAnalysisRouteContext = {
@@ -70,24 +73,8 @@ export async function GET(
     event.end_date
   );
 
-  let participantsQuery = supabase
-    .from("participant_users")
-    .select("created_at")
-    .eq("events_id", eventId);
-
-  if (dashboardDateWindow) {
-    participantsQuery = participantsQuery
-      .gte("created_at", dashboardDateWindow.startsAt)
-      .lt("created_at", dashboardDateWindow.endsBefore);
-  } else {
-    participantsQuery = participantsQuery.lt(
-      "created_at",
-      "0001-01-01 00:00:00"
-    );
-  }
-
-  const { data: participants, error: participantsError } =
-    await participantsQuery;
+  const { data: participantCreatedAts, error: participantsError } =
+    await fetchParticipantCreatedAts(eventId, dashboardDateWindow);
 
   if (participantsError) {
     return serverError(
@@ -102,14 +89,14 @@ export async function GET(
   );
   let includedParticipantCount = 0;
 
-  for (const participant of participants ?? []) {
-    const dateLabel = getTimestampDateLabel(participant.created_at);
+  for (const createdAt of participantCreatedAts ?? []) {
+    const dateLabel = getTimestampDateLabel(createdAt);
 
     if (!dailyCounts.has(dateLabel)) {
       continue;
     }
 
-    const hour = getTimestampHour(participant.created_at);
+    const hour = getTimestampHour(createdAt);
 
     dailyCounts.set(dateLabel, (dailyCounts.get(dateLabel) ?? 0) + 1);
     hourlyCounts.set(hour, (hourlyCounts.get(hour) ?? 0) + 1);
@@ -141,6 +128,44 @@ export async function GET(
     hourly_date_factors: hourlyDateFactors,
   });
 }
+
+const fetchParticipantCreatedAts = async (
+  eventId: number,
+  dashboardDateWindow: AdminDashboardDateWindow | null
+) => {
+  if (!dashboardDateWindow) {
+    return { data: [], error: null };
+  }
+
+  const createdAts: string[] = [];
+
+  for (let from = 0; ; from += PARTICIPANTS_PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from("participant_users")
+      .select("created_at")
+      .eq("events_id", eventId)
+      .gte("created_at", dashboardDateWindow.startsAt)
+      .lt("created_at", dashboardDateWindow.endsBefore)
+      .order("id", { ascending: true })
+      .range(from, from + PARTICIPANTS_PAGE_SIZE - 1);
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    const rows = data ?? [];
+
+    for (const row of rows) {
+      if (typeof row.created_at === "string") {
+        createdAts.push(row.created_at);
+      }
+    }
+
+    if (rows.length < PARTICIPANTS_PAGE_SIZE) {
+      return { data: createdAts, error: null };
+    }
+  }
+};
 
 const getTimestampDateLabel = (value: string) => {
   const [datePart] = value.split("T");
