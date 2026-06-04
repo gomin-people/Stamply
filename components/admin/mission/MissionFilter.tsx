@@ -4,11 +4,13 @@ export type MissionFilter = "all" | "active" | "inactive";
 
 type Props = {
   defaultValue?: MissionFilter;
+  disabled?: boolean;
   toggleValue: (value: MissionFilter) => void;
 };
 
 export default function MissionFilter({
   defaultValue = "all",
+  disabled = false,
   toggleValue,
 }: Props) {
   return (
@@ -19,6 +21,7 @@ export default function MissionFilter({
       spacing={0}
       defaultValue={defaultValue}
       onValueChange={toggleValue}
+      disabled={disabled}
     >
       <ToggleGroupItem
         value="all"

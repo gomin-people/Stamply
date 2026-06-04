@@ -31,9 +31,15 @@ import {
 
 type Props = {
   missions: AdminMissionDetail[];
+  isFetching?: boolean;
+  onReorderingChange?: (isReordering: boolean) => void;
 };
 
-export default function MissionList({ missions }: Props) {
+export default function MissionList({
+  missions,
+  isFetching,
+  onReorderingChange,
+}: Props) {
   const [prevMissions, setPrevMissions] = useState(missions);
   const [items, setItems] = useState<AdminMissionDetail[]>(() =>
     [...missions].sort((a, b) => a.sortOrder - b.sortOrder)
@@ -85,6 +91,7 @@ export default function MissionList({ missions }: Props) {
     const reordered = arrayMove(items, oldIndex, newIndex);
 
     setItems(reordered); // 낙관적 업데이트
+    onReorderingChange?.(true);
     try {
       await reorderAdminMissionsAsync({
         eventId,
@@ -94,6 +101,8 @@ export default function MissionList({ missions }: Props) {
     } catch (e) {
       console.error(e);
       setItems(items); // 실패 시 롤백
+    } finally {
+      onReorderingChange?.(false);
     }
   };
 
@@ -157,7 +166,7 @@ export default function MissionList({ missions }: Props) {
               key={mission.id}
               mission={mission}
               index={index}
-              disabled={isReordering}
+              disabled={isReordering || isFetching}
               onToggleActive={handleToggleActive}
               onViewQR={setViewingQR}
               onEdit={setEditingMission}
