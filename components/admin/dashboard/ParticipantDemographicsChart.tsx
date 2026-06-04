@@ -96,6 +96,7 @@ const GenderDonutChart = ({
         >
           <PieChart accessibilityLayer>
             <ChartTooltip
+              isAnimationActive={false}
               content={
                 <ChartTooltipContent
                   hideLabel
@@ -182,6 +183,7 @@ const AgeBarChart = ({ ageData }: { ageData: AgeData[] }) => {
           width={42}
         />
         <ChartTooltip
+          isAnimationActive={false}
           cursor={{ fill: "rgba(84, 53, 235, 0.06)" }}
           content={
             <ChartTooltipContent
