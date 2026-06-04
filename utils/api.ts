@@ -350,8 +350,12 @@ export async function getCurrentParticipant(request: NextRequest): Promise<
     return { response };
   }
 
+  const participant: ParticipantRow = {
+    ...(data as Record<string, unknown>),
+  } as ParticipantRow;
+
   return {
-    participant: data as ParticipantRow,
+    participant,
     eventUserId,
   };
 }

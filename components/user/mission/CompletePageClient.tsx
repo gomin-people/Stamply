@@ -9,19 +9,34 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useSubmitSurveyMutation } from "@/features/participant/survey/participantSurveyMutations";
 
 const CompletePageClient = () => {
   const router = useRouter();
   const { eventId } = useParams<{ eventId: string }>();
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const { mutate: claimReward, isPending } = useSubmitSurveyMutation();
 
   const handleStaffConfirm = () => {
     setIsCompleteModalOpen(true);
   };
 
   const handleConfirmClose = () => {
-    setIsCompleteModalOpen(false);
-    router.push(`/event/${eventId}`);
+    if (isPending) return;
+
+    claimReward(
+      { isRewardClaimed: true },
+      {
+        onSuccess: () => {
+          setIsCompleteModalOpen(false);
+          router.push(`/event/${eventId}`);
+        },
+        onError: (err: Error) => {
+          console.error("Reward claim failed:", err);
+          alert("수령 확인 처리에 실패했습니다. 다시 시도해 주세요.");
+        },
+      }
+    );
   };
 
   return (
@@ -85,9 +100,14 @@ const CompletePageClient = () => {
           <button
             type="button"
             onClick={handleConfirmClose}
-            className="w-full py-3.5 rounded-[18px] font-nanum font-bold text-[16px] bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all shadow-md active:scale-[0.98] cursor-pointer"
+            disabled={isPending}
+            className="w-full py-3.5 rounded-[18px] font-nanum font-bold text-[16px] bg-gomin-primary-700 hover:bg-gomin-primary-600 disabled:bg-gomin-neutral-200 disabled:text-gomin-neutral-400 disabled:cursor-not-allowed text-white transition-all shadow-md active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
           >
-            확인
+            {isPending ? (
+              <span className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              "확인"
+            )}
           </button>
         </DialogContent>
       </Dialog>
