@@ -13,7 +13,7 @@ import EventContactPhoneField from "@/components/admin/event/info/EventContactPh
 import EventContactEmailField from "@/components/admin/event/info/EventContactEmailField";
 import EventOperatingHoursField from "@/components/admin/event/info/EventOperatingHoursField";
 import EventRemarksField from "@/components/admin/event/info/EventRemarksField";
-import { formatPhoneNumber } from "@/utils";
+import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { eventInfoSchema } from "@/utils/schemas";
 
 type FormState = z.infer<typeof eventInfoSchema>;
@@ -61,8 +61,9 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
+      const cleaned = stripInvisibleChars(value).trim();
       const targetValue =
-        name === "contactPhone" ? formatPhoneNumber(value) : value;
+        name === "contactPhone" ? formatPhoneNumber(cleaned) : cleaned;
       const nextForm = { ...form, [name]: targetValue };
       setForm(nextForm);
 
@@ -78,26 +79,26 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
     setIsPosterUploading(true);
   };
 
-    const handlePosterUploadSuccess = (url: string) => {
-      setIsPosterUploading(false);
-      const nextForm = { ...form, posterImageUrl: url };
-      setForm(nextForm);
+  const handlePosterUploadSuccess = (url: string) => {
+    setIsPosterUploading(false);
+    const nextForm = { ...form, posterImageUrl: url };
+    setForm(nextForm);
 
-      if (zodError) {
-        const result = eventInfoSchema.safeParse(nextForm);
-        setZodError(result.error ?? null);
-      }
-    };
+    if (zodError) {
+      const result = eventInfoSchema.safeParse(nextForm);
+      setZodError(result.error ?? null);
+    }
+  };
 
-    const handlePosterRemove = () => {
-      const nextForm = { ...form, posterImageUrl: "" };
-      setForm(nextForm);
+  const handlePosterRemove = () => {
+    const nextForm = { ...form, posterImageUrl: "" };
+    setForm(nextForm);
 
-      if (zodError) {
-        const result = eventInfoSchema.safeParse(nextForm);
-        setZodError(result.error ?? null);
-      }
-    };
+    if (zodError) {
+      const result = eventInfoSchema.safeParse(nextForm);
+      setZodError(result.error ?? null);
+    }
+  };
 
   const validate = useCallback(() => {
     const result = eventInfoSchema.safeParse(form);

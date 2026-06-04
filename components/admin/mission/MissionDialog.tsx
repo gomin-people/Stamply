@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Mission } from "@/types";
+import { stripInvisibleChars } from "@/utils";
 
 type Props = {
   mission: Mission;
@@ -31,6 +32,17 @@ export default function MissionDialog({ mission, onSave }: Props) {
   const [description, setDescription] = useState(mission.description ?? "");
   const [titleError, setTitleError] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(stripInvisibleChars(e.target.value).trim());
+    if (titleError) setTitleError(false);
+  };
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setDescription(stripInvisibleChars(e.target.value).trim());
+  };
 
   const handleSave = () => {
     if (!title.trim()) {
@@ -78,10 +90,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
             maxLength={20}
             value={title}
             aria-invalid={titleError}
-            onChange={(e) => {
-              setTitle(e.target.value);
-              if (titleError) setTitleError(false);
-            }}
+            onChange={handleTitleChange}
           />
           <FieldError>{titleError && "미션명을 입력해 주세요."}</FieldError>
         </Field>
@@ -91,7 +100,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
           <Textarea
             maxLength={500}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={handleDescriptionChange}
             rows={4}
             className="resize-none"
           />

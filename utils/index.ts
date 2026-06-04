@@ -26,6 +26,12 @@ export const formatPhoneNumber = (raw: string): string => {
   return `${d.slice(0, 3)}-${d.slice(3, mid)}-${d.slice(mid)}`;
 };
 
+// .trim()으로 걸러지지 않는 비가시 유니코드 문자(U+3164 한글 채움 문자 등)를 제거
+const INVISIBLE_CHARS_RE = /[\u200B\u200C\u200D\uFEFF\u3164\u180E\u00AD]/g;
+
+export const stripInvisibleChars = (str: string): string =>
+  str.replace(INVISIBLE_CHARS_RE, "");
+
 export const isValidEmail = (value: string): boolean =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
