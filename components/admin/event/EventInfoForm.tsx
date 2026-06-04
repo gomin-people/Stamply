@@ -13,7 +13,7 @@ import EventContactPhoneField from "@/components/admin/event/info/EventContactPh
 import EventContactEmailField from "@/components/admin/event/info/EventContactEmailField";
 import EventOperatingHoursField from "@/components/admin/event/info/EventOperatingHoursField";
 import EventRemarksField from "@/components/admin/event/info/EventRemarksField";
-import { formatPhoneNumber } from "@/utils";
+import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { eventInfoSchema } from "@/utils/schemas";
 
 type FormState = z.infer<typeof eventInfoSchema>;
@@ -61,43 +61,47 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
+      const cleaned = stripInvisibleChars(value).trim();
       const targetValue =
-        name === "contactPhone" ? formatPhoneNumber(value) : value;
-      const nextForm = { ...form, [name]: targetValue };
-      setForm(nextForm);
+        name === "contactPhone" ? formatPhoneNumber(cleaned) : cleaned;
+      setForm((prev) => ({ ...prev, [name]: targetValue }));
 
       if (zodError) {
-        const result = eventInfoSchema.safeParse(nextForm);
-        setZodError(result.error ?? null);
+        setForm((prev) => {
+          const nextForm = { ...prev, [name]: targetValue };
+          const result = eventInfoSchema.safeParse(nextForm);
+          setZodError(result.error ?? null);
+          return nextForm;
+        });
       }
     },
-    [form, zodError]
+    [zodError]
   );
 
   const handlePosterUploadStart = () => {
     setIsPosterUploading(true);
   };
 
-    const handlePosterUploadSuccess = (url: string) => {
-      setIsPosterUploading(false);
+  const handlePosterUploadSuccess = (url: string) => {
+    setIsPosterUploading(false);
+    setForm((prev) => ({ ...prev, posterImageUrl: url }));
+
+    if (zodError) {
       const nextForm = { ...form, posterImageUrl: url };
-      setForm(nextForm);
+      const result = eventInfoSchema.safeParse(nextForm);
+      setZodError(result.error ?? null);
+    }
+  };
 
-      if (zodError) {
-        const result = eventInfoSchema.safeParse(nextForm);
-        setZodError(result.error ?? null);
-      }
-    };
+  const handlePosterRemove = () => {
+    setForm((prev) => ({ ...prev, posterImageUrl: "" }));
 
-    const handlePosterRemove = () => {
+    if (zodError) {
       const nextForm = { ...form, posterImageUrl: "" };
-      setForm(nextForm);
-
-      if (zodError) {
-        const result = eventInfoSchema.safeParse(nextForm);
-        setZodError(result.error ?? null);
-      }
-    };
+      const result = eventInfoSchema.safeParse(nextForm);
+      setZodError(result.error ?? null);
+    }
+  };
 
   const validate = useCallback(() => {
     const result = eventInfoSchema.safeParse(form);
