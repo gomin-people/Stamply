@@ -212,6 +212,7 @@ const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
           tickFormatter={formatChartTick}
         />
         <ChartTooltip
+          isAnimationActive={false}
           cursor={{ stroke: chartColor, strokeOpacity: 0.16 }}
           content={
             <ChartTooltipContent
@@ -275,6 +276,7 @@ const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
           tickFormatter={formatChartTick}
         />
         <ChartTooltip
+          isAnimationActive={false}
           cursor={{ fill: "rgba(84, 53, 235, 0.06)" }}
           content={
             <ChartTooltipContent
