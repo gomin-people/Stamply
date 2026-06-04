@@ -1,13 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { useAdminMissionsQuery } from "@/features/admin/missions/adminMissionQueries";
 import MissionFilter from "@/components/admin/mission/MissionFilter";
-import QRDownloadButton from "@/components/admin/mission/QRDownloadButton";
+import type { AdminMissionDetail } from "@/types/models/admin";
+
+const QRDownloadButton = dynamic(
+  () => import("@/components/admin/mission/QRDownloadButton"),
+  { ssr: false }
+);
 import MissionAddButton from "@/components/admin/mission/MissionAddButton";
 import MissionList from "@/components/admin/mission/MissionList";
 import { Button } from "@/components/ui/button";
-import { AdminMissionDetail } from "@/types/models/admin";
 
 type Props = {
   eventId: number;
