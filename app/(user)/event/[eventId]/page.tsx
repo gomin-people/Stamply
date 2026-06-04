@@ -12,9 +12,14 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
   const event = await getEntryEvent(eventId);
 
   return (
-    <main className="min-h-screen bg-white flex justify-center">
-      <div className="w-full max-w-100.5 flex flex-col items-center justify-center px-12  pb-10">
-        <EventPoster src={event.posterImageUrl} width={300} height={440} />
+    <main className="h-screen overflow-hidden bg-white flex justify-center">
+      <div className="w-full max-w-100.5 h-full flex flex-col items-center justify-center px-12 pb-10 min-h-0">
+        <EventPoster
+          src={event.posterImageUrl}
+          width={300}
+          height={440}
+          maxHeight="min(440px, calc(100vh - 136px))"
+        />
         <Link
           href={`/event/${eventId}/brochure`}
           className="mt-5.5 w-full max-w-76"
