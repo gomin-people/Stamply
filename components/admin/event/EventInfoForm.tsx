@@ -64,15 +64,18 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
       const cleaned = stripInvisibleChars(value).trim();
       const targetValue =
         name === "contactPhone" ? formatPhoneNumber(cleaned) : cleaned;
-      const nextForm = { ...form, [name]: targetValue };
-      setForm(nextForm);
+      setForm((prev) => ({ ...prev, [name]: targetValue }));
 
       if (zodError) {
-        const result = eventInfoSchema.safeParse(nextForm);
-        setZodError(result.error ?? null);
+        setForm((prev) => {
+          const nextForm = { ...prev, [name]: targetValue };
+          const result = eventInfoSchema.safeParse(nextForm);
+          setZodError(result.error ?? null);
+          return nextForm;
+        });
       }
     },
-    [form, zodError]
+    [zodError]
   );
 
   const handlePosterUploadStart = () => {
@@ -81,20 +84,20 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
 
   const handlePosterUploadSuccess = (url: string) => {
     setIsPosterUploading(false);
-    const nextForm = { ...form, posterImageUrl: url };
-    setForm(nextForm);
+    setForm((prev) => ({ ...prev, posterImageUrl: url }));
 
     if (zodError) {
+      const nextForm = { ...form, posterImageUrl: url };
       const result = eventInfoSchema.safeParse(nextForm);
       setZodError(result.error ?? null);
     }
   };
 
   const handlePosterRemove = () => {
-    const nextForm = { ...form, posterImageUrl: "" };
-    setForm(nextForm);
+    setForm((prev) => ({ ...prev, posterImageUrl: "" }));
 
     if (zodError) {
+      const nextForm = { ...form, posterImageUrl: "" };
       const result = eventInfoSchema.safeParse(nextForm);
       setZodError(result.error ?? null);
     }
