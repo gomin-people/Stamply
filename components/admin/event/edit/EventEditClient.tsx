@@ -103,9 +103,6 @@ export default function EventEditClient() {
     setPendingHref(null);
     if (href) {
       router.push(href);
-    } else {
-      setMode("view");
-      setFormKey((k) => k + 1);
     }
   };
 
