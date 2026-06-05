@@ -113,6 +113,7 @@ const PosterImageField = memo(function PosterImageField({
             )}
           >
             <ImageIcon className="size-8 text-primary/40" />
+            <span className="text-xs">클릭해서 업로드해주세요.</span>
           </button>
         )}
       </div>

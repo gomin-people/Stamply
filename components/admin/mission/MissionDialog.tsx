@@ -102,7 +102,7 @@ export default function MissionDialog({ mission, onSave }: Props) {
             value={description}
             onChange={handleDescriptionChange}
             rows={4}
-            className="resize-none"
+            className="resize-none h-20"
           />
         </Field>
       </FieldGroup>

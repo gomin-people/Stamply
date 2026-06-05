@@ -20,6 +20,8 @@ type Props = {
 };
 
 const QR_SIZE = 240;
+const QR_PADDING = 16;
+const QR_CANVAS_SIZE = QR_SIZE + QR_PADDING * 2;
 
 export default function QRDialog({ title, url, filename, description }: Props) {
   const svgRef = useRef<HTMLDivElement>(null);
@@ -35,12 +37,12 @@ export default function QRDialog({ title, url, filename, description }: Props) {
 
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = QR_SIZE;
-      canvas.height = QR_SIZE;
+      canvas.width = QR_CANVAS_SIZE;
+      canvas.height = QR_CANVAS_SIZE;
       const ctx = canvas.getContext("2d")!;
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, QR_SIZE, QR_SIZE);
-      ctx.drawImage(img, 0, 0, QR_SIZE, QR_SIZE);
+      ctx.fillRect(0, 0, QR_CANVAS_SIZE, QR_CANVAS_SIZE);
+      ctx.drawImage(img, QR_PADDING, QR_PADDING, QR_SIZE, QR_SIZE);
       URL.revokeObjectURL(objectUrl);
 
       const a = document.createElement("a");

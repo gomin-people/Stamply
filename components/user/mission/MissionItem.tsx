@@ -55,7 +55,7 @@ export default function MissionItem({
         {/* 텍스트 정보 영역 (오른쪽) */}
         <div className="flex flex-col text-left space-y-2 flex-1">
           <span
-            className={`text-[25px] font-sans font-black tracking-tight leading-none ${
+            className={`text-[25px] font-sans font-black tracking-tight leading-tight break-keep ${
               mission.isStamped
                 ? "text-gomin-primary-700"
                 : "text-gomin-neutral-600"
@@ -64,7 +64,7 @@ export default function MissionItem({
             {mission.title}
           </span>
           <div
-            className={`flex flex-col text-[16px] font-sans font-bold leading-tight tracking-tight whitespace-pre-line ${
+            className={`flex flex-col text-[16px] font-sans font-bold leading-tight tracking-tight whitespace-pre-line break-keep ${
               mission.isStamped
                 ? "text-gomin-neutral-600"
                 : "text-gomin-neutral-500"

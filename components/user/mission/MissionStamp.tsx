@@ -34,14 +34,14 @@ export default function MissionStamp({
       >
         {/* 미션 텍스트 (도장이 찍혔을 경우 도장 아래에 겹쳐서 보임) */}
         <div
-          className={`flex flex-col items-center justify-center text-center space-y-2 z-10 ${
+          className={`flex flex-col items-center justify-center text-center z-10 ${
             mission.isStamped
               ? "text-gomin-primary-700/60"
               : "text-gomin-neutral-500"
           }`}
         >
           <span
-            className={`text-2xl font-sans font-black ${
+            className={`text-2xl font-sans font-black break-keep ${
               mission.isStamped
                 ? "text-gomin-neutral-800/80"
                 : "text-gomin-neutral-600"
@@ -49,15 +49,6 @@ export default function MissionStamp({
           >
             {mission.title}
           </span>
-          <p
-            className={`text-[14px] font-sans max-w-[120px] leading-tight font-bold ${
-              mission.isStamped
-                ? "text-gomin-neutral-500/70"
-                : "text-gomin-neutral-400"
-            }`}
-          >
-            {mission.description}
-          </p>
         </div>
 
         {/* 완료 상태일 때 보라색 도장 오버레이 */}
