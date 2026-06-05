@@ -99,13 +99,11 @@ export default function EventEditClient() {
   };
 
   const handleLeaveConfirm = () => {
-    const href = pendingHref;
-    setPendingHref(null);
-    if (href) {
-      router.push(href);
-    } else {
-      setMode("view");
-      setFormKey((k) => k + 1);
+    setMode("view");
+    setFormKey((k) => k + 1);
+    if (pendingHref) {
+      setPendingHref(null);
+      router.push(pendingHref);
     }
   };
 
