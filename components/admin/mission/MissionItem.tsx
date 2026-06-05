@@ -64,10 +64,10 @@ export default function MissionItem({
       </div>
       <div className="text-sm text-gomin-neutral-600">{index + 1}</div>
 
-      <div className="text-sm font-medium text-gomin-black">
+      <div className="text-sm font-medium text-gomin-black truncate">
         {mission.title}
       </div>
-      <div className="text-sm text-gomin-neutral-500">
+      <div className="text-sm text-gomin-neutral-500 truncate">
         {mission.description}
       </div>
 
