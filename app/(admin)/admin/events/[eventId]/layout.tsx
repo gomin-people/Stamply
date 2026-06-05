@@ -32,6 +32,7 @@ export default async function AdminEventLayout({
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
+    await supabase.auth.signOut();
     redirect("/admin");
   }
 
