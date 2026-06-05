@@ -36,6 +36,10 @@ export default function SurveyModal({
     if (!isPending) onClose();
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) handleClose();
+  };
+
   useModalHistoryBack(isOpen, handleClose);
 
   const handleGenderSelect = (selectedGender: Gender) => {
@@ -70,12 +74,7 @@ export default function SurveyModal({
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open: boolean) => {
-        if (!open) handleClose();
-      }}
-    >
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         className="sm:max-w-md bg-gomin-white p-6 rounded-[24px] border border-gomin-primary-300"
