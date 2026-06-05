@@ -113,18 +113,18 @@ const ParticipantAnalysisChart = ({
   );
 
   return (
-    <div className="flex h-full min-h-88 flex-col px-4 py-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-row items-end gap-3">
+    <div className="flex h-full min-h-88 min-w-0 flex-col px-4 py-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 flex-wrap items-end gap-x-3 gap-y-1">
           <h2 className="text-lg font-semibold text-gomin-black">
             참여자 수 분석
           </h2>
-          <p className="text-sm font-medium text-gomin-neutral-400">
+          <p className="min-w-0 truncate text-sm font-medium text-gomin-neutral-400">
             시간에 따른 참여 패턴 확인
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <AnimatePresence initial={false}>
             {activeView === "hourly" && (
               <motion.div
@@ -194,6 +194,7 @@ const ParticipantAnalysisChart = ({
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeView}
+            className="min-w-0"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
@@ -216,7 +217,7 @@ const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
   return (
     <ChartContainer
       config={dailyChartConfig}
-      className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      className="aspect-auto h-[260px] min-w-0 [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
       initialDimension={{ width: 760, height: 260 }}
     >
       <AreaChart
@@ -292,7 +293,7 @@ const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
   return (
     <ChartContainer
       config={hourlyChartConfig}
-      className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      className="aspect-auto h-[260px] min-w-0 [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
       initialDimension={{ width: 760, height: 260 }}
     >
       <BarChart

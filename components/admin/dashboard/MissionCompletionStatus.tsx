@@ -19,28 +19,36 @@ const progressBarClassNames = {
   fill: "bg-gomin-primary-700",
 } as const;
 
+const missionCompletionGridClassName =
+  "grid grid-cols-[minmax(0,14rem)_minmax(0,4.25rem)_minmax(0,1fr)_minmax(4.5rem,5.75rem)]";
+
 const MissionCompletionStatus = ({ missions }: Props) => {
   const missionItems = missions.slice(0, 10);
 
   return (
-    <div className="flex h-full min-h-168 flex-col px-4 pt-4">
-      <div className="flex flex-row items-end gap-3">
+    <div className="flex h-full min-h-168 min-w-0 flex-col px-4 pt-4">
+      <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-1">
         <h2 className="text-lg font-semibold text-gomin-black">
           미션별 완료 현황
         </h2>
-        <p className="text-sm font-medium text-gomin-neutral-400">
+        <p className="min-w-0 truncate text-sm font-medium text-gomin-neutral-400">
           미션 참여 및 완료 데이터
         </p>
       </div>
 
-      <div className="mt-4 grid grid-cols-[minmax(0,14rem)_4.25rem_minmax(0,1fr)_5.75rem] items-center gap-x-2 border-b border-gomin-neutral-100 pb-2 text-sm font-semibold text-gomin-neutral-400">
-        <span>미션명</span>
-        <span className="text-right">완료자 수</span>
-        <span className="col-start-4 text-right">완료율</span>
+      <div
+        className={cn(
+          missionCompletionGridClassName,
+          "mt-4 items-center gap-x-2 border-b border-gomin-neutral-100 pb-2 text-sm font-semibold text-gomin-neutral-400"
+        )}
+      >
+        <span className="min-w-0 truncate">미션명</span>
+        <span className="min-w-0 truncate text-right">완료자 수</span>
+        <span className="col-start-4 min-w-0 truncate text-right">완료율</span>
       </div>
 
       {missionItems.length > 0 ? (
-        <ul className="min-h-0">
+        <ul className="min-h-0 min-w-0">
           {missionItems.map((mission, index) => {
             const completedCountText = formatNumber(mission.completedCount);
             const completionRate = Math.min(
@@ -51,7 +59,10 @@ const MissionCompletionStatus = ({ missions }: Props) => {
             return (
               <li
                 key={mission.id}
-                className="grid min-h-14.5 grid-cols-[minmax(0,14rem)_4.25rem_minmax(0,1fr)_5.75rem] items-center gap-x-2 border-b border-dashed border-gomin-neutral-100 last:border-b-0"
+                className={cn(
+                  missionCompletionGridClassName,
+                  "min-h-14.5 min-w-0 items-center gap-x-2 overflow-hidden border-b border-dashed border-gomin-neutral-100 last:border-b-0"
+                )}
               >
                 <span
                   className="block min-w-0 truncate text-sm text-gomin-black"

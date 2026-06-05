@@ -31,7 +31,7 @@ const DashboardKpiCard = ({
   return (
     <section
       aria-label={title}
-      className="relative flex min-h-30 items-center gap-4 rounded-xl border border-gomin-neutral-100 bg-white p-4 pr-11"
+      className="relative flex min-h-30 min-w-0 items-center gap-4 rounded-xl border border-gomin-neutral-100 bg-white p-4 pr-11"
     >
       <div className="group/info absolute top-2 right-2">
         <button
@@ -41,7 +41,7 @@ const DashboardKpiCard = ({
         >
           <Info className="size-3.5" aria-hidden="true" />
         </button>
-        <div className="pointer-events-none absolute bottom-6 right-0 z-10 w-max max-w-[calc(100vw-2rem)] rounded-lg border border-gomin-neutral-100 bg-white/90 px-3 py-2 text-right text-xs leading-5 font-medium whitespace-nowrap text-gomin-neutral-600 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition group-hover/info:opacity-100 group-focus-within/info:opacity-100">
+        <div className="pointer-events-none absolute right-0 bottom-6 z-10 w-max max-w-[min(28rem,calc(100vw-2rem))] rounded-lg border border-gomin-neutral-100 bg-white/90 px-3 py-2 text-right text-xs leading-5 font-medium text-gomin-neutral-600 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition group-hover/info:opacity-100 group-focus-within/info:opacity-100">
           {hasTooltipParenthesis ? (
             <>
               <span className="block">
@@ -58,14 +58,17 @@ const DashboardKpiCard = ({
       </div>
       <div
         className={cn(
-          "flex size-12 items-center justify-center rounded-xl mx-1",
+          "mx-1 flex size-12 shrink-0 items-center justify-center rounded-xl",
           colorClassNames.icon
         )}
       >
         {icon}
       </div>
       <div className="flex h-16 min-w-0 flex-1 translate-y-0.5 flex-col gap-2">
-        <div className="-translate-y-1 text-sm font-medium text-gomin-neutral-500">
+        <div
+          className="-translate-y-1 truncate text-sm font-medium text-gomin-neutral-500"
+          title={title}
+        >
           {title}
         </div>
         <div className="min-w-0">
@@ -77,20 +80,27 @@ const DashboardKpiCard = ({
           >
             <div
               className={cn(
-                "shrink-0 text-3xl font-semibold leading-none",
+                "min-w-0 truncate text-3xl leading-none font-semibold",
                 colorClassNames.value
               )}
+              title={`${todayCount}명`}
             >
               {todayCount}
             </div>
             {!shouldStackTotalCount && (
-              <div className="shrink-0 leading-none tracking-[0.03em] text-gomin-neutral-400">
+              <div
+                className="min-w-0 truncate leading-none tracking-[0.03em] text-gomin-neutral-400"
+                title={`${totalCount}명`}
+              >
                 / {totalCount}명
               </div>
             )}
           </div>
           {shouldStackTotalCount && (
-            <div className="mt-2 -translate-y-[3px] whitespace-nowrap text-right leading-none tracking-[0.03em] text-gomin-neutral-400">
+            <div
+              className="mt-2 -translate-y-[3px] truncate text-right leading-none tracking-[0.03em] text-gomin-neutral-400"
+              title={`${totalCount}명`}
+            >
               / {totalCount}명
             </div>
           )}
