@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useSubmitSurveyMutation } from "@/features/participant/survey/participantSurveyMutations";
 import { type Gender } from "@/features/shared/types/stamply";
+import { useModalHistoryBack } from "@/hooks/useModalHistoryBack";
 
 type GenderType = Gender | null;
 type AgeRangeType = "10대" | "20대" | "30대" | "40대" | "50대+" | null;
@@ -30,6 +31,12 @@ export default function SurveyModal({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { mutate: submitSurvey, isPending } = useSubmitSurveyMutation();
+
+  const handleClose = () => {
+    if (!isPending) onClose();
+  };
+
+  useModalHistoryBack(isOpen, handleClose);
 
   const handleGenderSelect = (selectedGender: Gender) => {
     setGender(selectedGender);
@@ -66,7 +73,7 @@ export default function SurveyModal({
     <Dialog
       open={isOpen}
       onOpenChange={(open: boolean) => {
-        if (!open && !isPending) onClose();
+        if (!open) handleClose();
       }}
     >
       <DialogContent
@@ -75,7 +82,7 @@ export default function SurveyModal({
       >
         {/* 우측 상단 닫기 버튼 */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           disabled={isPending}
           className="absolute right-5 top-5 text-gomin-neutral-700 hover:text-gomin-black disabled:opacity-50 transition-colors"
           aria-label="닫기"
