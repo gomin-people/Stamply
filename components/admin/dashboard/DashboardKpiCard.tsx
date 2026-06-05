@@ -37,11 +37,11 @@ const DashboardKpiCard = ({
         <button
           type="button"
           aria-label={`${title} 기준: ${info}`}
-          className="grid size-6 place-items-center rounded-full bg-white text-gomin-neutral-400 transition hover:text-gomin-primary-700 focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none"
+          className="grid size-6 cursor-pointer place-items-center rounded-full bg-white text-gomin-neutral-400 transition hover:text-gomin-primary-700 focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none"
         >
           <Info className="size-3.5" aria-hidden="true" />
         </button>
-        <div className="pointer-events-none absolute bottom-8 right-0 z-10 w-max max-w-[calc(100vw-2rem)] rounded-lg border border-gomin-neutral-100 bg-white/90 px-3 py-2 text-right text-xs leading-5 font-medium whitespace-nowrap text-gomin-neutral-600 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition group-hover/info:opacity-100 group-focus-within/info:opacity-100">
+        <div className="pointer-events-none absolute bottom-6 right-0 z-10 w-max max-w-[calc(100vw-2rem)] rounded-lg border border-gomin-neutral-100 bg-white/90 px-3 py-2 text-right text-xs leading-5 font-medium whitespace-nowrap text-gomin-neutral-600 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition group-hover/info:opacity-100 group-focus-within/info:opacity-100">
           {hasTooltipParenthesis ? (
             <>
               <span className="block">

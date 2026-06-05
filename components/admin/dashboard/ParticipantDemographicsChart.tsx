@@ -16,6 +16,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { getRankedBarColors } from "./rankedBarColors";
 
 type GenderData = {
   label: string;
@@ -29,11 +30,18 @@ type AgeData = {
   color: string;
 };
 
+type AgeBarChartData = AgeData & {
+  fill: string;
+};
+
 type Props = {
   totalRespondents: number;
   genderData: GenderData[];
   ageData: AgeData[];
 };
+
+const ageBarDarkColor = "#5435EB";
+const ageBarLightColor = "#C8BEFA";
 
 const genderChartConfig = {
   value: {
@@ -48,6 +56,9 @@ const ageChartConfig = {
     color: "#5435EB",
   },
 } satisfies ChartConfig;
+
+const ageYAxisWidth = 50;
+const ageYAxisTickOffset = -36;
 
 const ParticipantDemographicsChart = ({
   totalRespondents,
@@ -100,10 +111,8 @@ const GenderDonutChart = ({
               content={
                 <ChartTooltipContent
                   hideLabel
-                  formatter={(value, name) => (
-                    <span className="font-semibold">
-                      {name} {Number(value)}%
-                    </span>
+                  formatter={(value) => (
+                    <span className="font-semibold">{Number(value)}%</span>
                   )}
                 />
               }
@@ -125,11 +134,12 @@ const GenderDonutChart = ({
           </PieChart>
         </ChartContainer>
 
-        <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-gomin-black">
-              {totalRespondents.toLocaleString("ko-KR")}
-            </div>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-2xl text-gomin-black">
+            {totalRespondents.toLocaleString("ko-KR")}
+          </div>
+          <div className="absolute top-[calc(50%+1.25rem)] left-1/2 -translate-x-1/2 text-center text-xs text-gomin-black">
+            (명)
           </div>
         </div>
       </div>
@@ -141,9 +151,7 @@ const GenderDonutChart = ({
               className="size-3 rounded-[3px]"
               style={{ backgroundColor: item.color }}
             />
-            <span>
-              {item.label} {item.value}%
-            </span>
+            <span>{item.label}</span>
           </div>
         ))}
       </div>
@@ -152,6 +160,8 @@ const GenderDonutChart = ({
 };
 
 const AgeBarChart = ({ ageData }: { ageData: AgeData[] }) => {
+  const data = withAgeBarFill(ageData);
+
   return (
     <ChartContainer
       config={ageChartConfig}
@@ -160,7 +170,7 @@ const AgeBarChart = ({ ageData }: { ageData: AgeData[] }) => {
     >
       <BarChart
         accessibilityLayer
-        data={ageData}
+        data={data}
         layout="vertical"
         margin={{ top: 6, right: 8, bottom: 4, left: 0 }}
       >
@@ -180,7 +190,8 @@ const AgeBarChart = ({ ageData }: { ageData: AgeData[] }) => {
           axisLine={false}
           tickLine={false}
           tickMargin={8}
-          width={42}
+          width={ageYAxisWidth}
+          tick={{ textAnchor: "start", dx: ageYAxisTickOffset }}
         />
         <ChartTooltip
           isAnimationActive={false}
@@ -195,13 +206,26 @@ const AgeBarChart = ({ ageData }: { ageData: AgeData[] }) => {
           }
         />
         <Bar dataKey="percent" radius={[0, 6, 6, 0]} barSize={22}>
-          {ageData.map((item) => (
-            <Cell key={item.label} fill={item.color} />
+          {data.map((item) => (
+            <Cell key={item.label} fill={item.fill} />
           ))}
         </Bar>
       </BarChart>
     </ChartContainer>
   );
+};
+
+const withAgeBarFill = (ageData: AgeData[]): AgeBarChartData[] => {
+  const colors = getRankedBarColors(ageData, (item) => item.percent, {
+    darkColor: ageBarDarkColor,
+    includeInScale: (value) => value > 0,
+    lightColor: ageBarLightColor,
+  });
+
+  return ageData.map((item, index) => ({
+    ...item,
+    fill: colors[index],
+  }));
 };
 
 export default ParticipantDemographicsChart;

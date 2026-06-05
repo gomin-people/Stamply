@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { cn, formatNumber } from "@/utils";
 
 type MissionCompletionData = {
@@ -38,8 +41,12 @@ const MissionCompletionStatus = ({ missions }: Props) => {
 
       {missionItems.length > 0 ? (
         <ul className="min-h-0">
-          {missionItems.map((mission) => {
+          {missionItems.map((mission, index) => {
             const completedCountText = formatNumber(mission.completedCount);
+            const completionRate = Math.min(
+              Math.max(mission.completionRate, 0),
+              100
+            );
 
             return (
               <li
@@ -73,15 +80,22 @@ const MissionCompletionStatus = ({ missions }: Props) => {
                     aria-label={`${mission.title} 완료율`}
                     aria-valuemin={0}
                     aria-valuemax={100}
-                    aria-valuenow={mission.completionRate}
+                    aria-valuenow={completionRate}
                   >
-                    <div
+                    <motion.div
                       className={cn(
-                        "h-full rounded-full",
+                        "h-full origin-left rounded-full",
                         progressBarClassNames.fill
                       )}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{
+                        duration: 0.7,
+                        delay: index * 0.04,
+                        ease: "easeOut",
+                      }}
                       style={{
-                        width: `${Math.min(Math.max(mission.completionRate, 0), 100)}%`,
+                        width: `${completionRate}%`,
                       }}
                     />
                   </div>
