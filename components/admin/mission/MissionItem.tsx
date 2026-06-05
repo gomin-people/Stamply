@@ -13,6 +13,7 @@ type Props = {
   index: number;
   disabled?: boolean;
   qrDisabled?: boolean;
+  isAfter?: boolean;
   onToggleActive: (missionId: number, checked: boolean) => void;
   onViewQR: (info: {
     title: string;
@@ -29,6 +30,7 @@ export default function MissionItem({
   index,
   disabled = false,
   qrDisabled = false,
+  isAfter = false,
   onToggleActive,
   onViewQR,
   onEdit,
@@ -75,6 +77,7 @@ export default function MissionItem({
         <Switch
           defaultChecked={mission.isActive}
           className="data-checked:bg-gomin-primary-600"
+          disabled={isAfter}
           onCheckedChange={(checked) => onToggleActive(mission.id, checked)}
         />
       </div>
@@ -104,6 +107,7 @@ export default function MissionItem({
         <Button
           variant="outline"
           size="icon-sm"
+          disabled={isAfter}
           onClick={() => onEdit(mission)}
         >
           <Pencil />
@@ -112,6 +116,7 @@ export default function MissionItem({
           variant="outline"
           size="icon-sm"
           className="hover:text-destructive"
+          disabled={isAfter}
           onClick={() => onDelete(mission)}
         >
           <Trash2 />

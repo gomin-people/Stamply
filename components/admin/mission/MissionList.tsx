@@ -168,8 +168,9 @@ export default function MissionList({
               key={mission.id}
               mission={mission}
               index={index}
-              disabled={isReordering || isFetching}
+              disabled={isReordering || isFetching || isAfter}
               qrDisabled={isAfter}
+              isAfter={isAfter}
               onToggleActive={handleToggleActive}
               onViewQR={setViewingQR}
               onEdit={setEditingMission}

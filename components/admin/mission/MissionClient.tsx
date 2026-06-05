@@ -57,7 +57,7 @@ export default function MissionClient({ eventId }: Props) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gomin-neutral-100">
           <MissionFilter toggleValue={handleToggle} disabled={isDisabled} />
           <div className="flex items-center gap-2">
-            <MissionAddButton disabled={totalCount >= 10} />
+            <MissionAddButton disabled={totalCount >= 10 || isAfter} />
             <QRDownloadButton missions={filteredMissions} disabled={isAfter} />
           </div>
         </div>
