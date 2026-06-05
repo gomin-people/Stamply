@@ -49,9 +49,10 @@ export default function EventEditClient() {
 
   useEffect(() => {
     setIsEditMode(mode === "edit");
-    return () => { setIsEditMode(false); };
+    return () => {
+      setIsEditMode(false);
+    };
   }, [mode, setIsEditMode]);
-
 
   const { data: event, isLoading } = useAdminEventQuery(eventIdNum);
   const { data: events = [] } = useAdminEventsQuery();
