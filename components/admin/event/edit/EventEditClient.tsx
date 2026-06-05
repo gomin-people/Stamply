@@ -49,9 +49,10 @@ export default function EventEditClient() {
 
   useEffect(() => {
     setIsEditMode(mode === "edit");
-    return () => { setIsEditMode(false); };
+    return () => {
+      setIsEditMode(false);
+    };
   }, [mode, setIsEditMode]);
-
 
   const { data: event, isLoading } = useAdminEventQuery(eventIdNum);
   const { data: events = [] } = useAdminEventsQuery();
@@ -98,11 +99,13 @@ export default function EventEditClient() {
   };
 
   const handleLeaveConfirm = () => {
-    setMode("view");
-    setFormKey((k) => k + 1);
-    if (pendingHref) {
-      setPendingHref(null);
-      router.push(pendingHref);
+    const href = pendingHref;
+    setPendingHref(null);
+    if (href) {
+      router.push(href);
+    } else {
+      setMode("view");
+      setFormKey((k) => k + 1);
     }
   };
 
