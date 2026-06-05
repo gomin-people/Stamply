@@ -9,7 +9,7 @@ export const useModalHistoryBack = (isOpen: boolean, onClose: () => void) => {
 
   useEffect(() => {
     onCloseRef.current = onClose;
-  });
+  }, [onClose]);
 
   useEffect(() => {
     if (!isOpen) return;
