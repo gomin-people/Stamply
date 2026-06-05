@@ -20,6 +20,7 @@ type EventFormFooterProps = {
   onEditStart?: () => void;
   onEditCancel?: () => void;
   onEditSave?: () => void;
+  onDeleteClick?: () => void;
 };
 
 const outlineButton =
@@ -41,6 +42,7 @@ const EventFormFooter = ({
   onEditStart,
   onEditCancel,
   onEditSave,
+  onDeleteClick,
 }: EventFormFooterProps) => {
   const [shake, setShake] = useState(0);
 
@@ -65,6 +67,18 @@ const EventFormFooter = ({
           </span>
         )}
       </div>
+
+      {mode === "view" && onDeleteClick && (
+        <Button
+          type="button"
+          variant="outline"
+          size={null}
+          className={`${outlineButton} border-gomin-primary-300 text-gomin-primary-700 hover:text-gomin-primary-700`}
+          onClick={onDeleteClick}
+        >
+          삭제하기
+        </Button>
+      )}
 
       {mode === "view" && onEditStart && (
         <Button
