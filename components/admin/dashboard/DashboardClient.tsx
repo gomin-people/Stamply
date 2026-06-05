@@ -55,7 +55,7 @@ const dashboardCardMeta: {
   {
     key: "missionInProgress",
     title: "미션 진행 중",
-    info: "오늘 미션 진행 중 참여자 수 / 오늘 참여자 수. 미션 전체 완료자는 제외합니다.",
+    info: "오늘 미션 진행 중 참여자 수 / 오늘 참여자 수 (미션 전체 완료자 제외)",
     icon: <Zap className="size-6" aria-hidden="true" />,
     colorClassNames: {
       icon: "bg-[#FFF1D6] text-[#F59E0B]",
