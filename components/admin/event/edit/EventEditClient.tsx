@@ -99,11 +99,10 @@ export default function EventEditClient() {
   };
 
   const handleLeaveConfirm = () => {
-    setMode("view");
-    setFormKey((k) => k + 1);
-    if (pendingHref) {
-      setPendingHref(null);
-      router.push(pendingHref);
+    const href = pendingHref;
+    setPendingHref(null);
+    if (href) {
+      router.push(href);
     }
   };
 
