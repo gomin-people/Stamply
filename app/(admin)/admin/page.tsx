@@ -37,9 +37,9 @@ const AdminHomePage = async ({ searchParams }: AdminHomePageProps) => {
   const params = await searchParams;
   const errorMessage = getAdminLoginErrorMessage(params?.error);
   const cookieStore = await cookies();
-  const hasSession = cookieStore
-    .getAll()
-    .some(({ name }) => name.startsWith("sb-") && name.endsWith("-auth-token"));
+  const hasSession = cookieStore.getAll().some(({ name }) => {
+    return name.startsWith("sb-");
+  });
 
   if (hasSession) {
     return <AuthRedirect />;
