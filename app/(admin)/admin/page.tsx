@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import AuthRedirect from "@/components/admin/auth/AuthRedirect";
 import KakaoLogin from "@/components/admin/auth/KakaoLogin";
+import TestLoginButton from "@/components/admin/auth/TestLoginButton";
 import StamplyLogo from "@/components/admin/common/StamplyLogo";
 
 type AdminHomePageProps = {
@@ -61,7 +62,10 @@ const AdminHomePage = async ({ searchParams }: AdminHomePageProps) => {
           </p>
         ) : null}
 
-        <KakaoLogin />
+        <div className="flex w-full flex-col gap-3">
+          <KakaoLogin />
+          <TestLoginButton />
+        </div>
       </div>
     </main>
   );
