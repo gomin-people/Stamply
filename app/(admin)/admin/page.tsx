@@ -1,13 +1,14 @@
 import { cookies } from "next/headers";
-import KakaoLogin from "@/components/admin/auth/KakaoLogin";
-import StamplyLogo from "@/components/admin/common/StamplyLogo";
 import AuthRedirect from "@/components/admin/auth/AuthRedirect";
+import KakaoLogin from "@/components/admin/auth/KakaoLogin";
+import TestLoginButton from "@/components/admin/auth/TestLoginButton";
+import StamplyLogo from "@/components/admin/common/StamplyLogo";
 
-export default async function AdminHomePage() {
+const AdminHomePage = async () => {
   const cookieStore = await cookies();
-  const hasSession = cookieStore
-    .getAll()
-    .some(({ name }) => name.startsWith("sb-") && name.endsWith("-auth-token"));
+  const hasSession = cookieStore.getAll().some(({ name }) => {
+    return name.startsWith("sb-");
+  });
 
   if (hasSession) {
     return <AuthRedirect />;
@@ -20,8 +21,14 @@ export default async function AdminHomePage() {
           <StamplyLogo />
           <p className="text-base text-[#6D6D6D]">행사 운영 관리자 로그인</p>
         </div>
-        <KakaoLogin />
+
+        <div className="flex w-full flex-col gap-3">
+          <KakaoLogin />
+          <TestLoginButton />
+        </div>
       </div>
     </main>
   );
-}
+};
+
+export default AdminHomePage;
