@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +13,33 @@ import {
 } from "@/components/ui/field";
 import StamplyLogo from "@/components/admin/common/StamplyLogo";
 
-type SignUpFieldErrors = {
-  email?: string;
-  password?: string;
-  passwordConfirm?: string;
-};
+const signUpSchema = z
+  .object({
+    email: z
+      .string({ error: "이메일을 입력해주세요." })
+      .min(1, { error: "이메일을 입력해주세요." })
+      .email({ error: "올바른 이메일 형식을 입력해주세요." }),
+    password: z
+      .string({ error: "비밀번호를 입력해주세요." })
+      .min(1, { error: "비밀번호를 입력해주세요." })
+      .min(8, { error: "비밀번호는 8자 이상이어야 합니다." }),
+    passwordConfirm: z
+      .string({ error: "비밀번호 확인을 입력해주세요." })
+      .min(1, { error: "비밀번호 확인을 입력해주세요." }),
+  })
+  .check((ctx) => {
+    if (ctx.value.password !== ctx.value.passwordConfirm) {
+      ctx.issues.push({
+        code: "custom",
+        path: ["passwordConfirm"],
+        message: "비밀번호가 일치하지 않습니다.",
+        input: ctx.value,
+      });
+    }
+  });
+
+type SignUpFormValues = z.infer<typeof signUpSchema>;
+type SignUpFieldErrors = Partial<Record<keyof SignUpFormValues, string>>;
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -24,34 +47,25 @@ export default function SignUpPage() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [errors, setErrors] = useState<SignUpFieldErrors>({});
 
-  const validate = (): boolean => {
-    const next: SignUpFieldErrors = {};
-
-    if (!email) {
-      next.email = "이메일을 입력해주세요.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      next.email = "올바른 이메일 형식을 입력해주세요.";
-    }
-
-    if (!password) {
-      next.password = "비밀번호를 입력해주세요.";
-    } else if (password.length < 8) {
-      next.password = "비밀번호는 8자 이상이어야 합니다.";
-    }
-
-    if (!passwordConfirm) {
-      next.passwordConfirm = "비밀번호 확인을 입력해주세요.";
-    } else if (password !== passwordConfirm) {
-      next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
-    }
-
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+
+    const result = signUpSchema.safeParse({ email, password, passwordConfirm });
+    console.log(result);
+    if (!result.success) {
+      const fieldErrors = result.error.issues.reduce<SignUpFieldErrors>(
+        (acc, issue) => {
+          const key = issue.path[0] as keyof SignUpFormValues;
+          if (key && !acc[key]) acc[key] = issue.message;
+          return acc;
+        },
+        {}
+      );
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({});
     // TODO: Supabase 이메일 회원가입 연동
   };
 
