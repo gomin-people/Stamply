@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import Link from "next/link";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
@@ -39,34 +40,19 @@ const signUpSchema = z
   });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
-type SignUpFieldErrors = Partial<Record<keyof SignUpFormValues, string>>;
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [errors, setErrors] = useState<SignUpFieldErrors>({});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormValues>({
+    resolver: standardSchemaResolver(signUpSchema),
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const result = signUpSchema.safeParse({ email, password, passwordConfirm });
-    console.log(result);
-    if (!result.success) {
-      const fieldErrors = result.error.issues.reduce<SignUpFieldErrors>(
-        (acc, issue) => {
-          const key = issue.path[0] as keyof SignUpFormValues;
-          if (key && !acc[key]) acc[key] = issue.message;
-          return acc;
-        },
-        {}
-      );
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setErrors({});
+  const onSubmit = (data: SignUpFormValues) => {
     // TODO: Supabase 이메일 회원가입 연동
+    console.log(data);
   };
 
   return (
@@ -77,19 +63,21 @@ export default function SignUpPage() {
           <p className="text-base text-gomin-neutral-500">관리자 계정 만들기</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex w-full flex-col gap-5"
+        >
           <FieldGroup>
             <Field data-invalid={!!errors.email}>
               <FieldLabel htmlFor="email">이메일</FieldLabel>
               <Input
                 id="email"
                 placeholder="example@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 aria-invalid={!!errors.email}
                 className="h-12 rounded-xl px-4 text-sm"
+                {...register("email")}
               />
-              <FieldError>{errors.email}</FieldError>
+              <FieldError>{errors.email?.message}</FieldError>
             </Field>
 
             <Field data-invalid={!!errors.password}>
@@ -98,12 +86,11 @@ export default function SignUpPage() {
                 id="password"
                 type="password"
                 placeholder="8자 이상 입력해주세요"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 aria-invalid={!!errors.password}
                 className="h-12 rounded-xl px-4 text-sm"
+                {...register("password")}
               />
-              <FieldError>{errors.password}</FieldError>
+              <FieldError>{errors.password?.message}</FieldError>
             </Field>
 
             <Field data-invalid={!!errors.passwordConfirm}>
@@ -112,12 +99,11 @@ export default function SignUpPage() {
                 id="passwordConfirm"
                 type="password"
                 placeholder="비밀번호를 다시 입력해주세요"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
                 aria-invalid={!!errors.passwordConfirm}
                 className="h-12 rounded-xl px-4 text-sm"
+                {...register("passwordConfirm")}
               />
-              <FieldError>{errors.passwordConfirm}</FieldError>
+              <FieldError>{errors.passwordConfirm?.message}</FieldError>
             </Field>
           </FieldGroup>
 
