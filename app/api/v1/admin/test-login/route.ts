@@ -2,23 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_EVENT_REGISTER_PATH } from "@/constants/adminRoutes";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
-const redirectToAdminError = (request: NextRequest, error: string) => {
+const redirectToAdmin = (request: NextRequest) => {
   const redirectUrl = new URL("/admin", request.nextUrl.origin);
-  redirectUrl.searchParams.set("error", error);
 
   return NextResponse.redirect(redirectUrl, { status: 303 });
 };
 
 export const POST = async (request: NextRequest) => {
   if (process.env.STAMPLY_TEST_LOGIN_ENABLED !== "true") {
-    return redirectToAdminError(request, "test_login_disabled");
+    return redirectToAdmin(request);
   }
 
   const email = process.env.STAMPLY_TEST_LOGIN_EMAIL;
   const password = process.env.STAMPLY_TEST_LOGIN_PASSWORD;
 
   if (!email || !password) {
-    return redirectToAdminError(request, "test_login_not_configured");
+    return redirectToAdmin(request);
   }
 
   const supabase = await createSessionClient();
@@ -30,7 +29,7 @@ export const POST = async (request: NextRequest) => {
 
   if (error) {
     console.error("Test login failed:", error);
-    return redirectToAdminError(request, "test_login_failed");
+    return redirectToAdmin(request);
   }
 
   const { data: eventId, error: eventsError } = await supabase.rpc(
