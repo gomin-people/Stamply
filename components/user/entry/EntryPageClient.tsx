@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import EventPoster from "@/components/user/common/EventPoster";
@@ -28,6 +29,12 @@ export default function EntryPageClient({ eventId, posterImageUrl }: Props) {
 
   return (
     <main className="h-full overflow-hidden bg-white flex justify-center">
+      <Link
+        href={`/event/${eventId}/brochure`}
+        className="hidden"
+        aria-hidden
+        tabIndex={-1}
+      />
       <AnimatePresence
         onExitComplete={() => router.push(`/event/${eventId}/brochure`)}
       >

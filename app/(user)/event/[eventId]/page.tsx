@@ -1,5 +1,5 @@
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
-import EntryPageClient from "./EntryPageClient";
+import EntryPageClient from "@/components/user/entry/EntryPageClient";
 
 type EventEntryPageProps = {
   params: Promise<{ eventId: string }>;
