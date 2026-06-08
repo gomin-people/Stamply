@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { participantEventQueryOptions } from "@/features/participant/events/participantEventQueries";
+import { participantEventQueryOptions } from "@/features/participant/events/participantEventOptions";
 import EventPoster from "@/components/user/common/EventPoster";
 import ThemedButton from "@/components/user/common/ThemedButton";
 

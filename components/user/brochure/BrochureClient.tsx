@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { participantEventQueryOptions } from "@/features/participant/events/participantEventQueries";
+import { participantEventQueryOptions } from "@/features/participant/events/participantEventOptions";
 import BrochureSlider from "@/components/user/brochure/BrochureSlider";
 import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
 import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";

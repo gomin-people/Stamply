@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useParticipantEventQuery } from "@/features/participant/events/participantEventQueries";
+import { useQuery } from "@tanstack/react-query";
+import { participantEventQueryOptions } from "@/features/participant/events/participantEventOptions";
 import InfoCard from "@/components/user/common/InfoCard";
 import EventDateTimeCard from "@/components/user/event/EventDateTimeCard";
 import EventHostCard from "@/components/user/event/EventHostCard";
@@ -13,7 +14,7 @@ const EventDetailPage = () => {
     data: event,
     isLoading,
     isError,
-  } = useParticipantEventQuery(Number(eventId));
+  } = useQuery(participantEventQueryOptions(Number(eventId)));
 
   if (isLoading) {
     return (
