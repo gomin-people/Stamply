@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
+import { participantEventQueryOptions } from "@/features/participant/events/participantEventQueries";
 import BrochureSlider from "@/components/user/brochure/BrochureSlider";
 import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
 import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";
@@ -13,15 +15,18 @@ const BrochureGuideOverlay = dynamic(
   { ssr: false }
 );
 
-type Props = {
-  images: string[];
-};
-
-const BrochureClient = ({ images }: Props) => {
+const BrochureClient = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const searchParams = useSearchParams();
   const fromMission = searchParams.get("from") === "mission";
   const router = useRouter();
+
+  const queryOptions = useMemo(
+    () => participantEventQueryOptions(Number(eventId)),
+    [eventId]
+  );
+  const { data: event } = useQuery(queryOptions);
+  const images = event?.brochureImageUrl ?? [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

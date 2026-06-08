@@ -4,12 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { participantEventQueryOptions } from "@/features/participant/events/participantEventQueries";
 import EventPoster from "@/components/user/common/EventPoster";
 import ThemedButton from "@/components/user/common/ThemedButton";
 
 type Props = {
   eventId: string;
-  posterImageUrl: string;
 };
 
 const fadeUp = (delay: number) => ({
@@ -18,9 +19,13 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.45, ease: "easeOut" as const, delay },
 });
 
-export default function EntryPageClient({ eventId, posterImageUrl }: Props) {
+export default function EntryPageClient({ eventId }: Props) {
   const router = useRouter();
   const [exiting, setExiting] = useState(false);
+
+  const { data: event } = useQuery(
+    participantEventQueryOptions(Number(eventId))
+  );
 
   const handleStart = () => {
     if (exiting) return;
@@ -29,6 +34,7 @@ export default function EntryPageClient({ eventId, posterImageUrl }: Props) {
 
   return (
     <main className="h-full overflow-hidden bg-white flex justify-center">
+      {/* prefetch 전용 — 렌더링 없이 브로셔 페이지를 미리 로드 */}
       <Link
         href={`/event/${eventId}/brochure`}
         className="hidden"
@@ -53,7 +59,7 @@ export default function EntryPageClient({ eventId, posterImageUrl }: Props) {
               {...fadeUp(0)}
             >
               <EventPoster
-                src={posterImageUrl}
+                src={event?.posterImageUrl ?? ""}
                 width={300}
                 height={440}
                 maxHeight="min(440px, calc(100vh - 136px))"
