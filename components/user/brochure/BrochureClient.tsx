@@ -3,19 +3,14 @@
 import { useState, useMemo } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { participantEventQueryOptions } from "@/features/participant/events/participantEventQueries";
 import BrochureSlider from "@/components/user/brochure/BrochureSlider";
 import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
 import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";
+import BrochureGuideOverlay from "@/components/user/brochure/BrochureGuideOverlay";
 import FloatingActionButton from "@/components/user/mission/FloatingActionButton";
 
-const BrochureGuideOverlay = dynamic(
-  () => import("@/components/user/brochure/BrochureGuideOverlay"),
-  { ssr: false }
-);
-
-const BrochureClient = () => {
+const BrochureClient = ({ showGuide }: { showGuide: boolean }) => {
   const { eventId } = useParams<{ eventId: string }>();
   const searchParams = useSearchParams();
   const fromMission = searchParams.get("from") === "mission";
@@ -61,7 +56,9 @@ const BrochureClient = () => {
         />
       )}
 
-      {!fromMission && images.length > 1 && <BrochureGuideOverlay />}
+      {!fromMission && images.length > 1 && showGuide && (
+        <BrochureGuideOverlay eventId={eventId} />
+      )}
       {fromMission && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50 flex justify-center">
           <BrochureEventButton className="mt-4" />

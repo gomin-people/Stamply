@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import {
   dehydrate,
   HydrationBoundary,
@@ -15,12 +16,14 @@ type Props = {
 const BrochurePage = async ({ params }: Props) => {
   const { eventId } = await params;
 
-  // 쿠키 검증 + 없으면 /qr-required 리다이렉트
   const event = await getEntryEvent(eventId);
 
   if (!event.brochureImageUrl?.length) {
     redirect(`/event/${eventId}/mission`);
   }
+
+  const cookieStore = await cookies();
+  const guideSeen = cookieStore.has(`brochure-guide-seen-${eventId}`);
 
   const queryClient = new QueryClient();
   queryClient.setQueryData(
@@ -30,7 +33,7 @@ const BrochurePage = async ({ params }: Props) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <BrochureClient />
+      <BrochureClient showGuide={!guideSeen} />
     </HydrationBoundary>
   );
 };
