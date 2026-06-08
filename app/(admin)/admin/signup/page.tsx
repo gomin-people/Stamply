@@ -17,15 +17,16 @@ import StamplyLogo from "@/components/admin/common/StamplyLogo";
 const signUpSchema = z
   .object({
     email: z
-      .string({ error: "이메일을 입력해주세요." })
+      .string()
       .min(1, { error: "이메일을 입력해주세요." })
+      .max(254, { error: "이메일은 254자 이하여야 합니다." })
       .email({ error: "올바른 이메일 형식을 입력해주세요." }),
     password: z
-      .string({ error: "비밀번호를 입력해주세요." })
+      .string()
       .min(1, { error: "비밀번호를 입력해주세요." })
       .min(8, { error: "비밀번호는 8자 이상이어야 합니다." }),
     passwordConfirm: z
-      .string({ error: "비밀번호 확인을 입력해주세요." })
+      .string()
       .min(1, { error: "비밀번호 확인을 입력해주세요." }),
   })
   .check((ctx) => {
