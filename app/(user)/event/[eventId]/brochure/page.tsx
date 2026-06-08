@@ -1,12 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
-import { participantEventQueryOptions } from "@/features/participant/events/participantEventOptions";
 import BrochureClient from "@/components/user/brochure/BrochureClient";
 
 type Props = {
@@ -25,16 +19,8 @@ const BrochurePage = async ({ params }: Props) => {
   const cookieStore = await cookies();
   const guideSeen = cookieStore.has(`brochure-guide-seen-${eventId}`);
 
-  const queryClient = new QueryClient();
-  queryClient.setQueryData(
-    participantEventQueryOptions(Number(eventId)).queryKey,
-    event
-  );
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <BrochureClient showGuide={!guideSeen} />
-    </HydrationBoundary>
+    <BrochureClient images={event.brochureImageUrl} showGuide={!guideSeen} />
   );
 };
 

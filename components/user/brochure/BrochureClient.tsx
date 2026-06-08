@@ -1,27 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { participantEventQueryOptions } from "@/features/participant/events/participantEventOptions";
 import BrochureSlider from "@/components/user/brochure/BrochureSlider";
 import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
 import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";
 import BrochureGuideOverlay from "@/components/user/brochure/BrochureGuideOverlay";
 import FloatingActionButton from "@/components/user/mission/FloatingActionButton";
 
-const BrochureClient = ({ showGuide }: { showGuide: boolean }) => {
+type Props = {
+  images: string[];
+  showGuide: boolean;
+};
+
+const BrochureClient = ({ images, showGuide }: Props) => {
   const { eventId } = useParams<{ eventId: string }>();
   const searchParams = useSearchParams();
   const fromMission = searchParams.get("from") === "mission";
   const router = useRouter();
-
-  const queryOptions = useMemo(
-    () => participantEventQueryOptions(Number(eventId)),
-    [eventId]
-  );
-  const { data: event } = useQuery(queryOptions);
-  const images = event?.brochureImageUrl ?? [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
