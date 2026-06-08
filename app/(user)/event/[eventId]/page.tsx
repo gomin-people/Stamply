@@ -13,7 +13,7 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
 
   return (
     <main className="h-full overflow-hidden bg-white flex justify-center">
-      <div className="w-full max-w-100.5 h-full flex flex-col items-center justify-center px-12 pb-10 min-h-0">
+      <div className="w-full max-w-100.5 h-full flex flex-col items-center justify-center px-12 pb-10 pt-14 min-h-0">
         <EventPoster
           src={event.posterImageUrl}
           width={300}
