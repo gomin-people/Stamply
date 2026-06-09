@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import QRCode from "react-qr-code";
 import AnimatedIconStamplo from "@/components/icons/AnimatedIconStamplo";
 import {
   Dialog,
@@ -13,19 +14,46 @@ import {
   useCreateRewardQrMutation,
   type RewardQrData,
 } from "@/features/participant/reward/participantRewardMutations";
-import QRCode from "react-qr-code";
+import { createBrowserSupabaseClient } from "@/utils/supabase/browser";
 
 const CompletePageClient = () => {
+  const router = useRouter();
   const { eventId } = useParams<{ eventId: string }>();
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [qrValue, setQrValue] = useState<string | null>(null);
+  const [qrUrl, setQrUrl] = useState<string>("");
   const { mutate: createRewardQr, isPending } = useCreateRewardQrMutation();
+
+  useEffect(() => {
+    if (!qrValue) return;
+
+    const supabase = createBrowserSupabaseClient();
+    const channel = supabase.channel(`reward-claim:${qrValue}`, {
+      config: {
+        broadcast: { self: false },
+      },
+    });
+
+    channel
+      .on("broadcast", { event: "claim_success" }, () => {
+        setIsQrModalOpen(false);
+        setIsCompleteModalOpen(true);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [qrValue]);
 
   const handleStaffConfirm = () => {
     createRewardQr(undefined, {
       onSuccess: (data: RewardQrData) => {
-        // QR value: 어드민 스캔 시 참여자를 특정할 수 있도록 event_user_id 사용
+        // QR value: 어드민 스캔 시 즉시 호출 가능한 API URL 설정
+        const currentOrigin = window.location.origin;
         setQrValue(data.eventUserId);
+        setQrUrl(`${currentOrigin}/api/v1/qr/reward/${data.eventUserId}`);
         setIsQrModalOpen(true);
       },
       onError: (err: Error) => {
@@ -39,6 +67,11 @@ const CompletePageClient = () => {
     if (!open) {
       setIsQrModalOpen(false);
     }
+  };
+
+  const handleConfirmClose = () => {
+    setIsCompleteModalOpen(false);
+    router.push(`/event/${eventId}`);
   };
 
   return (
@@ -88,15 +121,56 @@ const CompletePageClient = () => {
             </DialogDescription>
           </div>
 
-          {qrValue && (
+          {qrUrl && (
             <div className="rounded-2xl border border-gomin-neutral-100 bg-white p-5 shadow-sm">
               <QRCode
-                value={qrValue}
+                value={qrUrl}
                 size={200}
                 aria-label={`리워드 수령 QR (행사 ${eventId})`}
               />
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* 미션완료 팝업 모달 */}
+      <Dialog open={isCompleteModalOpen} onOpenChange={handleConfirmClose}>
+        <DialogContent
+          showCloseButton={false}
+          className="sm:max-w-xs bg-white p-6 rounded-[24px] border border-gomin-primary-300 text-center flex flex-col items-center justify-center"
+        >
+          {/* 체크 성공 아이콘 그래픽 */}
+          <div className="w-16 h-16 bg-gomin-primary-100 rounded-full flex items-center justify-center mb-4">
+            <svg
+              className="w-8 h-8 text-gomin-primary-700"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </div>
+
+          <DialogTitle className="text-xl font-nanum font-extrabold text-gomin-black mb-2">
+            미션완료
+          </DialogTitle>
+          <DialogDescription className="text-sm font-nanum font-semibold text-gomin-neutral-500 mb-6 whitespace-pre-line">
+            리워드 지급이 완료되었습니다.{"\n"}감사합니다!
+          </DialogDescription>
+
+          <button
+            type="button"
+            onClick={handleConfirmClose}
+            className="w-full py-3.5 rounded-[18px] font-nanum font-bold text-[16px] bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all shadow-md active:scale-[0.98] cursor-pointer"
+          >
+            확인
+          </button>
         </DialogContent>
       </Dialog>
     </>
