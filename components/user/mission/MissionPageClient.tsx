@@ -103,8 +103,8 @@ const MissionPageClient = ({
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
   const isShowEmpty = hasError || isMissionsEmpty;
-  const showBrochureButton = !hasError && !isPreview;
-  const showMissionUI = showBrochureButton && !isMissionsEmpty;
+  const showBrochureButton = isPreview || !hasError;
+  const showMissionUI = isPreview || (showBrochureButton && !isMissionsEmpty);
 
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
