@@ -15,5 +15,5 @@ export async function GET() {
     );
   }
 
-  return NextResponse.json({ name: user.user_metadata.full_name, id: user.id });
+  return NextResponse.json({ name: user.user_metadata.name, id: user.id });
 }
