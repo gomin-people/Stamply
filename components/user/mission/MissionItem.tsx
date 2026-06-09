@@ -58,7 +58,7 @@ const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
         <div className="flex flex-col text-left space-y-2 flex-1 min-w-0">
           <span
             className={cn(
-              "text-[25px] font-sans font-black tracking-tight leading-tight break-keep line-clamp-2",
+              "text-[24px] font-sans font-black tracking-tight leading-tight break-keep line-clamp-2",
               mission.isStamped
                 ? "text-gomin-primary-700"
                 : "text-gomin-neutral-600"
