@@ -134,7 +134,9 @@ const MissionPageClient = ({
           ? "h-full pb-20"
           : isShowEmpty
             ? "h-full overflow-hidden"
-            : "min-h-screen pb-28"
+            : viewMode === "list"
+              ? "min-h-screen pb-28"
+              : "pb-28"
       )}
     >
       <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 overflow-x-hidden">
