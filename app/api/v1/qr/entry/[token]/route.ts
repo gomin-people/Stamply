@@ -69,18 +69,18 @@ export async function GET(request: NextRequest, { params }: EntryRouteContext) {
     return notFound("행사를 찾을 수 없습니다.");
   }
 
-  const operationStatus = getEventOperationStatus(
+  const { isBefore, isAfter } = getEventOperationStatus(
     event.start_date,
     event.end_date
   );
 
-  if (operationStatus === "before") {
+  if (isBefore) {
     return NextResponse.redirect(
       new URL("/user-unavailable?reason=event-not-started", request.url)
     );
   }
 
-  if (operationStatus === "after") {
+  if (isAfter) {
     return NextResponse.redirect(
       new URL("/user-unavailable?reason=event-ended", request.url)
     );

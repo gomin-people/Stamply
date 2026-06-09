@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Check } from "lucide-react";
 import {
   DialogContent,
@@ -21,38 +23,34 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Mission } from "@/types";
 import { stripInvisibleChars } from "@/utils";
+import {
+  MissionFormValues,
+  MissionFormSchema,
+} from "@/types/schemas/adminMissionSchemas";
 
 type Props = {
   mission: Mission;
   onSave?: (mission: Mission) => Promise<void>;
 };
 
-export default function MissionDialog({ mission, onSave }: Props) {
-  const [title, setTitle] = useState(mission.title);
-  const [description, setDescription] = useState(mission.description ?? "");
-  const [titleError, setTitleError] = useState(false);
+const MissionDialog = ({ mission, onSave }: Props) => {
   const [isPending, startTransition] = useTransition();
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(stripInvisibleChars(e.target.value).trim());
-    if (titleError) setTitleError(false);
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<MissionFormValues>({
+    resolver: standardSchemaResolver(MissionFormSchema),
+    defaultValues: {
+      title: mission.title,
+      description: mission.description ?? "",
+    },
+  });
 
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setDescription(stripInvisibleChars(e.target.value).trim());
-  };
-
-  const handleSave = () => {
-    if (!title.trim()) {
-      setTitleError(true);
-      return;
-    }
+  const onSubmit = (values: MissionFormValues) => {
     startTransition(async () => {
-      await onSave?.({ ...mission, title, description });
-      setTitle("");
-      setDescription("");
+      await onSave?.({ ...mission, ...values });
     });
   };
 
@@ -81,46 +79,46 @@ export default function MissionDialog({ mission, onSave }: Props) {
         </div>
       </DialogHeader>
 
-      <FieldGroup className="py-2">
-        <Field>
-          <FieldTitle>
-            미션명 <span className="text-red-500">*</span>
-          </FieldTitle>
-          <Input
-            maxLength={20}
-            value={title}
-            aria-invalid={titleError}
-            onChange={handleTitleChange}
-          />
-          <FieldError>{titleError && "미션명을 입력해 주세요."}</FieldError>
-        </Field>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FieldGroup className="py-2">
+          <Field>
+            <FieldTitle>
+              미션명 <span className="text-red-500">*</span>
+            </FieldTitle>
+            <Input
+              aria-invalid={!!errors.title}
+              {...register("title", { setValueAs: stripInvisibleChars })}
+            />
+            <FieldError>{errors.title?.message}</FieldError>
+          </Field>
 
-        <Field>
-          <FieldTitle>설명</FieldTitle>
-          <Textarea
-            maxLength={500}
-            value={description}
-            onChange={handleDescriptionChange}
-            rows={4}
-            className="resize-none h-20"
-          />
-        </Field>
-      </FieldGroup>
+          <Field>
+            <FieldTitle>설명</FieldTitle>
+            <Textarea
+              rows={4}
+              className="resize-none h-20"
+              {...register("description", { setValueAs: stripInvisibleChars })}
+            />
+          </Field>
+        </FieldGroup>
 
-      <DialogFooter>
-        <DialogClose asChild>
-          <Button variant="outline">취소</Button>
-        </DialogClose>
-        <Button
-          variant="default"
-          className="bg-gomin-primary-700"
-          onClick={handleSave}
-          disabled={isPending}
-        >
-          <Check />
-          저장
-        </Button>
-      </DialogFooter>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">취소</Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            variant="default"
+            className="bg-gomin-primary-700"
+            disabled={isPending}
+          >
+            <Check />
+            저장
+          </Button>
+        </DialogFooter>
+      </form>
     </DialogContent>
   );
-}
+};
+
+export default MissionDialog;

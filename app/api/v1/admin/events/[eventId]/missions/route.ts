@@ -1,17 +1,15 @@
 import {
   badRequest,
   created,
-  getMissingFields,
   notFound,
   ok,
   parsePositiveInteger,
-  pickBodyFields,
-  readJsonObject,
   serverError,
   unauthorized,
 } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
 import { createSessionClient } from "@/utils/supabase/session-server";
+import { MissionCreateSchema } from "@/types/schemas/adminMissionSchemas";
 
 // 행사 하위 미션 목록 route parameter 타입
 type AdminEventMissionsRouteContext = {
@@ -19,17 +17,6 @@ type AdminEventMissionsRouteContext = {
     eventId: string;
   }>;
 };
-
-// 미션 생성 시 요청 본문에서 허용하는 필드 목록
-const MISSION_INSERT_FIELDS = [
-  "title",
-  "description",
-  "sort_order",
-  "is_active",
-] as const;
-
-// 미션 생성에 필요한 최소 필드 목록
-const MISSION_REQUIRED_FIELDS = ["title"] as const;
 
 /**
  * 특정 행사의 어드민 미션 목록을 조회합니다.
@@ -138,43 +125,21 @@ export async function POST(
     return notFound("행사를 찾을 수 없습니다.");
   }
 
-  const result = await readJsonObject(request);
-
-  if ("response" in result) {
-    return result.response;
+  let rawBody: unknown;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return badRequest("올바른 JSON 본문이 필요합니다.");
   }
 
-  // 프론트에서 camelCase로 전달된 isActive를 DB 필드명 is_active로 정규화
-  const body = result.body;
-  if ("isActive" in body) {
-    body.is_active = body.isActive;
-    delete body.isActive;
-  }
-
-  const missingFields = getMissingFields(body, MISSION_REQUIRED_FIELDS);
-
-  if (missingFields.length > 0) {
-    return badRequest("필수 미션 필드가 누락되었습니다.", {
-      fields: missingFields,
+  const parsed = MissionCreateSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return badRequest("입력값이 올바르지 않습니다.", {
+      errors: parsed.error.issues[0].message,
     });
   }
 
-  const payload = pickBodyFields(body, MISSION_INSERT_FIELDS);
-  // const sortOrder = toInteger(payload.sort_order);
-
-  // if (
-  //   Object.prototype.hasOwnProperty.call(payload, 'sort_order') &&
-  //   sortOrder === null
-  // ) {
-  //   return badRequest('sortOrder는 정수여야 합니다.');
-  // }
-
-  if (
-    Object.prototype.hasOwnProperty.call(payload, "is_active") &&
-    typeof payload.is_active !== "boolean"
-  ) {
-    return badRequest("isActive는 boolean이어야 합니다.");
-  }
+  const { title, description, sortOrder, isActive } = parsed.data;
 
   // missions 테이블에서 events_id가 eventId인 미션 중 가장 큰 sort_order 조회
   const { data: lastMission, error: lastMissionError } = await supabase
@@ -189,17 +154,17 @@ export async function POST(
     return serverError("미션 순서 조회 실패", lastMissionError);
   }
 
-  // sort_order가 없으면 현재 행사의 마지막 순서 다음 값으로 배치
   const now = new Date().toISOString();
   const missionPayload = {
-    ...payload,
+    title,
+    description,
     events_id: eventId,
     sort_order:
-      typeof lastMission?.sort_order === "number"
+      sortOrder ??
+      (typeof lastMission?.sort_order === "number"
         ? lastMission.sort_order + 1
-        : 1,
-    is_active:
-      typeof payload.is_active === "boolean" ? payload.is_active : true,
+        : 1),
+    is_active: isActive ?? true,
     created_at: now,
     updated_at: now,
   };
@@ -229,7 +194,6 @@ export async function POST(
 
   if (qrCodeError) {
     // QR 생성 실패 시 고아 미션이 남지 않도록 생성된 미션을 정리
-    // missions 테이블에서 QR 생성에 실패한 미션 id 기준으로 row 삭제
     await supabase.from("missions").delete().eq("id", mission.id);
     return serverError("미션 QR 생성 실패", qrCodeError);
   }
