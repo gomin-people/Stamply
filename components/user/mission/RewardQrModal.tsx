@@ -10,14 +10,14 @@ import {
 
 type Props = {
   isOpen: boolean;
-  onClose: (open: boolean) => void;
+  onClose: () => void;
   qrUrl: string;
   eventId: string;
 };
 
 const RewardQrModal = ({ isOpen, onClose, qrUrl, eventId }: Props) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         showCloseButton
         className="sm:max-w-xs bg-white p-6 rounded-[24px] border border-gomin-primary-300 text-center flex flex-col items-center justify-center gap-4"

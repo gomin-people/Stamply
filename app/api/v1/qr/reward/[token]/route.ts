@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { conflict, notFound, ok, serverError } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
+import { createSessionClient } from "@/utils/supabase/session-server";
 
 type QrRewardRouteContext = {
   params: Promise<{
@@ -27,10 +28,32 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
     );
   }
 
-  // 1. 참여자 조회 (service_role 클라이언트 사용)
+  // 1. 요청자 세션 검증 (스태프/어드민 세션 확보)
+  const sessionClient = await createSessionClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await sessionClient.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json(
+      { message: "인증되지 않은 사용자입니다." },
+      { status: 401 }
+    );
+  }
+
+  // 2. 참여자 및 행사 소유 여부 단일 조인 조회 (service_role 클라이언트 사용)
   const { data: participant, error: participantError } = await supabase
     .from("participant_users")
-    .select("*")
+    .select(
+      `
+      *,
+      events (
+        id,
+        user_id
+      )
+    `
+    )
     .eq("event_user_id", eventUserId)
     .maybeSingle();
 
@@ -42,12 +65,26 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
     return notFound("참여자를 찾을 수 없습니다.");
   }
 
-  // 2. 이미 수령했는지 검사
+  // 3. 해당 행사의 소유자가 현재 로그인한 관리자인지 검증
+  type EventOwnerInfo = { id: number; user_id: string };
+  const rawEvents = participant.events;
+  const eventData = (Array.isArray(rawEvents)
+    ? rawEvents[0]
+    : rawEvents) as unknown as EventOwnerInfo | null;
+
+  if (!eventData || eventData.user_id !== user.id) {
+    return NextResponse.json(
+      { message: "해당 행사에 대한 관리 권한이 없습니다." },
+      { status: 403 }
+    );
+  }
+
+  // 4. 이미 수령했는지 검사
   if (participant.is_reward_claimed) {
     return conflict("이미 리워드를 수령한 참여자입니다.");
   }
 
-  // 3. 리워드 수령 완료 처리 (service_role 클라이언트 사용)
+  // 5. 리워드 수령 완료 처리 (service_role 클라이언트 사용)
   const { error: updateError } = await supabase
     .from("participant_users")
     .update({ is_reward_claimed: true })
@@ -57,13 +94,17 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
     return serverError("리워드 수령 상태 업데이트 실패", updateError);
   }
 
-  // 4. Supabase Realtime Broadcast 채널로 성공 이벤트 전송
+  // 6. Supabase Realtime Broadcast 채널로 성공 이벤트 전송
   const channel = supabase.channel(`reward-claim:${eventUserId}`);
-  await channel.send({
-    type: "broadcast",
-    event: "claim_success",
-    payload: { claimedAt: new Date().toISOString() },
-  });
+  try {
+    await channel.send({
+      type: "broadcast",
+      event: "claim_success",
+      payload: { claimedAt: new Date().toISOString() },
+    });
+  } finally {
+    await supabase.removeChannel(channel);
+  }
 
   return ok({ success: true });
 }

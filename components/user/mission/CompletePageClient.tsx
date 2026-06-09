@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import QRCode from "react-qr-code";
 import AnimatedIconStamplo from "@/components/icons/AnimatedIconStamplo";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import {
   useCreateRewardQrMutation,
   type RewardQrData,
@@ -17,6 +10,7 @@ import {
 import { createBrowserSupabaseClient } from "@/utils/supabase/browser";
 import RewardQrModal from "./RewardQrModal";
 import MissionCompleteModal from "./MissionCompleteModal";
+import { toast } from "sonner";
 
 const CompletePageClient = () => {
   const router = useRouter();
@@ -26,11 +20,11 @@ const CompletePageClient = () => {
   const [qrValue, setQrValue] = useState<string | null>(null);
   const [qrUrl, setQrUrl] = useState<string>("");
   const { mutate: createRewardQr, isPending } = useCreateRewardQrMutation();
+  const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
     if (!qrValue) return;
 
-    const supabase = createBrowserSupabaseClient();
     const channel = supabase.channel(`reward-claim:${qrValue}`, {
       config: {
         broadcast: { self: false },
@@ -42,12 +36,18 @@ const CompletePageClient = () => {
         setIsQrModalOpen(false);
         setIsCompleteModalOpen(true);
       })
-      .subscribe();
+      .subscribe((status: string) => {
+        if (status === "SUBSCRIBED") {
+          console.log(
+            `Realtime channel reward-claim:${qrValue} subscribed successfully`
+          );
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [qrValue]);
+  }, [qrValue, supabase]);
 
   const handleStaffConfirm = () => {
     createRewardQr(undefined, {
@@ -60,15 +60,13 @@ const CompletePageClient = () => {
       },
       onError: (err: Error) => {
         console.error("Reward QR 생성 실패:", err);
-        alert("QR 생성에 실패했습니다. 다시 시도해 주세요.");
+        toast.error("QR 생성에 실패했습니다. 다시 시도해 주세요.");
       },
     });
   };
 
-  const handleQrModalClose = (open: boolean) => {
-    if (!open) {
-      setIsQrModalOpen(false);
-    }
+  const handleQrModalClose = () => {
+    setIsQrModalOpen(false);
   };
 
   const handleConfirmClose = () => {
