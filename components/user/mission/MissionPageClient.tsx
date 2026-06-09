@@ -191,7 +191,7 @@ const MissionPageClient = ({
             </div>
           ) : viewMode === "grid" ? (
             /* 스탬프 뷰: 격자형 정사각형 카드 */
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 pb-2">
               {missions.map((mission) => (
                 <MissionStamp
                   key={mission.id}

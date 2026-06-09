@@ -28,7 +28,7 @@ export default function MissionStamp({
       <div
         onClick={() => setIsOpen(true)}
         className={cn(
-          "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none transition-all duration-300 hover:shadow-lg active:scale-[0.97]",
+          "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none transition-all duration-300 hover:shadow-lg active:scale-[0.97] overflow-hidden",
           mission.isStamped
             ? "bg-gomin-primary-100 border border-gomin-primary-200/50"
             : "bg-gomin-neutral-100 border border-transparent"
