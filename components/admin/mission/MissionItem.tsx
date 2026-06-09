@@ -12,7 +12,6 @@ type Props = {
   mission: AdminMissionDetail;
   index: number;
   disabled?: boolean;
-  qrDisabled?: boolean;
   onToggleActive: (missionId: number, checked: boolean) => void;
   onViewQR: (info: {
     title: string;
@@ -28,7 +27,6 @@ export default function MissionItem({
   mission,
   index,
   disabled = false,
-  qrDisabled = false,
   onToggleActive,
   onViewQR,
   onEdit,
@@ -75,6 +73,7 @@ export default function MissionItem({
         <Switch
           defaultChecked={mission.isActive}
           className="data-checked:bg-gomin-primary-600"
+          disabled={disabled}
           onCheckedChange={(checked) => onToggleActive(mission.id, checked)}
         />
       </div>
@@ -85,7 +84,7 @@ export default function MissionItem({
             key={qrCode.id}
             variant="outline"
             size="icon-sm"
-            disabled={qrDisabled}
+            disabled={disabled}
             onClick={() =>
               onViewQR({
                 title: mission.title,
@@ -104,6 +103,7 @@ export default function MissionItem({
         <Button
           variant="outline"
           size="icon-sm"
+          disabled={disabled}
           onClick={() => onEdit(mission)}
         >
           <Pencil />
@@ -112,6 +112,7 @@ export default function MissionItem({
           variant="outline"
           size="icon-sm"
           className="hover:text-destructive"
+          disabled={disabled}
           onClick={() => onDelete(mission)}
         >
           <Trash2 />
