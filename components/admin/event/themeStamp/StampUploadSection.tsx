@@ -1,6 +1,7 @@
 "use client";
 
-import { Plus, X, Info, Loader2 } from "lucide-react";
+import { Plus, X, Loader2 } from "lucide-react";
+import InfoBanner from "@/components/admin/event/themeStamp/InfoBanner";
 import useStampUpload from "@/hooks/useStampUpload";
 
 type Props = {
@@ -111,13 +112,7 @@ export default function StampUploadSection({
       ) : null}
 
       {/* 느낌표 안내 문구 */}
-      <div className="flex items-center gap-2.5 p-4 rounded-2xl bg-gomin-primary-100/50 border border-gomin-primary-100 text-gomin-primary-700/90 max-w-lg">
-        <Info className="w-5 h-5 shrink-0" />
-        <p className="text-xs font-bold leading-normal">
-          스탬프 이미지를 따로 업로드하지 않으시면, 기본 제공되는 Stamply 스탬프
-          이미지가 자동으로 사용됩니다.
-        </p>
-      </div>
+      <InfoBanner message="스탬프 이미지를 따로 업로드하지 않으시면, 기본 제공되는 Stamply 스탬프 이미지가 자동으로 사용됩니다." />
     </div>
   );
 }

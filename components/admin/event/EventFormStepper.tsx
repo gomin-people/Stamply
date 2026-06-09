@@ -144,7 +144,7 @@ export default function EventFormStepper({
       <hr className="border-gomin-neutral-100" />
 
       {/* 이전/다음 버튼 */}
-      <div className="flex justify-end gap-2 px-8 py-4">
+      <div className="flex justify-end gap-2 px-8 pt-4">
         <Button
           type="button"
           variant="outline"
@@ -170,7 +170,7 @@ export default function EventFormStepper({
                 <Button
                   type="button"
                   size={null}
-                  className="size-11 rounded-full bg-gomin-primary-700 p-0 shadow-[0px_5px_14px_-5px_rgba(84,53,235,0.55)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0"
+                  className="size-11 rounded-full bg-gomin-primary-700 bg-clip-border p-0 shadow-[0px_5px_14px_-5px_rgba(84,53,235,0.55)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0"
                   disabled={disabled}
                   onClick={handleNext}
                 >

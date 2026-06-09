@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Info } from "lucide-react";
+import InfoBanner from "@/components/admin/event/themeStamp/InfoBanner";
 import { hexToHsl, formatHexColor } from "@/utils";
 
 type Props = {
@@ -61,7 +61,7 @@ export default function ThemeColorPicker({
             const newH = Number(e.target.value);
             onHueChange(newH);
           }}
-          className="theme-hue-slider w-full h-[18px] rounded-full appearance-none outline-none shadow-inner border border-black/5 disabled:cursor-not-allowed disabled:opacity-50"
+          className="theme-hue-slider w-full h-4.5 rounded-full appearance-none outline-none shadow-inner border border-black/5 disabled:cursor-not-allowed disabled:opacity-50"
           style={
             {
               background:
@@ -104,13 +104,7 @@ export default function ThemeColorPicker({
       </div>
 
       {/* 느낌표 안내 문구 */}
-      <div className="flex items-center gap-2.5 p-4 rounded-2xl bg-gomin-primary-100/50 border border-gomin-primary-100 text-gomin-primary-700/90">
-        <Info className="w-5 h-5 shrink-0" />
-        <p className="text-xs font-bold leading-normal">
-          선택한 테마 색상은 진입 페이지, 설문조사 등 행사의 모든 페이지에 일괄
-          적용됩니다.
-        </p>
-      </div>
+      <InfoBanner message="선택한 테마 색상은 진입 페이지, 설문조사 등 행사의 모든 페이지에 일괄 적용됩니다." />
     </div>
   );
 }
