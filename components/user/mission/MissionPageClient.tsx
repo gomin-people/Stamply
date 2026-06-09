@@ -13,6 +13,7 @@ import {
   type ParticipantMission,
   type ParticipantMissions,
 } from "@/features/participant/missions/participantMissionQueries";
+import { cn } from "@/utils";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
 type EventData = {
@@ -123,7 +124,8 @@ const MissionPageClient = ({
 
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
-  const showBrochureAndActionButtons = !hasError && !isMissionsEmpty;
+  const isShowEmpty = hasError || isMissionsEmpty;
+  const showBrochureAndActionButtons = !isShowEmpty;
 
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
@@ -147,7 +149,14 @@ const MissionPageClient = ({
 
   return (
     <div
-      className={`flex flex-col relative bg-gomin-white ${isPreview ? "h-full pb-20" : "min-h-full pb-28"}`}
+      className={cn(
+        "flex flex-col relative bg-gomin-white",
+        isPreview
+          ? "h-full pb-20"
+          : isShowEmpty
+            ? "h-full overflow-hidden"
+            : "min-h-screen pb-28"
+      )}
     >
       <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
@@ -189,19 +198,8 @@ const MissionPageClient = ({
         )}
 
         {/* 5. 미션 뷰 렌더링 영역 */}
-        <div className="transition-all duration-300 pb-0">
-          {hasError ? (
-            /* 미션을 불러오는데 실패한 경우 Error State 처리 */
-            <div className="flex flex-col items-center justify-center py-20 text-center select-none">
-              <span className="text-4xl mb-4">⚠️</span>
-              <p className="text-gomin-neutral-500 font-sans font-bold text-[16px] leading-tight">
-                미션 목록을 불러오지 못했습니다.
-                <br />
-                네트워크 상태를 확인하고 다시 시도해 주세요.
-              </p>
-            </div>
-          ) : isMissionsEmpty ? (
-            /* 등록된 미션이 없는 경우 Empty State 처리 */
+        <div className="transition-all duration-300">
+          {isShowEmpty ? (
             <div className="flex flex-col items-center justify-center pb-20 pt-40 text-center select-none">
               <p className="text-[128px] font-nanum font-extrabold text-gomin-primary-700 leading-none">
                 텅
