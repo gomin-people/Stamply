@@ -14,6 +14,7 @@ import {
   useReorderAdminMissionsMutation,
   useUpdateAdminMissionMutation,
 } from "@/features/admin/missions/adminMissionMutations";
+import { adminMissionQueryOptions } from "@/features/admin/missions/adminMissionQueries";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -78,12 +79,6 @@ export default function MissionList({
     })
   );
 
-  const invalidateMissions = () => {
-    queryClient.invalidateQueries({
-      queryKey: ["admin", "events", eventId, "missions"],
-    });
-  };
-
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -99,7 +94,7 @@ export default function MissionList({
         eventId,
         missionIds: reordered.map((m) => m.id),
       });
-      invalidateMissions();
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
       setItems(items); // 실패 시 롤백
@@ -111,7 +106,7 @@ export default function MissionList({
   const handleDelete = async (missionId: number) => {
     try {
       await deleteAdminMissionAsync({ eventId, missionId });
-      invalidateMissions();
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
     } finally {
@@ -126,7 +121,7 @@ export default function MissionList({
         missionId,
         payload: { isActive: checked },
       });
-      invalidateMissions();
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
     }
@@ -140,7 +135,7 @@ export default function MissionList({
         missionId: mission.id,
         payload: { title: mission.title, description: mission.description },
       });
-      invalidateMissions();
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
     } finally {
