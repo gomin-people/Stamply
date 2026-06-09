@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { useAdminMissionsQuery } from "@/features/admin/missions/adminMissionQueries";
+import { useQuery } from "@tanstack/react-query";
+import { adminMissionQueryOptions } from "@/features/admin/missions/adminMissionQueries";
 import { useAdminEventQuery } from "@/features/admin/events/adminEventQueries";
 import MissionFilter from "@/components/admin/mission/MissionFilter";
 import MissionAddButton from "@/components/admin/mission/MissionAddButton";
@@ -23,14 +24,16 @@ type Props = {
 export default function MissionClient({ eventId }: Props) {
   const [filter, setFilter] = useState("all");
   const [isReordering, setIsReordering] = useState(false);
+
   const {
     data: missions,
     isError,
     refetch,
     isFetching,
-  } = useAdminMissionsQuery(eventId);
-  const { data: event } = useAdminEventQuery(eventId);
+  } = useQuery(adminMissionQueryOptions.list(eventId));
   const isDisabled = isReordering || isFetching;
+
+  const { data: event } = useAdminEventQuery(eventId);
 
   const filteredMissions = useMemo(() => {
     if (!missions) return [];
@@ -42,7 +45,7 @@ export default function MissionClient({ eventId }: Props) {
     });
   }, [missions, filter]);
 
-  const totalCount = missions?.length ?? 0;
+  const isMissionCountOver = (missions?.length ?? 0) >= 10;
   const isAfter =
     !!event && getEventOperationStatus(event.startDate, event.endDate).isAfter;
 
@@ -56,7 +59,7 @@ export default function MissionClient({ eventId }: Props) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gomin-neutral-100">
           <MissionFilter toggleValue={handleToggle} disabled={isDisabled} />
           <div className="flex items-center gap-2">
-            <MissionAddButton disabled={totalCount >= 10 || isAfter} />
+            <MissionAddButton disabled={isMissionCountOver || isAfter} />
             <QRDownloadButton missions={filteredMissions} disabled={isAfter} />
           </div>
         </div>
