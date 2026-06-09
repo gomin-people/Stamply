@@ -34,14 +34,14 @@ export default function MissionStamp({
       >
         {/* 미션 텍스트 (도장이 찍혔을 경우 도장 아래에 겹쳐서 보임) */}
         <div
-          className={`flex flex-col items-center justify-center text-center z-10 ${
+          className={`flex flex-col items-center justify-center text-center z-10 w-full px-1 ${
             mission.isStamped
               ? "text-gomin-primary-700/60"
               : "text-gomin-neutral-500"
           }`}
         >
           <span
-            className={`text-2xl font-sans font-black break-keep ${
+            className={`text-2xl font-sans font-black break-keep line-clamp-3 ${
               mission.isStamped
                 ? "text-gomin-neutral-800/80"
                 : "text-gomin-neutral-600"
