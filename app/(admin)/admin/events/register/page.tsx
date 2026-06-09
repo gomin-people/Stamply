@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
+import StepNavButtons from "@/components/admin/event/StepNavButtons";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
@@ -56,17 +57,23 @@ export default function CreateEventPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-10 py-8">
+    <div className="mx-auto w-full max-w-7xl px-10 py-7">
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
-        <EventFormStepper
-          currentStep={currentStep}
-          totalSteps={TOTAL_STEPS}
-          onPrev={handlePrev}
-          onNext={handleNext}
-          onComplete={handleComplete}
-          isLastStep={currentStep === TOTAL_STEPS}
-          disabled={isPending}
-        />
+        <div className="flex flex-col">
+          <EventFormStepper currentStep={currentStep} />
+          <hr className="border-gomin-neutral-100" />
+          <div className="flex justify-end px-8 pt-4">
+            <StepNavButtons
+              currentStep={currentStep}
+              isLastStep={currentStep === TOTAL_STEPS}
+              disabled={isPending}
+              onPrev={handlePrev}
+              onNext={handleNext}
+              onComplete={handleComplete}
+              completeTooltip="행사 등록 하기!"
+            />
+          </div>
+        </div>
 
         <div className="p-6">
           <div className={currentStep !== 1 ? "hidden" : ""}>

@@ -1,16 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/utils/index";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 type Step = {
   number: number;
@@ -26,34 +18,9 @@ const STEPS: Step[] = [
 
 type Props = {
   currentStep: number;
-  totalSteps: number;
-  onPrev?: () => void;
-  onNext?: () => boolean | void;
-  onComplete?: () => void;
-  isLastStep?: boolean;
-  disabled?: boolean;
 };
 
-export default function EventFormStepper({
-  currentStep,
-  totalSteps,
-  onPrev,
-  onNext,
-  onComplete,
-  isLastStep = false,
-  disabled = false,
-}: Props) {
-  const [shake, setShake] = useState(0);
-
-  const handleNext = () => {
-    if (isLastStep) {
-      onComplete?.();
-      return;
-    }
-    const result = onNext?.();
-    if (result === false) setShake((s) => s + 1);
-  };
-
+export default function EventFormStepper({ currentStep }: Props) {
   const stepItems: React.ReactNode[] = [];
 
   STEPS.forEach((step, index) => {
@@ -136,58 +103,5 @@ export default function EventFormStepper({
     );
   });
 
-  return (
-    <div className="flex flex-col">
-      {/* 스테퍼 */}
-      <div className="flex h-24 w-full items-center px-8">{stepItems}</div>
-
-      <hr className="border-gomin-neutral-100" />
-
-      {/* 이전/다음 버튼 */}
-      <div className="flex justify-end gap-2 px-8 pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          size={null}
-          className={cn(
-            "size-11 rounded-full border-gomin-neutral-200 p-0 transition-all hover:-translate-y-0.5 active:translate-y-0",
-            currentStep === 1 && "pointer-events-none opacity-40"
-          )}
-          onClick={onPrev}
-          tabIndex={currentStep === 1 ? -1 : 0}
-        >
-          <ChevronLeft className="size-4.5" />
-        </Button>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <motion.div
-                key={shake}
-                animate={shake > 0 ? { x: [0, -6, 6, -4, 4, -2, 2, 0] } : {}}
-                transition={{ duration: 0.4 }}
-              >
-                <Button
-                  type="button"
-                  size={null}
-                  className="size-11 rounded-full bg-gomin-primary-700 bg-clip-border p-0 shadow-[0px_5px_14px_-5px_rgba(84,53,235,0.55)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0"
-                  disabled={disabled}
-                  onClick={handleNext}
-                >
-                  {isLastStep ? (
-                    <Check className="size-4.5" />
-                  ) : (
-                    <ChevronRight className="size-4.5" />
-                  )}
-                </Button>
-              </motion.div>
-            </TooltipTrigger>
-            {isLastStep && (
-              <TooltipContent side="left">행사 등록 하기!</TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-    </div>
-  );
+  return <div className="flex h-24 w-full items-center px-8">{stepItems}</div>;
 }
