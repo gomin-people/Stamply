@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
-import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
@@ -59,7 +58,15 @@ export default function CreateEventPage() {
   return (
     <div className="mx-auto w-full max-w-7xl px-10 py-8">
       <div className="rounded-xl border border-gomin-neutral-100 bg-white">
-        <EventFormStepper currentStep={currentStep} />
+        <EventFormStepper
+          currentStep={currentStep}
+          totalSteps={TOTAL_STEPS}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          onComplete={handleComplete}
+          isLastStep={currentStep === TOTAL_STEPS}
+          disabled={isPending}
+        />
 
         <div className="p-6">
           <div className={currentStep !== 1 ? "hidden" : ""}>
@@ -71,19 +78,6 @@ export default function CreateEventPage() {
           <div className={currentStep !== 3 ? "hidden" : ""}>
             <EventThemeStampForm ref={step3Ref} />
           </div>
-        </div>
-
-        <div className="px-6 pb-4">
-          <EventFormFooter
-            currentStep={currentStep}
-            totalSteps={TOTAL_STEPS}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            onComplete={handleComplete}
-            isLastStep={currentStep === TOTAL_STEPS}
-            completeLabel={isPending ? "행사 생성 중..." : "행사 등록 완료"}
-            disabled={isPending}
-          />
         </div>
       </div>
     </div>
