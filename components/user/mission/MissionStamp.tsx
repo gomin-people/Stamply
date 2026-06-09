@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import IconStamply from "@/components/icons/IconStamply";
+import IconStamplo from "@/components/icons/IconStamplo";
 import MissionDetailModal from "@/components/user/mission/MissionDetailModal";
 import { cn } from "@/utils";
 
@@ -66,7 +66,7 @@ export default function MissionStamp({
                 className="w-[81%] h-[85%] object-contain opacity-95 animate-fade-in"
               />
             ) : (
-              <IconStamply className="w-[81%] h-[85%] aspect-162/171 opacity-95 animate-fade-in" />
+              <IconStamplo className="w-[81%] h-[85%] aspect-162/171 opacity-95 animate-fade-in" />
             )}
           </div>
         )}

@@ -9,7 +9,7 @@ import {
 import EventSelector, { compareEventsByDisplayPriority } from "./EventSelector";
 import SidebarNav from "./SidebarNav";
 import AdminUserInfo from "@/components/admin/common/AdminUserInfo";
-import StamplyLogo from "@/components/admin/common/StamplyLogo";
+import StamplyLogo from "@/components/admin/common/StamploLogo";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
