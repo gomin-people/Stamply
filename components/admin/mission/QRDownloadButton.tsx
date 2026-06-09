@@ -10,7 +10,7 @@ import {
 import { Download } from "lucide-react";
 import QRCode from "react-qr-code";
 import type { AdminMissionDetail } from "@/types/models/admin";
-import { getMissionCheckUrl } from "@/utils/qr";
+import { getMissionCheckUrl, svgToPng } from "@/utils/qr";
 
 type Props = {
   missions: AdminMissionDetail[];
@@ -19,32 +19,6 @@ type Props = {
 
 const QR_SIZE = 256;
 const QR_PADDING = 16;
-const QR_CANVAS_SIZE = QR_SIZE + QR_PADDING * 2;
-
-function svgToPng(svgElement: SVGElement): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const svgStr = new XMLSerializer().serializeToString(svgElement);
-    const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = QR_CANVAS_SIZE;
-      canvas.height = QR_CANVAS_SIZE;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, QR_CANVAS_SIZE, QR_CANVAS_SIZE);
-      ctx.drawImage(img, QR_PADDING, QR_PADDING, QR_SIZE, QR_SIZE);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL("image/png"));
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("SVG 변환 실패"));
-    };
-    img.src = url;
-  });
-}
 
 export default function QRDownloadButton({
   missions,
@@ -75,7 +49,7 @@ export default function QRDownloadButton({
       const svgEl = wrapper?.querySelector("svg");
       if (!svgEl) continue;
 
-      const dataUrl = await svgToPng(svgEl);
+      const dataUrl = await svgToPng(svgEl, QR_SIZE, QR_PADDING);
       const a = document.createElement("a");
       a.href = dataUrl;
       a.download = filename;

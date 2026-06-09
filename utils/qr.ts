@@ -1,5 +1,35 @@
 import { type QrScanTarget } from "@/types/qr-check";
 
+export function svgToPng(
+  svgElement: SVGElement,
+  size: number,
+  padding: number
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const svgStr = new XMLSerializer().serializeToString(svgElement);
+    const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvasSize = size + padding * 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = canvasSize;
+      canvas.height = canvasSize;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvasSize, canvasSize);
+      ctx.drawImage(img, padding, padding, size, size);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("SVG 변환 실패"));
+    };
+    img.src = url;
+  });
+}
+
 type GetQrScanTargetOptions = {
   currentEventId?: string;
 };
