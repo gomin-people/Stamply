@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
+import Link from "next/link";
 import AuthRedirect from "@/components/admin/auth/AuthRedirect";
 import KakaoLogin from "@/components/admin/auth/KakaoLogin";
 import TestLoginButton from "@/components/admin/auth/TestLoginButton";
+import EmailLoginForm from "@/components/admin/auth/EmailLoginForm";
 import StamplyLogo from "@/components/admin/common/StamplyLogo";
 
 const AdminHomePage = async () => {
@@ -22,7 +24,23 @@ const AdminHomePage = async () => {
           <p className="text-base text-[#6D6D6D]">행사 운영 관리자 로그인</p>
         </div>
 
+        <EmailLoginForm />
+
+        <p className="text-sm text-gomin-neutral-500">
+          계정이 없으신가요?{" "}
+          <Link
+            href="/admin/signup"
+            className="font-medium text-gomin-primary-700 hover:underline"
+          >
+            회원가입
+          </Link>
+        </p>
         <div className="flex w-full flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-gomin-neutral-100" />
+            <span className="text-xs text-gomin-neutral-400">또는</span>
+            <div className="h-px flex-1 bg-gomin-neutral-100" />
+          </div>
           <KakaoLogin />
           <TestLoginButton />
         </div>
