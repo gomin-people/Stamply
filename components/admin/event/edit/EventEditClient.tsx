@@ -61,11 +61,9 @@ export default function EventEditClient() {
   const { mutateAsync: updateEvent, isPending } = useUpdateEventMutation();
   const { mutateAsync: deleteEvent } = useDeleteEventMutation();
 
-  const operationStatus = event
+  const { isAfter, isDuring } = event
     ? getEventOperationStatus(event.startDate, event.endDate)
-    : null;
-  const isAfter = operationStatus === "after";
-  const isDuring = operationStatus === "during";
+    : { isAfter: false, isDuring: false };
 
   const step1Ref = useRef<StepFormHandle>(null);
   const step2Ref = useRef<StepFormHandle>(null);

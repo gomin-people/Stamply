@@ -1,4 +1,8 @@
-export type EventOperationStatus = "before" | "during" | "after";
+export type EventOperationStatus = {
+  isBefore: boolean; // 행사 시작전
+  isDuring: boolean; // 행사 진행 중
+  isAfter: boolean; // 행사 종료
+};
 
 const getLocalDateKey = () => {
   const now = new Date();
@@ -18,7 +22,9 @@ export function getEventOperationStatus(
   const start = getDateKey(startDate);
   const end = getDateKey(endDate);
 
-  if (today < start) return "before";
-  if (today > end) return "after";
-  return "during";
+  return {
+    isBefore: today < start,
+    isDuring: today >= start && today <= end,
+    isAfter: today > end,
+  };
 }

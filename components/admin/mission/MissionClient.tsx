@@ -44,8 +44,7 @@ export default function MissionClient({ eventId }: Props) {
 
   const totalCount = missions?.length ?? 0;
   const isAfter =
-    !!event &&
-    getEventOperationStatus(event.startDate, event.endDate) === "after";
+    !!event && getEventOperationStatus(event.startDate, event.endDate).isAfter;
 
   const handleToggle = (value: string) => {
     setFilter(value);
