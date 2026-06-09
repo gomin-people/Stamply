@@ -149,7 +149,7 @@ const MissionPageClient = ({
     <div
       className={`flex flex-col relative bg-gomin-white ${isPreview ? "h-full pb-20" : "min-h-screen pb-28"}`}
     >
-      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4">
+      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
           <h1 className="text-4xl font-nanum font-extrabold leading-[45px] text-gomin-primary-700 tracking-tight select-none">
@@ -189,7 +189,7 @@ const MissionPageClient = ({
         )}
 
         {/* 5. 미션 뷰 렌더링 영역 */}
-        <div className="transition-all duration-300">
+        <div className="transition-all duration-300 pb-0">
           {hasError ? (
             /* 미션을 불러오는데 실패한 경우 Error State 처리 */
             <div className="flex flex-col items-center justify-center py-20 text-center select-none">
