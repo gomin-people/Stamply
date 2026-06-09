@@ -14,6 +14,7 @@ import {
   type ParticipantMissions,
 } from "@/features/participant/missions/participantMissionQueries";
 import { cn } from "@/utils";
+import { buildInitialData } from "@/utils/participant-mission";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
 type EventData = {
@@ -57,30 +58,9 @@ const MissionPageClient = ({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
-  // 서버에서 prefetch한 initialMissions를 initialData로 변환해 클라이언트 첫 API 호출을 차단한다.
-  // Mission 타입 필수 필드 중 서버 초기 응답에 없는 값은 기본값으로 채운다.
   const initialData: ParticipantMissions | undefined =
     !isPreview && initialMissions.length > 0
-      ? {
-          participant: {} as ParticipantMissions["participant"],
-          missions: initialMissions.map((m) => ({
-            id: m.id,
-            eventsId: 0,
-            title: m.title,
-            description: m.description,
-            sortOrder: 0,
-            isActive: true,
-            createdAt: "",
-            updatedAt: "",
-            isCompleted: m.isCompleted,
-            completedAt: null,
-            token: null,
-          })),
-          summary: {
-            totalCount: initialMissions.length,
-            completedCount: initialMissions.filter((m) => m.isCompleted).length,
-          },
-        }
+      ? buildInitialData(initialMissions)
       : undefined;
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
@@ -93,14 +73,12 @@ const MissionPageClient = ({
   // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
   const missions: ClientMission[] =
     data && !isPreview
-      ? (data.missions as ParticipantMission[]).map(
-          (m: ParticipantMission) => ({
-            id: m.id,
-            title: m.title,
-            description: m.description ?? "",
-            isStamped: m.isCompleted,
-          })
-        )
+      ? (data.missions as ParticipantMission[]).map((m) => ({
+          id: m.id,
+          title: m.title,
+          description: m.description ?? "",
+          isStamped: m.isCompleted,
+        }))
       : initialMissions.map((m: InitialMission) => ({
           id: m.id,
           title: m.title,
@@ -161,7 +139,7 @@ const MissionPageClient = ({
       <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
-          <h1 className="text-4xl font-nanum font-extrabold leading-[45px] text-gomin-primary-700 tracking-tight select-none">
+          <h1 className="text-4xl font-nanum font-extrabold leading-11.25 text-gomin-primary-700 tracking-tight select-none">
             {eventName}
           </h1>
           {/* 우측 별도 컴포넌트로 보여지는 브로슈어 버튼 */}
@@ -170,7 +148,7 @@ const MissionPageClient = ({
 
         {/* 3. 진행 상황 안내 문구 */}
         {showBrochureAndActionButtons && (
-          <div className="mb-4 min-h-[56px] flex items-center">
+          <div className="mb-4 min-h-14 flex items-center">
             {!isAllCompleted ? (
               <h2 className="text-2xl font-nanum font-extrabold text-gomin-neutral-700 leading-tight tracking-tight select-none">
                 <span className="text-gomin-primary-700 font-nanum font-extrabold">
