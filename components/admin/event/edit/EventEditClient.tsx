@@ -12,6 +12,7 @@ import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import EntryQrCard from "@/components/admin/event/edit/EntryQrCard";
 import EventEditCancelDialog from "@/components/admin/event/edit/EventEditCancelDialog";
 import EventDeleteDialog from "@/components/admin/event/edit/EventDeleteDialog";
+import EventDeleteContactDialog from "@/components/admin/event/edit/EventDeleteContactDialog";
 import { type StepFormHandle } from "@/types";
 import {
   useAdminEventQuery,
@@ -41,6 +42,7 @@ export default function EventEditClient() {
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteContactDialogOpen, setDeleteContactDialogOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
   const setIsEditMode = useSetIsEditMode();
@@ -219,6 +221,7 @@ export default function EventEditClient() {
               onNext={handleNext}
               isLastStep={currentStep === TOTAL_STEPS}
               mode={mode}
+              onDeleteClick={() => setDeleteContactDialogOpen(true)}
               onEditStart={isAfter ? undefined : handleEditStart}
               onEditCancel={handleEditCancel}
               onEditSave={handleEditSave}
@@ -234,6 +237,13 @@ export default function EventEditClient() {
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <EventDeleteDialog onConfirm={handleDeleteConfirm} />
+      </Dialog>
+
+      <Dialog
+        open={deleteContactDialogOpen}
+        onOpenChange={setDeleteContactDialogOpen}
+      >
+        <EventDeleteContactDialog />
       </Dialog>
 
       <Dialog open={!!pendingHref} onOpenChange={handleLeaveDialogClose}>
