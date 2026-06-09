@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import JSZip from "jszip";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -33,16 +34,16 @@ export default function QRDownloadButton({
     if (!containerRef.current) return;
     setIsDownloading(true);
 
-    const targets: { token: string; filename: string }[] = missions.flatMap(
-      (mission) =>
-        (mission.qrCodes ?? []).map((qr) => ({
-          token: qr.token,
-          filename: `${mission.title}_${qr.id}.png`,
-        }))
+    const zip = new JSZip();
+
+    const targets = missions.flatMap((mission) =>
+      (mission.qrCodes ?? []).map((qr) => ({
+        token: qr.token,
+        filename: `${mission.title}_${qr.id}.png`,
+      }))
     );
 
-    for (let i = 0; i < targets.length; i++) {
-      const { token, filename } = targets[i];
+    for (const { token, filename } of targets) {
       const wrapper = containerRef.current.querySelector<HTMLDivElement>(
         `[data-token="${token}"]`
       );
@@ -50,15 +51,17 @@ export default function QRDownloadButton({
       if (!svgEl) continue;
 
       const dataUrl = await svgToPng(svgEl, QR_SIZE, QR_PADDING);
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = filename;
-      a.click();
-
-      if (i < targets.length - 1) {
-        await new Promise((r) => setTimeout(r, 300));
-      }
+      const base64 = dataUrl.split(",")[1];
+      zip.file(filename, base64, { base64: true });
     }
+
+    const blob = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mission_qr_codes.zip";
+    a.click();
+    URL.revokeObjectURL(url);
 
     setIsDownloading(false);
   };
