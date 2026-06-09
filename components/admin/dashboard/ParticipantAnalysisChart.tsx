@@ -20,7 +20,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { cn } from "@/utils";
-import { getRankedBarColors } from "./rankedBarColors";
+import { getRankedBarColors } from "@/components/admin/dashboard/rankedBarColors";
 
 type AnalysisView = "daily" | "hourly";
 

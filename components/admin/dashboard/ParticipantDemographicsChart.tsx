@@ -16,7 +16,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { getRankedBarColors } from "./rankedBarColors";
+import { getRankedBarColors } from "@/components/admin/dashboard/rankedBarColors";
 
 type GenderData = {
   label: string;
