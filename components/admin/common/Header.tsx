@@ -18,7 +18,7 @@ const Header = () => {
       `행사 ${eventId}`)
     : undefined;
 
-  if (!route) {
+  if (!route || !route.title) {
     return null;
   }
 
