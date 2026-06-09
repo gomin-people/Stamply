@@ -45,7 +45,7 @@ export default function MissionStamp({
         >
           <span
             className={cn(
-              "w-full text-2xl font-sans font-black break-keep line-clamp-2",
+              "w-full text-2xl font-sans font-black break-keep line-clamp-none",
               mission.isStamped
                 ? "text-gomin-neutral-800/80"
                 : "text-gomin-neutral-600"
