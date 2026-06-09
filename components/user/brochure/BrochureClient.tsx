@@ -15,9 +15,10 @@ const BrochureGuideOverlay = dynamic(
 
 type Props = {
   images: string[];
+  showGuide: boolean;
 };
 
-const BrochureClient = ({ images }: Props) => {
+const BrochureClient = ({ images, showGuide }: Props) => {
   const { eventId } = useParams<{ eventId: string }>();
   const searchParams = useSearchParams();
   const fromMission = searchParams.get("from") === "mission";
@@ -56,7 +57,9 @@ const BrochureClient = ({ images }: Props) => {
         />
       )}
 
-      {!fromMission && images.length > 1 && <BrochureGuideOverlay />}
+      {!fromMission && images.length > 1 && showGuide && (
+        <BrochureGuideOverlay eventId={eventId} onDismiss={() => {}} />
+      )}
       {fromMission && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50 flex justify-center">
           <BrochureEventButton className="mt-4" />
