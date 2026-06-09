@@ -69,7 +69,12 @@ export default function StepNavButtons({
               <Button
                 type="button"
                 size={null}
-                className="size-11 rounded-full bg-gomin-primary-700 bg-clip-border p-0 shadow-[0px_5px_14px_-5px_rgba(84,53,235,0.55)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0"
+                className={cn(
+                  "size-11 rounded-full bg-gomin-primary-700 bg-clip-border p-0 shadow-[0px_5px_14px_-5px_rgba(84,53,235,0.55)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 active:translate-y-0",
+                  !isLastStep &&
+                    !onNext &&
+                    "pointer-events-none bg-gomin-primary-300! shadow-none!"
+                )}
                 disabled={disabled}
                 onClick={handleNext}
               >

@@ -162,9 +162,8 @@ export default function EventEditClient() {
             <div className="flex justify-end px-8 pt-4">
               <StepNavButtons
                 currentStep={currentStep}
-                isLastStep={currentStep === TOTAL_STEPS}
                 onPrev={handlePrev}
-                onNext={handleNext}
+                onNext={currentStep === TOTAL_STEPS ? undefined : handleNext}
               />
             </div>
           </div>
