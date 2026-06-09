@@ -202,12 +202,12 @@ const MissionPageClient = ({
             </div>
           ) : isMissionsEmpty ? (
             /* 등록된 미션이 없는 경우 Empty State 처리 */
-            <div className="flex flex-col items-center justify-center py-20 text-center select-none">
-              <span className="text-4xl mb-4">📭</span>
-              <p className="text-gomin-neutral-500 font-sans font-bold text-[16px] leading-tight">
-                등록된 미션이 없습니다.
-                <br />
-                관리자에게 문의해 주세요.
+            <div className="flex flex-col items-center justify-center pb-20 pt-40 text-center select-none">
+              <p className="text-[128px] font-nanum font-extrabold text-gomin-primary-700 leading-none">
+                텅
+              </p>
+              <p className="text-2xl font-nanum font-extrabold text-gomin-black mt-4">
+                이런.. 미션이 없어요..
               </p>
             </div>
           ) : viewMode === "grid" ? (
