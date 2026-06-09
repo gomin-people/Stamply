@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { cn } from "@/utils";
 import { ADMIN_EVENT_REGISTER_PATH } from "@/constants/adminRoutes";
 import { AutoScrollText } from "@/components/admin/common/AutoScrollText";
@@ -213,17 +213,13 @@ const EventSelector = ({ eventId }: Props) => {
             >
               {selectedEventLabel}
             </AutoScrollText>
-            {isEventMenuOpen ? (
-              <ChevronUp
-                className="size-4 shrink-0 text-gomin-primary-600"
-                aria-hidden="true"
-              />
-            ) : (
-              <ChevronDown
-                className="size-4 shrink-0 text-gomin-primary-600"
-                aria-hidden="true"
-              />
-            )}
+            <ChevronDown
+              className={cn(
+                "size-4 shrink-0 text-gomin-primary-600 transition-transform duration-200 ease-out motion-reduce:transition-none",
+                isEventMenuOpen && "rotate-180"
+              )}
+              aria-hidden="true"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
