@@ -10,10 +10,9 @@ import FloatingActionButton from "@/components/user/mission/FloatingActionButton
 
 type Props = {
   images: string[];
-  showGuide: boolean;
 };
 
-const BrochureClient = ({ images, showGuide }: Props) => {
+const BrochureClient = ({ images }: Props) => {
   const { eventId } = useParams<{ eventId: string }>();
   const searchParams = useSearchParams();
   const fromMission = searchParams.get("from") === "mission";
@@ -52,7 +51,7 @@ const BrochureClient = ({ images, showGuide }: Props) => {
         />
       )}
 
-      {!fromMission && images.length > 1 && showGuide && (
+      {!fromMission && images.length > 1 && (
         <BrochureGuideOverlay eventId={eventId} />
       )}
       {fromMission && (
