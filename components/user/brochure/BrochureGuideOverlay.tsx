@@ -3,23 +3,16 @@
 import { useState, useEffect } from "react";
 import OverlayCircleIcon from "@/components/icons/OverlayCircleIcon";
 
-type Props = {
-  eventId: string;
-  onDismiss: () => void;
-};
-
-const BrochureGuideOverlay = ({ eventId, onDismiss }: Props) => {
-  const [visible, setVisible] = useState(() => {
-    return !document.cookie.includes(`brochure-guide-seen-${eventId}=1`);
-  });
+const BrochureGuideOverlay = ({ eventId }: { eventId: string }) => {
+  const [visible, setVisible] = useState(
+    () => !document.cookie.includes(`brochure-guide-seen-${eventId}`)
+  );
 
   useEffect(() => {
     const prevent = (e: TouchEvent) => e.preventDefault();
-
     if (visible) {
       document.addEventListener("touchmove", prevent, { passive: false });
     }
-
     return () => {
       document.removeEventListener("touchmove", prevent);
     };
@@ -28,7 +21,6 @@ const BrochureGuideOverlay = ({ eventId, onDismiss }: Props) => {
   const handleDismiss = () => {
     document.cookie = `brochure-guide-seen-${eventId}=1; path=/; max-age=31536000`;
     setVisible(false);
-    onDismiss();
   };
 
   if (!visible) return null;

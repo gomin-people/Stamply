@@ -2,16 +2,11 @@
 
 import { useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import BrochureSlider from "@/components/user/brochure/BrochureSlider";
 import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
 import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";
+import BrochureGuideOverlay from "@/components/user/brochure/BrochureGuideOverlay";
 import FloatingActionButton from "@/components/user/mission/FloatingActionButton";
-
-const BrochureGuideOverlay = dynamic(
-  () => import("@/components/user/brochure/BrochureGuideOverlay"),
-  { ssr: false }
-);
 
 type Props = {
   images: string[];
@@ -58,7 +53,7 @@ const BrochureClient = ({ images, showGuide }: Props) => {
       )}
 
       {!fromMission && images.length > 1 && showGuide && (
-        <BrochureGuideOverlay eventId={eventId} onDismiss={() => {}} />
+        <BrochureGuideOverlay eventId={eventId} />
       )}
       {fromMission && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50 flex justify-center">
