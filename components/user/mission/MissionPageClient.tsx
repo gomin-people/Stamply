@@ -147,7 +147,7 @@ const MissionPageClient = ({
 
   return (
     <div
-      className={`flex flex-col relative bg-gomin-white ${isPreview ? "h-full pb-20" : "min-h-screen pb-28"}`}
+      className={`flex flex-col relative bg-gomin-white ${isPreview ? "h-full pb-20" : "min-h-full pb-28"}`}
     >
       <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
