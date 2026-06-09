@@ -15,6 +15,8 @@ import {
   type RewardQrData,
 } from "@/features/participant/reward/participantRewardMutations";
 import { createBrowserSupabaseClient } from "@/utils/supabase/browser";
+import RewardQrModal from "./RewardQrModal";
+import MissionCompleteModal from "./MissionCompleteModal";
 
 const CompletePageClient = () => {
   const router = useRouter();
@@ -99,7 +101,7 @@ const CompletePageClient = () => {
               {isPending ? (
                 <span className="size-5 border-2 border-gomin-primary-700 border-t-transparent rounded-full animate-spin" />
               ) : (
-                "직원 확인 버튼"
+                "리워드 QR 생성"
               )}
             </button>
           </div>
@@ -107,72 +109,18 @@ const CompletePageClient = () => {
       </div>
 
       {/* REWARD QR 모달 */}
-      <Dialog open={isQrModalOpen} onOpenChange={handleQrModalClose}>
-        <DialogContent
-          showCloseButton
-          className="sm:max-w-xs bg-white p-6 rounded-[24px] border border-gomin-primary-300 text-center flex flex-col items-center justify-center gap-4"
-        >
-          <div>
-            <DialogTitle className="text-xl font-nanum font-extrabold text-gomin-black mb-1">
-              리워드 수령 QR
-            </DialogTitle>
-            <DialogDescription className="text-sm font-nanum font-semibold text-gomin-neutral-500 whitespace-pre-line">
-              스태프에게 이 QR을 보여주세요.{"\n"}스캔 후 리워드가 지급됩니다.
-            </DialogDescription>
-          </div>
-
-          {qrUrl && (
-            <div className="rounded-2xl border border-gomin-neutral-100 bg-white p-5 shadow-sm">
-              <QRCode
-                value={qrUrl}
-                size={200}
-                aria-label={`리워드 수령 QR (행사 ${eventId})`}
-              />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <RewardQrModal
+        isOpen={isQrModalOpen}
+        onClose={handleQrModalClose}
+        qrUrl={qrUrl}
+        eventId={eventId}
+      />
 
       {/* 미션완료 팝업 모달 */}
-      <Dialog open={isCompleteModalOpen} onOpenChange={handleConfirmClose}>
-        <DialogContent
-          showCloseButton={false}
-          className="sm:max-w-xs bg-white p-6 rounded-[24px] border border-gomin-primary-300 text-center flex flex-col items-center justify-center"
-        >
-          {/* 체크 성공 아이콘 그래픽 */}
-          <div className="w-16 h-16 bg-gomin-primary-100 rounded-full flex items-center justify-center mb-4">
-            <svg
-              className="w-8 h-8 text-gomin-primary-700"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              ></path>
-            </svg>
-          </div>
-
-          <DialogTitle className="text-xl font-nanum font-extrabold text-gomin-black mb-2">
-            미션완료
-          </DialogTitle>
-          <DialogDescription className="text-sm font-nanum font-semibold text-gomin-neutral-500 mb-6 whitespace-pre-line">
-            리워드 지급이 완료되었습니다.{"\n"}감사합니다!
-          </DialogDescription>
-
-          <button
-            type="button"
-            onClick={handleConfirmClose}
-            className="w-full py-3.5 rounded-[18px] font-nanum font-bold text-[16px] bg-gomin-primary-700 hover:bg-gomin-primary-600 text-white transition-all shadow-md active:scale-[0.98] cursor-pointer"
-          >
-            확인
-          </button>
-        </DialogContent>
-      </Dialog>
+      <MissionCompleteModal
+        isOpen={isCompleteModalOpen}
+        onClose={handleConfirmClose}
+      />
     </>
   );
 };
