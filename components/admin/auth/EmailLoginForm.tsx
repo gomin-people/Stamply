@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { z } from "zod";
+import {
+  loginSchema,
+  type LoginFormValues,
+} from "@/types/schemas/adminLoginSchemas";
 import { useAdminLoginMutation } from "@/features/admin/login/adminLoginMutations";
 import { ApiError } from "@/features/shared/api/http";
 import { Input } from "@/components/ui/input";
@@ -16,17 +19,7 @@ import {
   FieldGroup,
 } from "@/components/ui/field";
 
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, { error: "이메일을 입력해주세요." })
-    .email({ error: "올바른 이메일 형식을 입력해주세요." }),
-  password: z.string().min(1, { error: "비밀번호를 입력해주세요." }),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-
-const EmailLoginFormEmailLoginForm = () => {
+const EmailLoginForm = () => {
   const router = useRouter();
   const { mutateAsync: login } = useAdminLoginMutation();
   const {
@@ -93,4 +86,4 @@ const EmailLoginFormEmailLoginForm = () => {
   );
 };
 
-export default EmailLoginFormEmailLoginForm;
+export default EmailLoginForm;

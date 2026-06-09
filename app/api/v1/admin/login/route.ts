@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { loginSchema } from "@/types/schemas/adminLoginSchemas";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
 const SUPABASE_ERROR_MESSAGES: Record<string, string> = {
@@ -9,7 +10,15 @@ const SUPABASE_ERROR_MESSAGES: Record<string, string> = {
 };
 
 export const POST = async (request: NextRequest) => {
-  const { email, password } = await request.json();
+  const body = await request.json();
+  const parsed = loginSchema.safeParse(body);
+
+  if (!parsed.success) {
+    const message = parsed.error.issues[0].message;
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+
+  const { email, password } = parsed.data;
 
   const supabase = await createSessionClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
