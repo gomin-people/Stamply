@@ -9,7 +9,7 @@ import MissionFilter from "@/components/admin/mission/MissionFilter";
 import MissionAddButton from "@/components/admin/mission/MissionAddButton";
 import MissionList from "@/components/admin/mission/MissionList";
 import { Button } from "@/components/ui/button";
-import type { AdminMissionDetail } from "@/types/models/admin";
+import type { AdminMissionDetail } from "@/types/models";
 import { getEventOperationStatus } from "@/utils/event-status";
 
 const QRDownloadButton = dynamic(

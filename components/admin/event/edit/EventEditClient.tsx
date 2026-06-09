@@ -22,7 +22,7 @@ import {
   useUpdateEventMutation,
   useDeleteEventMutation,
 } from "@/features/admin/events/adminEventMutations";
-import type { EventUpdatePayload } from "@/features/shared/types/stamply";
+import type { EventUpdatePayloadModel } from "@/types/models";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { getEventOperationStatus } from "@/utils/event-status";
 import {
@@ -125,7 +125,7 @@ export default function EventEditClient() {
       ...step1Data,
       ...step2Data,
       ...step3Data,
-    } as EventUpdatePayload;
+    } as EventUpdatePayloadModel;
 
     try {
       await updateEvent({ eventId: eventIdNum, payload });

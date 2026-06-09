@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Download } from "lucide-react";
 import QRCode from "react-qr-code";
-import type { AdminMissionDetail } from "@/types/models/admin";
+import type { AdminMissionDetail } from "@/types/models";
 import { getMissionCheckUrl, svgToPng } from "@/utils/qr";
 
 type Props = {

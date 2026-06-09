@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import type { AdminMissionDetail } from "@/types/models/admin";
+import type { AdminMissionDetail } from "@/types/models";
 import MissionItem from "@/components/admin/mission/MissionItem";
 import MissionDialog from "@/components/admin/mission/MissionDialog";
 import MissionDeleteDialog from "@/components/admin/mission/MissionDeleteDialog";

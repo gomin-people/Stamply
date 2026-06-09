@@ -2,15 +2,12 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
-import {
-  type Mission,
-  type MissionCompletion,
-} from "@/features/shared/types/stamply";
+import { type MissionModel, type MissionCompletionModel } from "@/types/models";
 
 // 미션 완료 응답 타입
 type CompletedMission = {
-  mission: Mission;
-  completion: MissionCompletion;
+  mission: MissionModel;
+  completion: MissionCompletionModel;
 };
 
 function completeMissionByToken(token: string) {
