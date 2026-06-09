@@ -230,7 +230,7 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
 
     isBackNavigatingRef.current = true;
     setIsBackNavigating(true);
-    router.push(`/event/${eventId}/mission`);
+    router.back();
   };
 
   const handleVideoLoadedMetadata = () => {
