@@ -1,0 +1,147 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { toast } from "sonner";
+import { z } from "zod";
+import { useAdminSignupMutation } from "@/features/admin/signup/adminSignupMutations";
+import { ApiError } from "@/features/shared/api/http";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldGroup,
+} from "@/components/ui/field";
+
+const signUpSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, { error: "이름은 2자 이상이여야 합니다" })
+      .max(16, { error: "이름은 16자 이하여야 합니다." })
+      .regex(/^[가-힣a-zA-Z\s]+$/, {
+        error: "이름은 한글 또는 영문만 입력 가능합니다.",
+      }),
+    email: z
+      .string()
+      .min(1, { error: "이메일을 입력해주세요." })
+      .max(254, { error: "이메일은 254자 이하여야 합니다." })
+      .email({ error: "올바른 이메일 형식을 입력해주세요." }),
+    password: z
+      .string()
+      .min(1, { error: "비밀번호를 입력해주세요." })
+      .min(8, { error: "비밀번호는 8자 이상이어야 합니다." }),
+    passwordConfirm: z
+      .string()
+      .min(1, { error: "비밀번호 확인을 입력해주세요." }),
+  })
+  .check((ctx) => {
+    if (ctx.value.password !== ctx.value.passwordConfirm) {
+      ctx.issues.push({
+        code: "custom",
+        path: ["passwordConfirm"],
+        message: "비밀번호가 일치하지 않습니다.",
+        input: ctx.value,
+      });
+    }
+  });
+
+type SignUpFormValues = z.infer<typeof signUpSchema>;
+
+const SignUpForm = () => {
+  const { mutateAsync: signUp } = useAdminSignupMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignUpFormValues>({
+    resolver: standardSchemaResolver(signUpSchema),
+  });
+
+  const onSubmit = async (data: SignUpFormValues) => {
+    try {
+      await signUp({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+    } catch (error) {
+      const message =
+        error instanceof ApiError
+          ? error.message
+          : "회원가입에 실패했습니다. 다시 시도해주세요.";
+      toast.error(message);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex w-full flex-col gap-5"
+    >
+      <FieldGroup>
+        <Field data-invalid={!!errors.name}>
+          <FieldLabel htmlFor="name">이름</FieldLabel>
+          <Input
+            id="name"
+            placeholder="이름을 입력해주세요"
+            aria-invalid={!!errors.name}
+            className="h-12 rounded-xl px-4 text-sm"
+            {...register("name")}
+          />
+          <FieldError>{errors.name?.message}</FieldError>
+        </Field>
+
+        <Field data-invalid={!!errors.email}>
+          <FieldLabel htmlFor="email">이메일</FieldLabel>
+          <Input
+            id="email"
+            placeholder="example@email.com"
+            aria-invalid={!!errors.email}
+            className="h-12 rounded-xl px-4 text-sm"
+            {...register("email")}
+          />
+          <FieldError>{errors.email?.message}</FieldError>
+        </Field>
+
+        <Field data-invalid={!!errors.password}>
+          <FieldLabel htmlFor="password">비밀번호</FieldLabel>
+          <Input
+            id="password"
+            type="password"
+            placeholder="8자 이상 입력해주세요"
+            aria-invalid={!!errors.password}
+            className="h-12 rounded-xl px-4 text-sm"
+            {...register("password")}
+          />
+          <FieldError>{errors.password?.message}</FieldError>
+        </Field>
+
+        <Field data-invalid={!!errors.passwordConfirm}>
+          <FieldLabel htmlFor="passwordConfirm">비밀번호 확인</FieldLabel>
+          <Input
+            id="passwordConfirm"
+            type="password"
+            placeholder="비밀번호를 다시 입력해주세요"
+            aria-invalid={!!errors.passwordConfirm}
+            className="h-12 rounded-xl px-4 text-sm"
+            {...register("passwordConfirm")}
+          />
+          <FieldError>{errors.passwordConfirm?.message}</FieldError>
+        </Field>
+      </FieldGroup>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-1 h-12 w-full rounded-xl bg-gomin-primary-700 text-base font-semibold text-white hover:bg-gomin-primary-600 active:bg-gomin-primary-700"
+      >
+        {isSubmitting ? "가입 중..." : "회원가입"}
+      </Button>
+    </form>
+  );
+};
+
+export default SignUpForm;

@@ -26,7 +26,7 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function EmailLoginForm() {
+const EmailLoginFormEmailLoginForm = () => {
   const router = useRouter();
   const { mutateAsync: login } = useAdminLoginMutation();
   const {
@@ -91,4 +91,6 @@ export default function EmailLoginForm() {
       </Button>
     </form>
   );
-}
+};
+
+export default EmailLoginFormEmailLoginForm;
