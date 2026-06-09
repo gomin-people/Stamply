@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/dialog";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
+import StepNavButtons from "@/components/admin/event/StepNavButtons";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
@@ -155,7 +156,18 @@ export default function EventEditClient() {
         )}
 
         <div className="rounded-xl border border-gomin-neutral-100 bg-white">
-          <EventFormStepper currentStep={currentStep} />
+          <div className="flex flex-col">
+            <EventFormStepper currentStep={currentStep} />
+            <hr className="border-gomin-neutral-100" />
+            <div className="flex justify-end px-8 pt-4">
+              <StepNavButtons
+                currentStep={currentStep}
+                isLastStep={currentStep === TOTAL_STEPS}
+                onPrev={handlePrev}
+                onNext={handleNext}
+              />
+            </div>
+          </div>
 
           <div className="p-6">
             <div className={currentStep !== 1 ? "hidden" : ""}>
@@ -213,11 +225,6 @@ export default function EventEditClient() {
 
           <div className="px-6 pb-4">
             <EventFormFooter
-              currentStep={currentStep}
-              totalSteps={TOTAL_STEPS}
-              onPrev={handlePrev}
-              onNext={handleNext}
-              isLastStep={currentStep === TOTAL_STEPS}
               mode={mode}
               onDeleteClick={() => setDeleteContactDialogOpen(true)}
               onEditStart={isAfter ? undefined : handleEditStart}
