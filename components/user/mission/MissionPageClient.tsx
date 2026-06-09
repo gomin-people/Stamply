@@ -103,7 +103,8 @@ const MissionPageClient = ({
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
   const isShowEmpty = hasError || isMissionsEmpty;
-  const showBrochureAndActionButtons = !isShowEmpty;
+  const showBrochureButton = !hasError && !isPreview;
+  const showMissionUI = showBrochureButton && !isMissionsEmpty;
 
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
@@ -143,11 +144,11 @@ const MissionPageClient = ({
             {eventName}
           </h1>
           {/* 우측 별도 컴포넌트로 보여지는 브로슈어 버튼 */}
-          {showBrochureAndActionButtons && <BrochureButton eventId={eventId} />}
+          {showBrochureButton && <BrochureButton eventId={eventId} />}
         </div>
 
         {/* 3. 진행 상황 안내 문구 */}
-        {showBrochureAndActionButtons && (
+        {showMissionUI && (
           <div className="mb-4 min-h-14 flex items-center">
             {!isAllCompleted ? (
               <h2 className="text-2xl font-nanum font-extrabold text-gomin-neutral-700 leading-tight tracking-tight select-none">
@@ -169,7 +170,7 @@ const MissionPageClient = ({
         )}
 
         {/* 4. UI 선택 토글 버튼 (리스트형 vs 격자형) */}
-        {showBrochureAndActionButtons && (
+        {showMissionUI && (
           <div className="flex justify-end mb-5">
             <ViewToggle viewMode={viewMode} onChange={setViewMode} />
           </div>
@@ -213,7 +214,7 @@ const MissionPageClient = ({
       </main>
 
       {/* 6. 하단 고정 플로팅 액션 버튼 */}
-      {showBrochureAndActionButtons && (
+      {showMissionUI && (
         <FloatingActionButton
           isAllCompleted={isAllCompleted}
           onClick={handleAction}
