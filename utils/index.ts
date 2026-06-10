@@ -32,18 +32,6 @@ const INVISIBLE_CHARS_RE = /[\u200B\u200C\u200D\uFEFF\u3164\u180E\u00AD]/g;
 export const stripInvisibleChars = (str: string): string =>
   str.replace(INVISIBLE_CHARS_RE, " ");
 
-export const isValidEmail = (value: string): boolean =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-export const isValidUrl = (value: string): boolean => {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-};
-
 export const isValidPhone = (value: string): boolean => {
   return /^(02|0\d{1,2})-\d{3,4}-\d{4}$/.test(value);
 };

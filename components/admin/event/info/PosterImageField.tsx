@@ -1,13 +1,13 @@
 "use client";
 import { memo, useRef, useState } from "react";
-import { ImageIcon, X } from "lucide-react";
+import { ImageIcon, Loader2, X } from "lucide-react";
 import {
   useUploadAdminImageMutation,
   useDeleteAdminImageMutation,
 } from "@/features/admin/upload/adminUploadMutations";
 
 import { cn } from "@/utils/index";
-import { imageSchema } from "@/utils/schemas";
+import { imageSchema } from "@/types/schemas/adminEventInfoSchemas";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -20,7 +20,6 @@ type Props = {
   error?: string;
   initialImageUrl?: string;
   disabled?: boolean;
-  onUploadStart: () => void;
   onUploadSuccess: (url: string) => void;
   onRemove: () => void;
 };
@@ -29,7 +28,6 @@ const PosterImageField = memo(function PosterImageField({
   error,
   initialImageUrl,
   disabled,
-  onUploadStart,
   onUploadSuccess,
   onRemove,
 }: Props) {
@@ -55,11 +53,10 @@ const PosterImageField = memo(function PosterImageField({
     }
 
     setFileError(undefined);
-    setPosterPreview(URL.createObjectURL(file));
-    onUploadStart();
     uploadImage(file, {
       onSuccess: ({ url, path }) => {
         setPosterPath(path);
+        setPosterPreview(url);
         onUploadSuccess(url);
       },
     });
@@ -81,7 +78,12 @@ const PosterImageField = memo(function PosterImageField({
         <span className="text-destructive">*</span>
       </FieldTitle>
       <div className="relative aspect-2/3 w-full">
-        {posterPreview ? (
+        {isUploading ? (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-input bg-muted/30 text-muted-foreground">
+            <Loader2 className="size-8 animate-spin text-primary/60" />
+            <span className="text-xs">업로드 중...</span>
+          </div>
+        ) : posterPreview ? (
           <div className="relative h-full w-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -106,7 +108,7 @@ const PosterImageField = memo(function PosterImageField({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading || disabled}
+            disabled={disabled}
             className={cn(
               "flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50 disabled:opacity-50",
               error ? "border-destructive" : "border-input"
@@ -129,7 +131,9 @@ const PosterImageField = memo(function PosterImageField({
         2 : 3 비율 · 1080 × 1620 권장
       </FieldDescription>
       <div className="h-3">
-        <FieldError>{fileError ?? error}</FieldError>
+        <FieldError>
+          {fileError ?? (isUploading ? undefined : error)}
+        </FieldError>
       </div>
     </Field>
   );
