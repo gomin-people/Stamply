@@ -21,11 +21,11 @@ type SurveyModalProps = {
   onSubmitSuccess: () => void;
 };
 
-export default function SurveyModal({
+const SurveyModal = ({
   isOpen,
   onClose,
   onSubmitSuccess,
-}: SurveyModalProps) {
+}: SurveyModalProps) => {
   const [gender, setGender] = useState<GenderType>(null);
   const [ageRange, setAgeRange] = useState<AgeRangeType>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -91,7 +91,7 @@ export default function SurveyModal({
 
         {/* 타이틀 영역 */}
         <div className="text-left mt-2 mb-6">
-          <DialogTitle className="text-[22px] font-nanum font-extrabold leading-[30px] text-gomin-black whitespace-pre-line">
+          <DialogTitle className="text-[22px] font-nanum font-extrabold leading-7.5 text-gomin-black whitespace-pre-line">
             정보 입력하고{"\n"}리워드 받아가세요!
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -187,4 +187,6 @@ export default function SurveyModal({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default SurveyModal;
