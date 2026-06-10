@@ -27,7 +27,7 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
           <ThemedButton className="w-full">시작하기</ThemedButton>
         </Link>
         <p className="font-sans text-sm font-bold leading-normal text-gomin-neutral-500 whitespace-nowrap pt-2.5">
-          powered by stamply
+          powered by stamplo
         </p>
       </div>
     </main>
