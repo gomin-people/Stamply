@@ -6,6 +6,7 @@ import { useParticipantEventQuery } from "@/features/participant/events/particip
 import InfoCard from "@/components/user/common/InfoCard";
 import EventDateTimeCard from "@/components/user/event/EventDateTimeCard";
 import EventHostCard from "@/components/user/event/EventHostCard";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 const EventDetailPage = () => {
   const { eventId } = useParams<{ eventId: string }>();
 
@@ -16,11 +17,7 @@ const EventDetailPage = () => {
   } = useParticipantEventQuery(Number(eventId));
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <span className="size-8 border-4 border-gomin-primary-700 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (isError || !event) {
