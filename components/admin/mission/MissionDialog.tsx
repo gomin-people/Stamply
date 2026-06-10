@@ -72,12 +72,14 @@ const MissionDialog = ({ mission, onSave }: Props) => {
       </DialogHeader>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FieldGroup className="py-2">
+        <FieldGroup className="py-2 min-h-[220px]">
           <Field>
             <FieldTitle>
               미션명 <span className="text-red-500">*</span>
             </FieldTitle>
             <Input
+              maxLength={20}
+              placeholder="미션명을 입력해주세요. (최대 20자)"
               aria-invalid={!!errors.title}
               {...register("title", { setValueAs: stripInvisibleChars })}
             />
@@ -89,6 +91,8 @@ const MissionDialog = ({ mission, onSave }: Props) => {
             <Textarea
               rows={4}
               className="resize-none h-20"
+              placeholder="미션 설명을 입력해주세요. (최대 500자)"
+              maxLength={500}
               {...register("description", { setValueAs: stripInvisibleChars })}
             />
           </Field>
