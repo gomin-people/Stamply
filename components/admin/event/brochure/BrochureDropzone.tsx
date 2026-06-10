@@ -29,7 +29,7 @@ const BrochureDropzone = ({
   const [shake, setShake] = useState(0);
 
   const triggerShake = (message: string) => {
-    toast.warning(message);
+    toast.warning(message, { id: "brochure-warning" });
     setShake((s) => s + 1);
   };
 

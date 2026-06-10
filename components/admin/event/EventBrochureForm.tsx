@@ -32,7 +32,9 @@ const EventBrochureForm = forwardRef<StepFormHandle, Props>(
       () => ({
         validate: () => {
           if (pages.some((p) => p.isUploading)) {
-            toast.warning("이미지 업로드가 완료될 때까지 기다려주세요.");
+            toast.warning("이미지 업로드가 완료될 때까지 기다려주세요.", {
+              id: "uploading-warning",
+            });
             return false;
           }
           return true;
