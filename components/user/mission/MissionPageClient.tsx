@@ -139,7 +139,7 @@ const MissionPageClient = ({
               : "pb-28"
       )}
     >
-      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 pb-3 overflow-x-hidden">
+      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 pb-1.5 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
           <h1 className="text-4xl font-nanum font-extrabold leading-11.25 text-gomin-primary-700 tracking-tight select-none">
