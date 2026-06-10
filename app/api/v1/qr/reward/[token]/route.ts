@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { conflict, notFound, ok, serverError } from "@/utils/api";
+import { badRequest, conflict, notFound, ok, serverError } from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
@@ -42,7 +42,7 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
     );
   }
 
-  // 2. 참여자 및 행사 소유 여부 단일 조인 조회 (service_role 클라이언트 사용)
+  // 2. 참여자, 행사 소유 여부, 활성 미션 목록 및 완료 미션 목록 단일 조인 조회 (service_role 클라이언트 사용)
   const { data: participant, error: participantError } = await supabase
     .from("participant_users")
     .select(
@@ -50,7 +50,14 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
       *,
       events (
         id,
-        user_id
+        user_id,
+        missions (
+          id,
+          is_active
+        )
+      ),
+      mission_completions (
+        missions_id
       )
     `
     )
@@ -66,7 +73,11 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
   }
 
   // 3. 해당 행사의 소유자가 현재 로그인한 관리자인지 검증
-  type EventOwnerInfo = { id: number; user_id: string };
+  type EventOwnerInfo = {
+    id: number;
+    user_id: string;
+    missions: { id: number; is_active: boolean }[];
+  };
   const rawEvents = participant.events;
   const eventData = (Array.isArray(rawEvents)
     ? rawEvents[0]
@@ -82,6 +93,25 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
   // 4. 이미 수령했는지 검사
   if (participant.is_reward_claimed) {
     return conflict("이미 리워드를 수령한 참여자입니다.");
+  }
+
+  // 4-1. 미션 완료 여부 검증 (활성화된 미션이 최소 1개 이상 존재하고, 모두 완료했는지 확인)
+  const missions = eventData.missions ?? [];
+  const activeMissions = Array.isArray(missions)
+    ? missions.filter((m: { id: number; is_active: boolean }) => m.is_active)
+    : [];
+  const activeMissionsCount = activeMissions.length;
+
+  const completions = participant.mission_completions ?? [];
+  const completedMissionsCount = Array.isArray(completions)
+    ? completions.length
+    : 0;
+
+  if (
+    activeMissionsCount === 0 ||
+    completedMissionsCount < activeMissionsCount
+  ) {
+    return badRequest("모든 필수 미션을 완료하지 않았습니다.");
   }
 
   // 5. 리워드 수령 완료 처리 (service_role 클라이언트 사용)

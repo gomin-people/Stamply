@@ -10,11 +10,7 @@ import {
 import { supabase } from "@/utils/supabase/server";
 
 // 설문 저장 시 요청 본문에서 허용하는 필드 목록
-const SURVEY_UPDATE_FIELDS = [
-  "gender",
-  "age_range",
-  "is_reward_claimed",
-] as const;
+const SURVEY_UPDATE_FIELDS = ["gender", "age_range"] as const;
 
 // participant_users.gender enum과 맞춘 허용 성별 값
 const GENDERS = ["MALE", "FEMALE", "UNKNOWN"] as const;
@@ -86,13 +82,6 @@ export async function POST(request: NextRequest) {
     if (typeof ageRange === "string" && ageRange.trim() === "") {
       payload.age_range = null;
     }
-  }
-
-  if (
-    Object.prototype.hasOwnProperty.call(payload, "is_reward_claimed") &&
-    typeof payload.is_reward_claimed !== "boolean"
-  ) {
-    return badRequest("isRewardClaimed는 boolean이어야 합니다.");
   }
 
   // participant_users 테이블에서 현재 참여자 id 기준 설문 필드 수정 후 조회
