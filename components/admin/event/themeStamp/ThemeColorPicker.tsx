@@ -14,12 +14,12 @@ type Props = {
 /**
  * 테마 컬러 피커 (슬라이더 + Hex 직접 입력 + 안내 문구) 컴포넌트
  */
-export default function ThemeColorPicker({
+const ThemeColorPicker = ({
   h,
   onHueChange,
   keyColor,
   disabled = false,
-}: Props) {
+}: Props) => {
   // 텍스트 필드 포커스 여부 및 입력 중인 문자열 상태 (슬라이더 드래그 시 렌더링 병목 및 피드백 루프 원천 차단)
   const [isFocused, setIsFocused] = useState(false);
   const [typingValue, setTypingValue] = useState("");
@@ -107,4 +107,6 @@ export default function ThemeColorPicker({
       <InfoBanner message="선택한 테마 색상은 진입 페이지, 설문조사 등 행사의 모든 페이지에 일괄 적용됩니다." />
     </div>
   );
-}
+};
+
+export default ThemeColorPicker;

@@ -22,7 +22,7 @@ type Props = {
   completeTooltip?: string;
 };
 
-export default function StepNavButtons({
+const StepNavButtons = ({
   currentStep,
   isLastStep = false,
   disabled = false,
@@ -30,7 +30,7 @@ export default function StepNavButtons({
   onNext,
   onComplete,
   completeTooltip = "완료",
-}: Props) {
+}: Props) => {
   const [shake, setShake] = useState(0);
 
   const handleNext = () => {
@@ -93,4 +93,6 @@ export default function StepNavButtons({
       </TooltipProvider>
     </div>
   );
-}
+};
+
+export default StepNavButtons;

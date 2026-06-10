@@ -16,13 +16,13 @@ type Props = {
  * 스탬프 모양 이미지 업로드 뷰 컴포넌트
  * 비즈니스 로직(검증, 스토리지 업로드)은 useStampUpload 훅으로 완벽히 격리되어 있습니다.
  */
-export default function StampUploadSection({
+const StampUploadSection = ({
   stampPreviewUrl,
   onPreviewChange,
   onFileUrlChange,
   onUploadingChange,
   disabled = false,
-}: Props) {
+}: Props) => {
   const {
     fileInputRef,
     isUploading,
@@ -115,4 +115,6 @@ export default function StampUploadSection({
       <InfoBanner message="스탬프 이미지를 따로 업로드하지 않으시면, 기본 제공되는 Stamply 스탬프 이미지가 자동으로 사용됩니다." />
     </div>
   );
-}
+};
+
+export default StampUploadSection;

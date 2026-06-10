@@ -20,7 +20,7 @@ type Props = {
   currentStep: number;
 };
 
-export default function EventFormStepper({ currentStep }: Props) {
+const EventFormStepper = ({ currentStep }: Props) => {
   const stepItems: React.ReactNode[] = [];
 
   STEPS.forEach((step, index) => {
@@ -104,4 +104,6 @@ export default function EventFormStepper({ currentStep }: Props) {
   });
 
   return <div className="flex h-24 w-full items-center px-8">{stepItems}</div>;
-}
+};
+
+export default EventFormStepper;
