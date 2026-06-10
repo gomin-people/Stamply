@@ -11,6 +11,7 @@ import { createBrowserSupabaseClient } from "@/utils/supabase/browser";
 import RewardQrModal from "./RewardQrModal";
 import MissionCompleteModal from "./MissionCompleteModal";
 import { toast } from "sonner";
+import { ApiError } from "@/features/shared/api/http";
 
 const CompletePageClient = () => {
   const router = useRouter();
@@ -60,7 +61,11 @@ const CompletePageClient = () => {
       },
       onError: (err: Error) => {
         console.error("Reward QR 생성 실패:", err);
-        toast.error("QR 생성에 실패했습니다. 다시 시도해 주세요.");
+        if (err instanceof ApiError) {
+          toast.error(err.message);
+        } else {
+          toast.error("QR 생성에 실패했습니다. 다시 시도해 주세요.");
+        }
       },
     });
   };
