@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import AnimatedIconStamply from "@/components/icons/AnimatedIconStamply";
+import AnimatedIconStamplo from "@/components/icons/AnimatedIconStamplo";
 import {
   Dialog,
   DialogContent,
@@ -43,9 +43,9 @@ const CompletePageClient = () => {
     <>
       <div className="fixed inset-0 w-full h-full bg-gomin-primary-700 flex flex-col items-center justify-center p-6 text-center select-none">
         <div className="max-w-md w-full flex flex-col items-center justify-center space-y-10">
-          {/* 1. 중앙 Stamply 대형 원형 도장 그래픽 */}
+          {/* 1. 중앙 Stamplo 대형 원형 도장 그래픽 */}
           <div className="w-64 h-64 shrink-0 flex items-center justify-center relative select-none">
-            <AnimatedIconStamply className="w-full h-full text-white opacity-95 animate-fade-in scale-110" />
+            <AnimatedIconStamplo className="w-full h-full text-white opacity-95 animate-fade-in scale-110" />
           </div>
 
           {/* 2. 안내 문구 */}

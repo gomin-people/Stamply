@@ -1,9 +1,9 @@
-import IconStamply from "@/components/icons/IconStamply";
+import IconStamplo from "@/components/icons/IconStamplo";
 
 export default function AdminUnavailablePage() {
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-2">
-      <IconStamply
+      <IconStamplo
         className="text-gomin-neutral-300 mb-2"
         width={64}
         height={64}

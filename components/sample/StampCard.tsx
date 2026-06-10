@@ -24,7 +24,7 @@ const StampCard = ({
         )}
       >
         <Image
-          src="/images/icon_stamply.svg"
+          src="/images/icon_stamplo.svg"
           alt="stamp"
           fill
           className="object-contain"

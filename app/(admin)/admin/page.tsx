@@ -3,8 +3,8 @@ import Link from "next/link";
 import AuthRedirect from "@/components/admin/auth/AuthRedirect";
 import KakaoLogin from "@/components/admin/auth/KakaoLogin";
 import TestLoginButton from "@/components/admin/auth/TestLoginButton";
+import StamploLogo from "@/components/admin/common/StamploLogo";
 import EmailLoginForm from "@/components/admin/auth/EmailLoginForm";
-import StamplyLogo from "@/components/admin/common/StamplyLogo";
 
 const AdminHomePage = async () => {
   const cookieStore = await cookies();
@@ -20,7 +20,7 @@ const AdminHomePage = async () => {
     <main className="min-h-screen bg-gomin-neutral-100 flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-125 bg-white rounded-2xl shadow-sm px-12 py-12 flex flex-col items-center gap-8">
         <div className="flex flex-col items-center gap-2">
-          <StamplyLogo />
+          <StamploLogo />
           <p className="text-base text-[#6D6D6D]">행사 운영 관리자 로그인</p>
         </div>
 

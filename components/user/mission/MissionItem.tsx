@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import IconStamply from "@/components/icons/IconStamply";
+import IconStamplo from "@/components/icons/IconStamplo";
 import MissionDetailModal from "@/components/user/mission/MissionDetailModal";
 import { cn } from "@/utils";
 
@@ -43,7 +43,7 @@ const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
               )}
             />
           ) : (
-            <IconStamply
+            <IconStamplo
               className={cn(
                 "w-full h-full",
                 mission.isStamped
