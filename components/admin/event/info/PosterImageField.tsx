@@ -17,23 +17,20 @@ import {
 } from "@/components/ui/field";
 
 type Props = {
+  value: string;
   error?: string;
-  initialImageUrl?: string;
   disabled?: boolean;
   onUploadSuccess: (url: string) => void;
   onRemove: () => void;
 };
 
 const PosterImageField = memo(function PosterImageField({
+  value,
   error,
-  initialImageUrl,
   disabled,
   onUploadSuccess,
   onRemove,
 }: Props) {
-  const [posterPreview, setPosterPreview] = useState<string | null>(
-    initialImageUrl ?? null
-  );
   const [posterPath, setPosterPath] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | undefined>();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +53,6 @@ const PosterImageField = memo(function PosterImageField({
     uploadImage(file, {
       onSuccess: ({ url, path }) => {
         setPosterPath(path);
-        setPosterPreview(url);
         onUploadSuccess(url);
       },
     });
@@ -65,7 +61,6 @@ const PosterImageField = memo(function PosterImageField({
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (posterPath) deleteImage(posterPath);
-    setPosterPreview(null);
     setPosterPath(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
     onRemove();
@@ -83,11 +78,11 @@ const PosterImageField = memo(function PosterImageField({
             <Loader2 className="size-8 animate-spin text-primary/60" />
             <span className="text-xs">업로드 중...</span>
           </div>
-        ) : posterPreview ? (
+        ) : value ? (
           <div className="relative h-full w-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={posterPreview}
+              src={value}
               alt="포스터 미리보기"
               className="h-full w-full rounded-lg object-cover"
             />

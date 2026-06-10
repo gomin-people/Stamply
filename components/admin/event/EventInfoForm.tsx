@@ -107,8 +107,8 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
       <form>
         <div className="flex min-h-166 gap-8">
           <PosterImageField
+            value={posterImageField.value}
             error={posterImageState.error?.message}
-            initialImageUrl={initialData?.posterImageUrl}
             onUploadSuccess={handlePosterUploadSuccess}
             onRemove={handlePosterRemove}
             disabled={isDisabled("posterImageUrl")}
