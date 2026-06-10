@@ -76,6 +76,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle, Props>(
             onUploadingChange={setIsUploading}
             disabled={disabled}
           />
+          <hr className="border-gomin-neutral-100" />
           <ThemeColorPicker
             h={h}
             onHueChange={setH}
