@@ -62,16 +62,6 @@ const EventFormFooter = ({
         <>
           <Button
             type="button"
-            size={null}
-            className={primaryButton}
-            disabled={disabled}
-            onClick={onEditSave}
-          >
-            <Save className="size-3.5" />
-            변경사항 저장
-          </Button>
-          <Button
-            type="button"
             variant="outline"
             size={null}
             className={outlineButton}
@@ -79,6 +69,16 @@ const EventFormFooter = ({
           >
             <X className="size-3.5" />
             변경 취소
+          </Button>
+          <Button
+            type="button"
+            size={null}
+            className={primaryButton}
+            disabled={disabled}
+            onClick={onEditSave}
+          >
+            <Save className="size-3.5" />
+            변경사항 저장
           </Button>
         </>
       )}
