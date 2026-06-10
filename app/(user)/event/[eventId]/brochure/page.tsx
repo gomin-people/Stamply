@@ -12,7 +12,7 @@ const BrochurePage = async ({ params }: Props) => {
   const event = await getEntryEvent(eventId);
 
   if (!event.brochureImageUrl?.length) {
-    redirect(`/event/${eventId}/mission`);
+    redirect(`/event/${eventId}/detail`);
   }
 
   return <BrochureClient images={event.brochureImageUrl} />;
