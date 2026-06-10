@@ -112,7 +112,7 @@ const StampUploadSection = ({
       ) : null}
 
       {/* 느낌표 안내 문구 */}
-      <InfoBanner message="스탬프 이미지를 따로 업로드하지 않으시면, 기본 제공되는 Stamply 스탬프 이미지가 자동으로 사용됩니다." />
+      <InfoBanner message="스탬프 이미지를 따로 업로드하지 않으시면, 기본 제공되는 Stamplo 스탬프 이미지가 자동으로 사용됩니다." />
     </div>
   );
 };
