@@ -10,7 +10,7 @@ import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
 import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import { type StepFormHandle } from "@/types";
 import { useCreateEventMutation } from "@/features/admin/events/adminEventMutations";
-import type { EventCreatePayload } from "@/features/shared/types/stamply";
+import type { EventCreatePayloadModel } from "@/types/models";
 
 const TOTAL_STEPS = 3;
 
@@ -45,7 +45,7 @@ export default function CreateEventPage() {
       ...step1Data,
       ...step2Data,
       ...step3Data,
-    } as EventCreatePayload;
+    } as EventCreatePayloadModel;
 
     try {
       const event = await createEvent(payload);

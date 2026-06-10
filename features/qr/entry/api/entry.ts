@@ -1,10 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { PARTICIPANT_COOKIE_NAME, parsePositiveInteger } from "@/utils/api";
-import {
-  type StamplyEvent,
-  type Gender,
-} from "@/features/shared/types/stamply";
+import { type EventModel, type Gender } from "@/types/models";
 import { supabase } from "@/utils/supabase/server";
 import { toCamelKeys } from "@/utils/case";
 
@@ -21,7 +18,7 @@ export type ParticipantUser = {
 
 export const getEntryEventAndParticipant = async (
   eventIdParam: string
-): Promise<{ event: StamplyEvent; participant: ParticipantUser }> => {
+): Promise<{ event: EventModel; participant: ParticipantUser }> => {
   const cookieStore = await cookies();
   const participantCookie = cookieStore.get(PARTICIPANT_COOKIE_NAME);
 
@@ -58,14 +55,14 @@ export const getEntryEventAndParticipant = async (
   const { events, ...participantData } = participant;
 
   return {
-    event: toCamelKeys(event) as unknown as StamplyEvent,
+    event: toCamelKeys(event) as unknown as EventModel,
     participant: participantData,
   };
 };
 
 export const getEntryEvent = async (
   eventIdParam: string
-): Promise<StamplyEvent> => {
+): Promise<EventModel> => {
   const { event } = await getEntryEventAndParticipant(eventIdParam);
   return event;
 };

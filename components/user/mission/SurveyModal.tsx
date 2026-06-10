@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useSubmitSurveyMutation } from "@/features/participant/survey/participantSurveyMutations";
-import { type Gender } from "@/features/shared/types/stamply";
+import { type Gender } from "@/types/models";
 import { useModalHistoryBack } from "@/hooks/useModalHistoryBack";
 
 type GenderType = Gender | null;

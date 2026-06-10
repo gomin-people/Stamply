@@ -5,7 +5,7 @@ export type QrCodeType = "MISSION" | "ENTRY" | "REWARD";
 export type Gender = "MALE" | "FEMALE" | "UNKNOWN";
 
 // 행사 API 응답 타입
-export type StamplyEvent = {
+export type EventModel = {
   id: number;
   userId: string;
   title: string;
@@ -30,7 +30,7 @@ export type StamplyEvent = {
 };
 
 // 미션 API 응답 타입
-export type Mission = {
+export type MissionModel = {
   id: number;
   eventsId: number;
   title: string;
@@ -41,18 +41,21 @@ export type Mission = {
   updatedAt: string;
 };
 
-// QR 코드 API 응답 타입
-export type QrCode = {
+export interface QrCodeModelBase {
   id: number;
+  token: string;
+}
+
+// QR 코드 API 응답 타입
+export interface QrCodeModel extends QrCodeModelBase {
   eventsId: number;
   missionsId: number | null;
   type: QrCodeType;
-  token: string;
   createdAt: string;
-};
+}
 
 // 참여자 API 응답 타입
-export type Participant = {
+export type ParticipantModel = {
   id: number;
   eventsId: number;
   userId: string | null;
@@ -64,7 +67,7 @@ export type Participant = {
 };
 
 // 미션 완료 API 응답 타입
-export type MissionCompletion = {
+export type MissionCompletionModel = {
   id: number;
   eventsId: number;
   missionsId: number;
@@ -73,7 +76,7 @@ export type MissionCompletion = {
 };
 
 // 행사 생성 요청 타입
-export type EventCreatePayload = {
+export type EventCreatePayloadModel = {
   title: string;
   startDate: string;
   endDate: string;
@@ -94,10 +97,10 @@ export type EventCreatePayload = {
 };
 
 // 행사 수정 요청 타입
-export type EventUpdatePayload = Partial<EventCreatePayload>;
+export type EventUpdatePayloadModel = Partial<EventCreatePayloadModel>;
 
 // 미션 생성 요청 타입
-export type MissionCreatePayload = {
+export type MissionCreatePayloadModel = {
   title: string;
   description?: string | null;
   sortOrder?: number;
@@ -105,11 +108,20 @@ export type MissionCreatePayload = {
 };
 
 // 미션 수정 요청 타입
-export type MissionUpdatePayload = Partial<MissionCreatePayload>;
+export type MissionUpdatePayloadModel = Partial<MissionCreatePayloadModel>;
 
 // 설문 저장 요청 타입
-export type SurveyPayload = {
+export type SurveyPayloadModel = {
   gender?: Gender | null;
   ageRange?: string | null;
   isRewardClaimed?: boolean;
 };
+
+export interface AdminMissionDetail extends MissionModel {
+  qrCodes: QrCodeModel[] | null;
+}
+
+export interface AdminUserModel {
+  id: string;
+  name: string;
+}

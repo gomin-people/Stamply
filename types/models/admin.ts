@@ -3,7 +3,7 @@ export interface AdminUserModel {
   name: string;
 }
 
-export interface QrCodeModel {
+export interface QrCodeModelBase {
   id: number;
   token: string;
 }
@@ -20,5 +20,5 @@ export interface MissionModel {
 }
 
 export interface AdminMissionDetail extends MissionModel {
-  qrCodes: QrCodeModel[] | null;
+  qrCodes: QrCodeModelBase[] | null;
 }

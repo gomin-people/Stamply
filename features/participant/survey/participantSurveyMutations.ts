@@ -2,13 +2,10 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
-import {
-  type Participant,
-  type SurveyPayload,
-} from "@/features/shared/types/stamply";
+import { type ParticipantModel, type SurveyPayloadModel } from "@/types/models";
 
-function submitParticipantSurvey(payload: SurveyPayload) {
-  return requestJson<Participant>(
+function submitParticipantSurvey(payload: SurveyPayloadModel) {
+  return requestJson<ParticipantModel>(
     "/api/v1/participant/survey",
     createJsonRequest("POST", payload)
   );

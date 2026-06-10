@@ -1,5 +1,5 @@
 import { requestJson, resolveRequest } from "@/features/shared/api/http";
-import type { AdminMissionDetail } from "@/types/models/admin";
+import type { AdminMissionDetail } from "@/types/models";
 
 export async function fetchAdminMissions(
   eventId: number

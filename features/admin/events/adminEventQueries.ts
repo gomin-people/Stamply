@@ -3,21 +3,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { requestJson, resolveRequest } from "@/features/shared/api/http";
 import {
-  type Mission,
-  type QrCode,
-  type StamplyEvent,
-} from "@/features/shared/types/stamply";
+  type MissionModel,
+  type QrCodeModel,
+  type EventModel,
+} from "@/types/models";
 
 // 어드민 행사 상세 응답 타입
-type AdminEventDetail = StamplyEvent & {
-  missions: Mission[];
-  qrCodes: QrCode[];
+type AdminEventDetail = EventModel & {
+  missions: MissionModel[];
+  qrCodes: QrCodeModel[];
   participantCount: number;
 };
 
 // 행사 대시보드 응답 타입
 type EventDashboard = {
-  event: StamplyEvent;
+  event: EventModel;
   summary: {
     missionCount: number;
     activeMissionCount: number;
@@ -27,14 +27,14 @@ type EventDashboard = {
     completionRate: number;
   };
   missions: Array<
-    Pick<Mission, "id" | "title" | "sortOrder" | "isActive"> & {
+    Pick<MissionModel, "id" | "title" | "sortOrder" | "isActive"> & {
       completedCount: number;
     }
   >;
 };
 
 function getAdminEvents() {
-  return requestJson<StamplyEvent[]>("/api/v1/admin/events");
+  return requestJson<EventModel[]>("/api/v1/admin/events");
 }
 
 export async function fetchAdminEvent(

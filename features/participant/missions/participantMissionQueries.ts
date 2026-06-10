@@ -2,12 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { requestJson } from "@/features/shared/api/http";
-import {
-  type Mission,
-  type Participant,
-} from "@/features/shared/types/stamply";
+import { type MissionModel, type ParticipantModel } from "@/types/models";
 
-export type ParticipantMission = Mission & {
+export type ParticipantMission = MissionModel & {
   isCompleted: boolean;
   completedAt: string | null;
   token?: string | null;
@@ -15,7 +12,7 @@ export type ParticipantMission = Mission & {
 
 // 참여자 미션 진행률 응답 타입
 export type ParticipantMissions = {
-  participant: Participant;
+  participant: ParticipantModel;
   missions: ParticipantMission[];
   summary: {
     totalCount: number;

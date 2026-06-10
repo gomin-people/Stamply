@@ -3,16 +3,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { requestJson } from "@/features/shared/api/http";
 import {
-  type Participant,
-  type QrCode,
-  type StamplyEvent,
-} from "@/features/shared/types/stamply";
+  type ParticipantModel,
+  type QrCodeModel,
+  type EventModel,
+} from "@/types/models";
 
 // 입장 QR 처리 응답 타입
 type EntryResult = {
-  event: StamplyEvent;
-  participant: Participant;
-  qrCode: QrCode;
+  event: EventModel;
+  participant: ParticipantModel;
+  qrCode: QrCodeModel;
 };
 
 // 행사 입장 mutation 요청 변수 타입
