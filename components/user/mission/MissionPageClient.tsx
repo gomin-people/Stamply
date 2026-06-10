@@ -139,7 +139,7 @@ const MissionPageClient = ({
               : "pb-28"
       )}
     >
-      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 overflow-x-hidden">
+      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 pb-3 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
           <h1 className="text-4xl font-nanum font-extrabold leading-11.25 text-gomin-primary-700 tracking-tight select-none">
@@ -191,7 +191,7 @@ const MissionPageClient = ({
             </div>
           ) : viewMode === "grid" ? (
             /* 스탬프 뷰: 격자형 정사각형 카드 */
-            <div className="grid grid-cols-2 gap-4 pb-2">
+            <div className="grid grid-cols-2 gap-4">
               {missions.map((mission) => (
                 <MissionStamp
                   key={mission.id}
