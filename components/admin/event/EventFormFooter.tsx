@@ -2,6 +2,7 @@
 
 import { Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/utils";
 
 type Mode = "view" | "edit";
 
@@ -15,7 +16,7 @@ type EventFormFooterProps = {
 };
 
 const outlineButton =
-  "gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-black transition-transform hover:-translate-y-0.5 active:translate-y-0";
+  "gap-1.5 rounded-xl border-gomin-neutral-200 px-5.5 py-3 text-sm font-medium text-gomin-neutral-500 transition-transform hover:-translate-y-0.5 active:translate-y-0";
 
 const primaryButton =
   "gap-1.5 rounded-xl bg-gomin-primary-700 bg-clip-border px-5.5 py-3 text-sm font-medium shadow-[0px_6px_16px_-6px_rgba(84,53,235,0.6)] transition-all hover:-translate-y-0.5 hover:bg-gomin-primary-700/90 hover:shadow-[0px_8px_20px_-6px_rgba(84,53,235,0.7)] active:translate-y-0";
@@ -35,7 +36,7 @@ const EventFormFooter = ({
           type="button"
           variant="outline"
           size={null}
-          className={`${outlineButton} border-gomin-primary-300 text-gomin-primary-700 hover:text-gomin-primary-700`}
+          className={outlineButton}
           onClick={onDeleteClick}
         >
           삭제하기
@@ -47,7 +48,10 @@ const EventFormFooter = ({
           type="button"
           variant="outline"
           size={null}
-          className={outlineButton}
+          className={cn(
+            outlineButton,
+            "border-gomin-primary-300 text-gomin-primary-700 hover:text-gomin-primary-700"
+          )}
           onClick={onEditStart}
         >
           수정하기
