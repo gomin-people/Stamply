@@ -70,7 +70,7 @@ export default function CreateEventPage() {
               onPrev={handlePrev}
               onNext={handleNext}
               onComplete={handleComplete}
-              completeTooltip="행사 등록 하기!"
+              completeTooltip="행사 등록하기!"
             />
           </div>
         </div>
