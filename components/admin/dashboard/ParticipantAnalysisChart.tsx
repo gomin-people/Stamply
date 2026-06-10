@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -18,8 +20,9 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { cn } from "@/utils";
+import { getRankedBarColors } from "@/components/admin/dashboard/rankedBarColors";
 
-type AnalysisView = "daily" | "hourlyTotal" | "hourlyDate";
+type AnalysisView = "daily" | "hourly";
 
 type DailyParticipantData = {
   label: string;
@@ -52,9 +55,11 @@ const analysisTabs: {
   label: string;
 }[] = [
   { value: "daily", label: "날짜별" },
-  { value: "hourlyTotal", label: "시간대별(전체)" },
-  { value: "hourlyDate", label: "시간대별(날짜)" },
+  { value: "hourly", label: "시간대별" },
 ];
+
+const HOURLY_TOTAL_OPTION_VALUE = "total";
+const ADMIN_DASHBOARD_TIME_ZONE = "Asia/Seoul";
 
 const chartColor = "#5435EB";
 const chartSoftColor = "#C8BEFA";
@@ -84,55 +89,79 @@ const ParticipantAnalysisChart = ({
     () => daily.map((item) => item.label),
     [daily]
   );
-  const [selectedDate, setSelectedDate] = useState(() =>
-    getLastDateOption(eventDateOptions)
-  );
-  const selectedDateValue =
-    selectedDate !== "" && eventDateOptions.includes(selectedDate)
-      ? selectedDate
-      : getLastDateOption(eventDateOptions);
+  const [selectedHourlyFilter, setSelectedHourlyFilter] =
+    useState(getTodayDateOption);
+  const selectedHourlyFilterValue =
+    selectedHourlyFilter === HOURLY_TOTAL_OPTION_VALUE ||
+    eventDateOptions.includes(selectedHourlyFilter)
+      ? selectedHourlyFilter
+      : HOURLY_TOTAL_OPTION_VALUE;
   const hourlyTotalData = useMemo(
     () => withHourlyFill(hourlyTotal),
     [hourlyTotal]
   );
-  const selectedDateHourlyData = useMemo(
+  const selectedHourlyData = useMemo(
     () =>
-      getHourlyDataByDate(selectedDateValue, hourlyTotal, hourlyDateFactors),
-    [selectedDateValue, hourlyTotal, hourlyDateFactors]
+      selectedHourlyFilterValue === HOURLY_TOTAL_OPTION_VALUE
+        ? hourlyTotalData
+        : getHourlyDataByDate(
+            selectedHourlyFilterValue,
+            hourlyTotal,
+            hourlyDateFactors
+          ),
+    [selectedHourlyFilterValue, hourlyTotalData, hourlyTotal, hourlyDateFactors]
   );
 
   return (
-    <div className="flex h-full min-h-88 flex-col px-4 py-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-row items-end gap-3">
+    <div className="flex h-full min-h-88 min-w-0 flex-col px-4 py-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 flex-wrap items-end gap-x-3 gap-y-1">
           <h2 className="text-lg font-semibold text-gomin-black">
             참여자 수 분석
           </h2>
-          <p className="text-sm font-medium text-gomin-neutral-400">
+          <p className="min-w-0 truncate text-sm font-medium text-gomin-neutral-400">
             시간에 따른 참여 패턴 확인
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          {activeView === "hourlyDate" && (
-            <select
-              aria-label="날짜 선택"
-              value={selectedDateValue}
-              className="h-10 w-[88px] rounded-lg border border-gomin-neutral-100 bg-white px-3 text-xs font-semibold text-gomin-neutral-600 outline-none"
-              onChange={(event) => setSelectedDate(event.target.value)}
-            >
-              {eventDateOptions.map((date) => (
-                <option key={date} value={date}>
-                  {date}
-                </option>
-              ))}
-            </select>
-          )}
+        <div className="flex shrink-0 items-center gap-2">
+          <AnimatePresence initial={false}>
+            {activeView === "hourly" && (
+              <motion.div
+                key="hourly-filter"
+                className="relative"
+                initial={{ opacity: 0, x: 6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 6 }}
+                transition={{ duration: 0.16, ease: "easeOut" }}
+              >
+                <select
+                  aria-label="시간대별 범위 선택"
+                  value={selectedHourlyFilterValue}
+                  className="h-9 w-[80px] cursor-pointer appearance-none rounded-lg border border-gomin-neutral-100 bg-white px-3 pr-7 text-xs font-semibold text-gomin-neutral-600 outline-none"
+                  onChange={(event) =>
+                    setSelectedHourlyFilter(event.target.value)
+                  }
+                >
+                  <option value={HOURLY_TOTAL_OPTION_VALUE}>전체</option>
+                  {eventDateOptions.map((date) => (
+                    <option key={date} value={date}>
+                      {date}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  className="pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2 text-gomin-neutral-400"
+                  aria-hidden="true"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div
             role="tablist"
             aria-label="참여자 수 분석 보기"
-            className="grid h-10 w-[310px] grid-cols-3 rounded-lg bg-[#F4F4F4] p-1"
+            className="grid h-9 w-[150px] grid-cols-2 rounded-lg bg-[#F4F4F4] p-1"
           >
             {analysisTabs.map((tab) => (
               <button
@@ -141,14 +170,20 @@ const ParticipantAnalysisChart = ({
                 role="tab"
                 aria-selected={activeView === tab.value}
                 className={cn(
-                  "rounded-lg px-3 text-xs font-semibold text-gomin-neutral-400 transition",
+                  "relative cursor-pointer rounded-lg px-3 text-xs font-semibold text-gomin-neutral-400 transition",
                   "focus-visible:ring-2 focus-visible:ring-gomin-primary-300 focus-visible:outline-none",
-                  activeView === tab.value &&
-                    "bg-white text-gomin-black shadow-[0_1px_6px_rgba(0,0,0,0.08)]"
+                  activeView === tab.value && "text-gomin-black"
                 )}
                 onClick={() => setActiveView(tab.value)}
               >
-                {tab.label}
+                {activeView === tab.value && (
+                  <motion.span
+                    layoutId="participant-analysis-active-tab"
+                    className="absolute inset-0 rounded-lg bg-white shadow-[0_1px_6px_rgba(0,0,0,0.08)]"
+                    transition={{ type: "spring", stiffness: 450, damping: 34 }}
+                  />
+                )}
+                <span className="relative">{tab.label}</span>
               </button>
             ))}
           </div>
@@ -156,13 +191,21 @@ const ParticipantAnalysisChart = ({
       </div>
 
       <div className="mt-4 min-h-0 flex-1">
-        {activeView === "daily" && <DailyAreaChart data={daily} />}
-        {activeView === "hourlyTotal" && (
-          <HourlyBarChart data={hourlyTotalData} />
-        )}
-        {activeView === "hourlyDate" && (
-          <HourlyBarChart data={selectedDateHourlyData} />
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeView}
+            className="min-w-0"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.16, ease: "easeOut" }}
+          >
+            {activeView === "daily" && <DailyAreaChart data={daily} />}
+            {activeView === "hourly" && (
+              <HourlyBarChart data={selectedHourlyData} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -174,7 +217,7 @@ const DailyAreaChart = ({ data }: { data: DailyParticipantData[] }) => {
   return (
     <ChartContainer
       config={dailyChartConfig}
-      className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      className="aspect-auto h-[260px] min-w-0 [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
       initialDimension={{ width: 760, height: 260 }}
     >
       <AreaChart
@@ -250,7 +293,7 @@ const HourlyBarChart = ({ data }: { data: HourlyParticipantBarData[] }) => {
   return (
     <ChartContainer
       config={hourlyChartConfig}
-      className="aspect-auto h-[260px] [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
+      className="aspect-auto h-[260px] min-w-0 [&_.recharts-cartesian-axis-tick_text]:fill-gomin-neutral-400"
       initialDimension={{ width: 760, height: 260 }}
     >
       <BarChart
@@ -375,16 +418,30 @@ function getHourlyDataByDate(
   );
 }
 
-function getLastDateOption(dateOptions: string[]) {
-  return dateOptions[dateOptions.length - 1] ?? "";
+function getTodayDateOption() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: ADMIN_DASHBOARD_TIME_ZONE,
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(new Date());
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  return month && day ? `${month}/${day}` : HOURLY_TOTAL_OPTION_VALUE;
 }
 
 function withHourlyFill(
   data: HourlyParticipantData[]
 ): HourlyParticipantBarData[] {
-  return data.map((item) => ({
+  const colors = getRankedBarColors(data, (item) => item.count, {
+    darkColor: chartColor,
+    includeInScale: (value) => value > 0,
+    lightColor: chartSoftColor,
+  });
+
+  return data.map((item, index) => ({
     ...item,
-    fill: item.hour >= 17 && item.hour <= 20 ? chartColor : chartSoftColor,
+    fill: colors[index],
   }));
 }
 

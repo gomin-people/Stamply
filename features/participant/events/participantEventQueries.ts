@@ -2,10 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { requestJson } from "@/features/shared/api/http";
-import { type StamplyEvent } from "@/features/shared/types/stamply";
+import { type EventModel } from "@/types/models";
 
 function getParticipantEvent(eventId: number) {
-  return requestJson<StamplyEvent>(`/api/v1/participant/events/${eventId}`);
+  return requestJson<EventModel>(`/api/v1/participant/events/${eventId}`);
 }
 
 /**

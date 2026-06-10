@@ -23,7 +23,7 @@ type Props = {
 };
 
 const dashboardPanelClassName =
-  "rounded-xl border border-gomin-neutral-100 bg-white";
+  "min-w-0 rounded-xl border border-gomin-neutral-100 bg-white";
 
 const emptyKpis: AdminDashboardKpisResponse = {
   participants: { today: 0, total: 0 },
@@ -55,7 +55,7 @@ const dashboardCardMeta: {
   {
     key: "missionInProgress",
     title: "미션 진행 중",
-    info: "오늘 미션 진행 중 참여자 수 / 오늘 참여자 수. 미션 전체 완료자는 제외합니다.",
+    info: "오늘 미션 진행 중 참여자 수 / 오늘 참여자 수 (미션 전체 완료자 제외)",
     icon: <Zap className="size-6" aria-hidden="true" />,
     colorClassNames: {
       icon: "bg-[#FFF1D6] text-[#F59E0B]",
@@ -134,7 +134,7 @@ const DashboardClient = ({ eventId }: Props) => {
 
   return (
     <div className="px-8 pt-0">
-      <div className="grid grid-cols-4 gap-4 mt-8">
+      <div className="mt-8 grid grid-cols-4 gap-4">
         {dashboardCardMeta.map((card) => (
           <DashboardKpiCard
             key={card.key}
@@ -148,7 +148,7 @@ const DashboardClient = ({ eventId }: Props) => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4">
-        <div className="col-span-8 flex flex-col gap-4">
+        <div className="col-span-8 flex min-w-0 flex-col gap-4">
           <section
             aria-label="참여자 수 분석"
             className={`${dashboardPanelClassName} overflow-hidden`}
@@ -172,7 +172,7 @@ const DashboardClient = ({ eventId }: Props) => {
           </section>
         </div>
 
-        <div className="col-span-4 flex flex-col gap-4">
+        <div className="col-span-4 flex min-w-0 flex-col gap-4">
           <section
             aria-label="미션별 완료 현황"
             className={`${dashboardPanelClassName} overflow-visible`}

@@ -30,7 +30,7 @@ export const formatPhoneNumber = (raw: string): string => {
 const INVISIBLE_CHARS_RE = /[\u200B\u200C\u200D\uFEFF\u3164\u180E\u00AD]/g;
 
 export const stripInvisibleChars = (str: string): string =>
-  str.replace(INVISIBLE_CHARS_RE, "");
+  str.replace(INVISIBLE_CHARS_RE, " ");
 
 export const isValidEmail = (value: string): boolean =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);

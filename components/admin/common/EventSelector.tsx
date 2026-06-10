@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { cn } from "@/utils";
 import { ADMIN_EVENT_REGISTER_PATH } from "@/constants/adminRoutes";
 import { AutoScrollText } from "@/components/admin/common/AutoScrollText";
@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
-import type { StamplyEvent } from "@/features/shared/types/stamply";
+import type { EventModel } from "@/types/models";
 import {
   useSetSelectedEventId,
   useIsEditMode,
@@ -57,7 +57,7 @@ const getLocalDateKey = () => {
 const getEventDateKey = (value: string) => value.slice(0, 10);
 
 const getEventStatus = (
-  event: Pick<StamplyEvent, "startDate" | "endDate">
+  event: Pick<EventModel, "startDate" | "endDate">
 ): AdminEventStatus => {
   const today = getLocalDateKey();
   const startDate = getEventDateKey(event.startDate);
@@ -94,8 +94,8 @@ const getEventSortPriority = (status: AdminEventStatus) => {
 
 // 현재 행사 선택 목록과 생성 취소 이동 대상에서 동일하게 사용하는 행사 노출 우선순위
 export const compareEventsByDisplayPriority = (
-  firstEvent: StamplyEvent,
-  secondEvent: StamplyEvent
+  firstEvent: EventModel,
+  secondEvent: EventModel
 ) => {
   const firstStatus = getEventStatus(firstEvent);
   const secondStatus = getEventStatus(secondEvent);
@@ -213,17 +213,13 @@ const EventSelector = ({ eventId }: Props) => {
             >
               {selectedEventLabel}
             </AutoScrollText>
-            {isEventMenuOpen ? (
-              <ChevronUp
-                className="size-4 shrink-0 text-gomin-primary-600"
-                aria-hidden="true"
-              />
-            ) : (
-              <ChevronDown
-                className="size-4 shrink-0 text-gomin-primary-600"
-                aria-hidden="true"
-              />
-            )}
+            <ChevronDown
+              className={cn(
+                "size-4 shrink-0 text-gomin-primary-600 transition-transform duration-200 ease-out motion-reduce:transition-none",
+                isEventMenuOpen && "rotate-180"
+              )}
+              aria-hidden="true"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent

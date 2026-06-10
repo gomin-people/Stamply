@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { Download, Printer, QrCode } from "lucide-react";
+import { Download, Printer } from "lucide-react";
+import { svgToPng } from "@/utils/qr";
 import QRCode from "react-qr-code";
 import {
   DialogContent,
@@ -21,37 +22,19 @@ type Props = {
 
 const QR_SIZE = 240;
 const QR_PADDING = 16;
-const QR_CANVAS_SIZE = QR_SIZE + QR_PADDING * 2;
 
 export default function QRDialog({ title, url, filename, description }: Props) {
   const svgRef = useRef<HTMLDivElement>(null);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const svgEl = svgRef.current?.querySelector("svg");
     if (!svgEl) return;
 
-    const svgStr = new XMLSerializer().serializeToString(svgEl);
-    const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-    const objectUrl = URL.createObjectURL(blob);
-    const img = new Image();
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = QR_CANVAS_SIZE;
-      canvas.height = QR_CANVAS_SIZE;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, QR_CANVAS_SIZE, QR_CANVAS_SIZE);
-      ctx.drawImage(img, QR_PADDING, QR_PADDING, QR_SIZE, QR_SIZE);
-      URL.revokeObjectURL(objectUrl);
-
-      const a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = filename;
-      a.click();
-    };
-
-    img.src = objectUrl;
+    const dataUrl = await svgToPng(svgEl, QR_SIZE, QR_PADDING);
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    a.click();
   };
 
   const handlePrint = () => {
@@ -95,18 +78,12 @@ export default function QRDialog({ title, url, filename, description }: Props) {
     <DialogContent className="sm:max-w-sm">
       <DialogHeader>
         <div className="flex items-start gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gomin-primary-600 text-white">
-            <QrCode className="size-6" />
-          </div>
           <div>
-            <p className="mb-1 text-xs font-medium text-gomin-primary-600">
-              QR 코드
-            </p>
             <DialogTitle className="text-xl font-bold text-gomin-black">
               {title}
             </DialogTitle>
             {description && (
-              <DialogDescription className="mt-1">
+              <DialogDescription className="mt-1 break-keep">
                 {description}
               </DialogDescription>
             )}

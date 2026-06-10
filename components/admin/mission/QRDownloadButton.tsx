@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import JSZip from "jszip";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -9,8 +10,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Download } from "lucide-react";
 import QRCode from "react-qr-code";
-import type { AdminMissionDetail } from "@/types/models/admin";
-import { getMissionCheckUrl } from "@/utils/qr";
+import type { AdminMissionDetail } from "@/types/models";
+import { getMissionCheckUrl, svgToPng } from "@/utils/qr";
 
 type Props = {
   missions: AdminMissionDetail[];
@@ -19,32 +20,6 @@ type Props = {
 
 const QR_SIZE = 256;
 const QR_PADDING = 16;
-const QR_CANVAS_SIZE = QR_SIZE + QR_PADDING * 2;
-
-function svgToPng(svgElement: SVGElement): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const svgStr = new XMLSerializer().serializeToString(svgElement);
-    const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = QR_CANVAS_SIZE;
-      canvas.height = QR_CANVAS_SIZE;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, QR_CANVAS_SIZE, QR_CANVAS_SIZE);
-      ctx.drawImage(img, QR_PADDING, QR_PADDING, QR_SIZE, QR_SIZE);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL("image/png"));
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("SVG 변환 실패"));
-    };
-    img.src = url;
-  });
-}
 
 export default function QRDownloadButton({
   missions,
@@ -59,32 +34,34 @@ export default function QRDownloadButton({
     if (!containerRef.current) return;
     setIsDownloading(true);
 
-    const targets: { token: string; filename: string }[] = missions.flatMap(
-      (mission) =>
-        (mission.qrCodes ?? []).map((qr) => ({
-          token: qr.token,
-          filename: `${mission.title}_${qr.id}.png`,
-        }))
+    const zip = new JSZip();
+
+    const targets = missions.flatMap((mission) =>
+      (mission.qrCodes ?? []).map((qr) => ({
+        token: qr.token,
+        filename: `${mission.title}_${qr.id}.png`,
+      }))
     );
 
-    for (let i = 0; i < targets.length; i++) {
-      const { token, filename } = targets[i];
+    for (const { token, filename } of targets) {
       const wrapper = containerRef.current.querySelector<HTMLDivElement>(
         `[data-token="${token}"]`
       );
       const svgEl = wrapper?.querySelector("svg");
       if (!svgEl) continue;
 
-      const dataUrl = await svgToPng(svgEl);
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = filename;
-      a.click();
-
-      if (i < targets.length - 1) {
-        await new Promise((r) => setTimeout(r, 300));
-      }
+      const dataUrl = await svgToPng(svgEl, QR_SIZE, QR_PADDING);
+      const base64 = dataUrl.split(",")[1];
+      zip.file(filename, base64, { base64: true });
     }
+
+    const blob = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mission_qr_codes.zip";
+    a.click();
+    URL.revokeObjectURL(url);
 
     setIsDownloading(false);
   };

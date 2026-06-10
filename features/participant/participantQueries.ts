@@ -2,11 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { requestJson } from "@/features/shared/api/http";
-import { type Participant } from "@/features/shared/types/stamply";
+import { type ParticipantModel } from "@/types/models";
 
 // 현재 참여자 조회 응답 타입
 type ParticipantState = {
-  participant: Participant;
+  participant: ParticipantModel;
 };
 
 function getParticipant() {

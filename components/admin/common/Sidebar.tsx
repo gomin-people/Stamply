@@ -9,7 +9,7 @@ import {
 import EventSelector, { compareEventsByDisplayPriority } from "./EventSelector";
 import SidebarNav from "./SidebarNav";
 import AdminUserInfo from "@/components/admin/common/AdminUserInfo";
-import StamplyLogo from "@/components/admin/common/StamplyLogo";
+import StamploLogo from "@/components/admin/common/StamploLogo";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
@@ -66,7 +66,7 @@ const Sidebar = () => {
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-gomin-neutral-100 bg-gomin-white px-4 py-5">
       <div className="ml-3">
-        <StamplyLogo />
+        <StamploLogo />
       </div>
 
       {eventId ? (

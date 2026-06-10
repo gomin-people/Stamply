@@ -3,7 +3,7 @@
 import { GripVertical, Pencil, Trash2, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import type { AdminMissionDetail } from "@/types/models/admin";
+import type { AdminMissionDetail } from "@/types/models";
 import type { Mission } from "@/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -12,7 +12,6 @@ type Props = {
   mission: AdminMissionDetail;
   index: number;
   disabled?: boolean;
-  qrDisabled?: boolean;
   onToggleActive: (missionId: number, checked: boolean) => void;
   onViewQR: (info: {
     title: string;
@@ -28,7 +27,6 @@ export default function MissionItem({
   mission,
   index,
   disabled = false,
-  qrDisabled = false,
   onToggleActive,
   onViewQR,
   onEdit,
@@ -75,6 +73,7 @@ export default function MissionItem({
         <Switch
           defaultChecked={mission.isActive}
           className="data-checked:bg-gomin-primary-600"
+          disabled={disabled}
           onCheckedChange={(checked) => onToggleActive(mission.id, checked)}
         />
       </div>
@@ -85,7 +84,7 @@ export default function MissionItem({
             key={qrCode.id}
             variant="outline"
             size="icon-sm"
-            disabled={qrDisabled}
+            disabled={disabled}
             onClick={() =>
               onViewQR({
                 title: mission.title,
@@ -104,6 +103,7 @@ export default function MissionItem({
         <Button
           variant="outline"
           size="icon-sm"
+          disabled={disabled}
           onClick={() => onEdit(mission)}
         >
           <Pencil />
@@ -112,6 +112,7 @@ export default function MissionItem({
           variant="outline"
           size="icon-sm"
           className="hover:text-destructive"
+          disabled={disabled}
           onClick={() => onDelete(mission)}
         >
           <Trash2 />

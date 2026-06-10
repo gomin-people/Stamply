@@ -13,6 +13,8 @@ import {
   type ParticipantMission,
   type ParticipantMissions,
 } from "@/features/participant/missions/participantMissionQueries";
+import { cn } from "@/utils";
+import { buildInitialData } from "@/utils/participant-mission";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
 type EventData = {
@@ -56,30 +58,9 @@ const MissionPageClient = ({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
-  // 서버에서 prefetch한 initialMissions를 initialData로 변환해 클라이언트 첫 API 호출을 차단한다.
-  // Mission 타입 필수 필드 중 서버 초기 응답에 없는 값은 기본값으로 채운다.
   const initialData: ParticipantMissions | undefined =
     !isPreview && initialMissions.length > 0
-      ? {
-          participant: {} as ParticipantMissions["participant"],
-          missions: initialMissions.map((m) => ({
-            id: m.id,
-            eventsId: 0,
-            title: m.title,
-            description: m.description,
-            sortOrder: 0,
-            isActive: true,
-            createdAt: "",
-            updatedAt: "",
-            isCompleted: m.isCompleted,
-            completedAt: null,
-            token: null,
-          })),
-          summary: {
-            totalCount: initialMissions.length,
-            completedCount: initialMissions.filter((m) => m.isCompleted).length,
-          },
-        }
+      ? buildInitialData(initialMissions)
       : undefined;
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
@@ -92,14 +73,12 @@ const MissionPageClient = ({
   // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
   const missions: ClientMission[] =
     data && !isPreview
-      ? (data.missions as ParticipantMission[]).map(
-          (m: ParticipantMission) => ({
-            id: m.id,
-            title: m.title,
-            description: m.description ?? "",
-            isStamped: m.isCompleted,
-          })
-        )
+      ? (data.missions as ParticipantMission[]).map((m) => ({
+          id: m.id,
+          title: m.title,
+          description: m.description ?? "",
+          isStamped: m.isCompleted,
+        }))
       : initialMissions.map((m: InitialMission) => ({
           id: m.id,
           title: m.title,
@@ -123,7 +102,9 @@ const MissionPageClient = ({
 
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
-  const showBrochureAndActionButtons = !hasError && !isMissionsEmpty;
+  const isShowEmpty = hasError || isMissionsEmpty;
+  const showBrochureButton = isPreview || !hasError;
+  const showMissionUI = isPreview || (showBrochureButton && !isMissionsEmpty);
 
   // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
@@ -147,21 +128,30 @@ const MissionPageClient = ({
 
   return (
     <div
-      className={`flex flex-col relative bg-gomin-white ${isPreview ? "h-full pb-20" : "min-h-screen pb-28"}`}
+      className={cn(
+        "flex flex-col relative bg-gomin-white",
+        isPreview
+          ? "h-full pb-20"
+          : isShowEmpty
+            ? "h-full overflow-hidden"
+            : viewMode === "list"
+              ? "min-h-screen pb-20"
+              : "pb-21.5"
+      )}
     >
-      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4">
+      <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 pb-1.5 overflow-x-hidden">
         {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
-          <h1 className="text-4xl font-nanum font-extrabold leading-[45px] text-gomin-primary-700 tracking-tight select-none">
+          <h1 className="text-4xl font-nanum font-extrabold leading-11.25 text-gomin-primary-700 tracking-tight select-none">
             {eventName}
           </h1>
           {/* 우측 별도 컴포넌트로 보여지는 브로슈어 버튼 */}
-          {showBrochureAndActionButtons && <BrochureButton eventId={eventId} />}
+          {showBrochureButton && <BrochureButton eventId={eventId} />}
         </div>
 
         {/* 3. 진행 상황 안내 문구 */}
-        {showBrochureAndActionButtons && (
-          <div className="mb-4 min-h-[56px] flex items-center">
+        {showMissionUI && (
+          <div className="mb-4 min-h-14 flex items-center">
             {!isAllCompleted ? (
               <h2 className="text-2xl font-nanum font-extrabold text-gomin-neutral-700 leading-tight tracking-tight select-none">
                 <span className="text-gomin-primary-700 font-nanum font-extrabold">
@@ -182,7 +172,7 @@ const MissionPageClient = ({
         )}
 
         {/* 4. UI 선택 토글 버튼 (리스트형 vs 격자형) */}
-        {showBrochureAndActionButtons && (
+        {showMissionUI && (
           <div className="flex justify-end mb-5">
             <ViewToggle viewMode={viewMode} onChange={setViewMode} />
           </div>
@@ -190,24 +180,13 @@ const MissionPageClient = ({
 
         {/* 5. 미션 뷰 렌더링 영역 */}
         <div className="transition-all duration-300">
-          {hasError ? (
-            /* 미션을 불러오는데 실패한 경우 Error State 처리 */
-            <div className="flex flex-col items-center justify-center py-20 text-center select-none">
-              <span className="text-4xl mb-4">⚠️</span>
-              <p className="text-gomin-neutral-500 font-sans font-bold text-[16px] leading-tight">
-                미션 목록을 불러오지 못했습니다.
-                <br />
-                네트워크 상태를 확인하고 다시 시도해 주세요.
+          {isShowEmpty ? (
+            <div className="flex flex-col items-center justify-center pb-20 pt-40 text-center select-none">
+              <p className="text-[128px] font-nanum font-extrabold text-gomin-primary-700 leading-none">
+                텅
               </p>
-            </div>
-          ) : isMissionsEmpty ? (
-            /* 등록된 미션이 없는 경우 Empty State 처리 */
-            <div className="flex flex-col items-center justify-center py-20 text-center select-none">
-              <span className="text-4xl mb-4">📭</span>
-              <p className="text-gomin-neutral-500 font-sans font-bold text-[16px] leading-tight">
-                등록된 미션이 없습니다.
-                <br />
-                관리자에게 문의해 주세요.
+              <p className="text-2xl font-nanum font-extrabold text-gomin-black mt-4">
+                이런.. 미션이 없어요..
               </p>
             </div>
           ) : viewMode === "grid" ? (
@@ -237,7 +216,7 @@ const MissionPageClient = ({
       </main>
 
       {/* 6. 하단 고정 플로팅 액션 버튼 */}
-      {showBrochureAndActionButtons && (
+      {showMissionUI && (
         <FloatingActionButton
           isAllCompleted={isAllCompleted}
           onClick={handleAction}

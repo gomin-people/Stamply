@@ -3,9 +3,9 @@
 import { forwardRef, useImperativeHandle, useState, useMemo } from "react";
 import { type StepFormHandle } from "@/types";
 import { generatePalette, hslToHex, hexToHsl } from "@/utils";
-import StampUploadSection from "./themestamp/StampUploadSection";
-import ThemeColorPicker from "./themestamp/ThemeColorPicker";
-import ThemePreviewPanel from "./themestamp/ThemePreviewPanel";
+import StampUploadSection from "./themeStamp/StampUploadSection";
+import ThemeColorPicker from "./themeStamp/ThemeColorPicker";
+import ThemePreviewPanel from "./themeStamp/ThemePreviewPanel";
 
 type InitialData = {
   stampImageUrl?: string | null;
@@ -76,6 +76,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle, Props>(
             onUploadingChange={setIsUploading}
             disabled={disabled}
           />
+          <hr className="border-gomin-neutral-100" />
           <ThemeColorPicker
             h={h}
             onHueChange={setH}

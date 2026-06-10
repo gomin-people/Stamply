@@ -2,11 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { requestJson } from "@/features/shared/api/http";
-import { type Participant } from "@/features/shared/types/stamply";
+import { type ParticipantModel } from "@/types/models";
 
 // 참여자 설문 상태 응답 타입
 type ParticipantSurvey = Pick<
-  Participant,
+  ParticipantModel,
   "gender" | "ageRange" | "isRewardClaimed"
 >;
 

@@ -23,7 +23,7 @@ const monomaniacOne = Monomaniac_One({
 });
 
 export const metadata: Metadata = {
-  title: "Stamply",
+  title: "Stamplo",
   description: "팝업스토어 디지털 스탬프 랠리 서비스",
 };
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import StamplyLogo from "@/components/admin/common/StamplyLogo";
+import StamploLogo from "@/components/admin/common/StamploLogo";
 
 const Section = ({
   title,
@@ -47,7 +47,7 @@ export default function Home() {
         {/* 헤더 */}
         <div className="flex flex-col items-center gap-3 py-6">
           <div className="text-center">
-            <StamplyLogo />
+            <StamploLogo />
             <p className="text-sm text-gomin-neutral-500 mt-1">테스트 가이드</p>
           </div>
         </div>
@@ -253,7 +253,7 @@ export default function Home() {
         </Section>
 
         <p className="text-center text-xs text-gomin-neutral-300 pb-4">
-          Stamply © 2026
+          Stamplo © 2026
         </p>
       </div>
     </div>

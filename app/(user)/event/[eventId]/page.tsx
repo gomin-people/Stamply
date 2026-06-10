@@ -12,8 +12,8 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
   const event = await getEntryEvent(eventId);
 
   return (
-    <main className="h-screen overflow-hidden bg-white flex justify-center">
-      <div className="w-full max-w-100.5 h-full flex flex-col items-center justify-center px-12 pb-10 min-h-0">
+    <main className="h-full overflow-hidden bg-white flex justify-center">
+      <div className="w-full max-w-100.5 h-full flex flex-col items-center justify-center px-12 pb-10 pt-14 min-h-0">
         <EventPoster
           src={event.posterImageUrl}
           width={300}
@@ -27,7 +27,7 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
           <ThemedButton className="w-full">시작하기</ThemedButton>
         </Link>
         <p className="font-sans text-sm font-bold leading-normal text-gomin-neutral-500 whitespace-nowrap pt-2.5">
-          powered by stamply
+          powered by stamplo
         </p>
       </div>
     </main>

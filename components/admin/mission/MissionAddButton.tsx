@@ -7,6 +7,7 @@ import { Dialog } from "@/components/ui/dialog";
 import MissionDialog from "@/components/admin/mission/MissionDialog";
 import { Mission } from "@/types";
 import { useCreateAdminMissionMutation } from "@/features/admin/missions/adminMissionMutations";
+import { adminMissionQueryOptions } from "@/features/admin/missions/adminMissionQueries";
 import { useParams } from "next/navigation";
 
 type Props = {
@@ -23,9 +24,7 @@ export default function MissionAddButton({ disabled }: Props) {
   const handleSave = async (payload: Mission): Promise<void> => {
     try {
       await createAdminMissionAsync({ eventId, payload });
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "events", eventId, "missions"],
-      });
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
     } finally {

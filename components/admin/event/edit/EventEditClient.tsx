@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/dialog";
 import EventFormStepper from "@/components/admin/event/EventFormStepper";
+import StepNavButtons from "@/components/admin/event/StepNavButtons";
 import EventFormFooter from "@/components/admin/event/EventFormFooter";
 import EventInfoForm from "@/components/admin/event/EventInfoForm";
 import EventBrochureForm from "@/components/admin/event/EventBrochureForm";
@@ -12,6 +13,7 @@ import EventThemeStampForm from "@/components/admin/event/EventThemeStampForm";
 import EntryQrCard from "@/components/admin/event/edit/EntryQrCard";
 import EventEditCancelDialog from "@/components/admin/event/edit/EventEditCancelDialog";
 import EventDeleteDialog from "@/components/admin/event/edit/EventDeleteDialog";
+import EventDeleteContactDialog from "@/components/admin/event/edit/EventDeleteContactDialog";
 import { type StepFormHandle } from "@/types";
 import {
   useAdminEventQuery,
@@ -21,7 +23,7 @@ import {
   useUpdateEventMutation,
   useDeleteEventMutation,
 } from "@/features/admin/events/adminEventMutations";
-import type { EventUpdatePayload } from "@/features/shared/types/stamply";
+import type { EventUpdatePayloadModel } from "@/types/models";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { getEventOperationStatus } from "@/utils/event-status";
 import {
@@ -41,6 +43,7 @@ export default function EventEditClient() {
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteContactDialogOpen, setDeleteContactDialogOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
   const setIsEditMode = useSetIsEditMode();
@@ -59,11 +62,9 @@ export default function EventEditClient() {
   const { mutateAsync: updateEvent, isPending } = useUpdateEventMutation();
   const { mutateAsync: deleteEvent } = useDeleteEventMutation();
 
-  const operationStatus = event
+  const { isAfter, isDuring } = event
     ? getEventOperationStatus(event.startDate, event.endDate)
-    : null;
-  const isAfter = operationStatus === "after";
-  const isDuring = operationStatus === "during";
+    : { isAfter: false, isDuring: false };
 
   const step1Ref = useRef<StepFormHandle>(null);
   const step2Ref = useRef<StepFormHandle>(null);
@@ -125,7 +126,7 @@ export default function EventEditClient() {
       ...step1Data,
       ...step2Data,
       ...step3Data,
-    } as EventUpdatePayload;
+    } as EventUpdatePayloadModel;
 
     try {
       await updateEvent({ eventId: eventIdNum, payload });
@@ -155,7 +156,17 @@ export default function EventEditClient() {
         )}
 
         <div className="rounded-xl border border-gomin-neutral-100 bg-white">
-          <EventFormStepper currentStep={currentStep} />
+          <div className="flex flex-col">
+            <EventFormStepper currentStep={currentStep} />
+            <hr className="border-gomin-neutral-100" />
+            <div className="flex justify-end px-8 pt-4">
+              <StepNavButtons
+                currentStep={currentStep}
+                onPrev={handlePrev}
+                onNext={currentStep === TOTAL_STEPS ? undefined : handleNext}
+              />
+            </div>
+          </div>
 
           <div className="p-6">
             <div className={currentStep !== 1 ? "hidden" : ""}>
@@ -213,12 +224,8 @@ export default function EventEditClient() {
 
           <div className="px-6 pb-4">
             <EventFormFooter
-              currentStep={currentStep}
-              totalSteps={TOTAL_STEPS}
-              onPrev={handlePrev}
-              onNext={handleNext}
-              isLastStep={currentStep === TOTAL_STEPS}
               mode={mode}
+              onDeleteClick={() => setDeleteContactDialogOpen(true)}
               onEditStart={isAfter ? undefined : handleEditStart}
               onEditCancel={handleEditCancel}
               onEditSave={handleEditSave}
@@ -234,6 +241,13 @@ export default function EventEditClient() {
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <EventDeleteDialog onConfirm={handleDeleteConfirm} />
+      </Dialog>
+
+      <Dialog
+        open={deleteContactDialogOpen}
+        onOpenChange={setDeleteContactDialogOpen}
+      >
+        <EventDeleteContactDialog />
       </Dialog>
 
       <Dialog open={!!pendingHref} onOpenChange={handleLeaveDialogClose}>

@@ -3,28 +3,28 @@
 import { useMutation } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import {
-  type Mission,
-  type MissionCreatePayload,
-  type MissionUpdatePayload,
-  type QrCode,
-} from "@/features/shared/types/stamply";
+  type MissionModel,
+  type MissionCreatePayloadModel,
+  type MissionUpdatePayloadModel,
+  type QrCodeModel,
+} from "@/types/models";
 
 // 미션 생성 응답 타입
-type CreatedAdminMission = Mission & {
-  qrCode: QrCode;
+type CreatedAdminMission = MissionModel & {
+  qrCode: QrCodeModel;
 };
 
 // 미션 생성 mutation 요청 변수 타입
 type CreateMissionVariables = {
   eventId: number;
-  payload: MissionCreatePayload;
+  payload: MissionCreatePayloadModel;
 };
 
 // 미션 수정 mutation 요청 변수 타입
 type UpdateMissionVariables = {
   eventId: number;
   missionId: number;
-  payload: MissionUpdatePayload;
+  payload: MissionUpdatePayloadModel;
 };
 
 // 미션 삭제 mutation 요청 변수 타입
@@ -48,7 +48,7 @@ type ReorderMissionsVariables = {
  */
 function createAdminEventMission(
   eventId: number,
-  payload: MissionCreatePayload
+  payload: MissionCreatePayloadModel
 ) {
   return requestJson<CreatedAdminMission>(
     `/api/v1/admin/events/${eventId}/missions`,
@@ -67,9 +67,9 @@ function createAdminEventMission(
 function updateAdminEventMission(
   eventId: number,
   missionId: number,
-  payload: MissionUpdatePayload
+  payload: MissionUpdatePayloadModel
 ) {
-  return requestJson<Mission>(
+  return requestJson<MissionModel>(
     `/api/v1/admin/events/${eventId}/missions/${missionId}`,
     createJsonRequest("PATCH", payload)
   );

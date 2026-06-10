@@ -28,14 +28,11 @@ export default function MissionDeleteDialog({ mission, onDelete }: Props) {
   return (
     <DialogContent className="sm:max-w-lg" showCloseButton={false}>
       <DialogHeader>
-        <p className="mb-1 text-xs font-medium text-gomin-primary-600">
-          미션 삭제
-        </p>
         <DialogTitle className="text-xl font-bold text-gomin-black">
-          &quot;{mission.title}&quot;를 삭제하시겠습니까?
+          미션 삭제
         </DialogTitle>
         <DialogDescription className="mt-1">
-          삭제된 미션은 복구할 수 없습니다.
+          &quot;{mission.title}&quot;를 삭제하시겠습니까?
         </DialogDescription>
       </DialogHeader>
 

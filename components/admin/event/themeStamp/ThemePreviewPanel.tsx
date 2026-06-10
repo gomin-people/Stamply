@@ -32,12 +32,12 @@ const PREVIEW_MISSIONS = [
 /**
  * 실시간 모바일 참가자 화면 미리보기 패널 컴포넌트
  */
-export default function ThemePreviewPanel({ stampImage, palette }: Props) {
+const ThemePreviewPanel = ({ stampImage, palette }: Props) => {
   // preview용 props 객체들의 참조 고정 (React.memo 최적화 매칭)
   const previewEvent = useMemo(
     () => ({
       id: 0,
-      title: "Stamply",
+      title: "Stamplo",
       stampImageUrl: stampImage,
     }),
     [stampImage]
@@ -56,7 +56,7 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
   } as React.CSSProperties;
 
   return (
-    <div className="w-full lg:w-[320px] bg-[#EBE7FD]/50 h-[650px] p-5 rounded-[28px] flex flex-col items-center justify-center shadow-inner border border-[#E1DBFA]">
+    <div className="w-full lg:w-[320px] bg-[#EBE7FD]/50 h-162.5 p-5 rounded-[28px] flex flex-col items-center justify-center shadow-inner border border-[#E1DBFA]">
       {/* 참가자 화면 미리보기 뱃지 */}
       <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[11px] font-extrabold text-[#5435EB] shadow-sm mb-4 select-none border border-[#ECE7FC]">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -65,7 +65,7 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
 
       {/* 모바일 폰 프레임 */}
       <div
-        className="preview-mobile-frame w-[240px] h-fit bg-white rounded-[32px] shadow-2xl border-[5px] border-white overflow-hidden relative flex items-center justify-center pointer-events-none select-none"
+        className="preview-mobile-frame w-60 h-fit bg-white rounded-[32px] shadow-2xl border-[5px] border-white overflow-hidden relative flex items-center justify-center pointer-events-none select-none"
         style={previewThemeVars}
       >
         {/* 표준 모바일 규격 해상도로 1:1 렌더링 후 zoom으로 물리적 리사이징 축소 */}
@@ -92,4 +92,6 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
       </p>
     </div>
   );
-}
+};
+
+export default ThemePreviewPanel;

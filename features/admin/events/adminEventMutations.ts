@@ -4,32 +4,32 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
 import { toSnakeKeys } from "@/utils/case";
 import {
-  type EventCreatePayload,
-  type EventUpdatePayload,
-  type QrCode,
-  type StamplyEvent,
-} from "@/features/shared/types/stamply";
+  type EventCreatePayloadModel,
+  type EventUpdatePayloadModel,
+  type QrCodeModel,
+  type EventModel,
+} from "@/types/models";
 
 // 행사 생성 응답 타입
-type CreatedEvent = StamplyEvent & {
-  qrCodes: QrCode[];
+type CreatedEvent = EventModel & {
+  qrCodes: QrCodeModel[];
 };
 
 // 행사 수정 mutation 요청 변수 타입
 type UpdateEventVariables = {
   eventId: number;
-  payload: EventUpdatePayload;
+  payload: EventUpdatePayloadModel;
 };
 
-function createAdminEvent(payload: EventCreatePayload) {
+function createAdminEvent(payload: EventCreatePayloadModel) {
   return requestJson<CreatedEvent>(
     "/api/v1/admin/events",
     createJsonRequest("POST", toSnakeKeys(payload))
   );
 }
 
-function updateAdminEvent(eventId: number, payload: EventUpdatePayload) {
-  return requestJson<StamplyEvent>(
+function updateAdminEvent(eventId: number, payload: EventUpdatePayloadModel) {
+  return requestJson<EventModel>(
     `/api/v1/admin/events/${eventId}`,
     createJsonRequest("PATCH", toSnakeKeys(payload))
   );
@@ -57,7 +57,7 @@ export function useCreateEventMutation() {
         queryKey: ["admin", "events", "list"],
       });
 
-      queryClient.setQueryData<StamplyEvent[]>(
+      queryClient.setQueryData<EventModel[]>(
         ["admin", "events", "list"],
         (events = []) => {
           const hasCreatedEvent = events.some(
