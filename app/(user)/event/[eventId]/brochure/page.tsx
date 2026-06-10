@@ -4,15 +4,17 @@ import { redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{ eventId: string }>;
+  searchParams: Promise<{ from?: string }>;
 };
 
-const BrochurePage = async ({ params }: Props) => {
+const BrochurePage = async ({ params, searchParams }: Props) => {
   const { eventId } = await params;
+  const { from } = await searchParams;
 
   const event = await getEntryEvent(eventId);
 
   if (!event.brochureImageUrl?.length) {
-    redirect(`/event/${eventId}/detail`);
+    redirect(`/event/${eventId}/${from === "mission" ? "detail" : "mission"}`);
   }
 
   return <BrochureClient images={event.brochureImageUrl} />;
