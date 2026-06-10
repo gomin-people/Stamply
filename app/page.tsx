@@ -253,7 +253,7 @@ export default function Home() {
         </Section>
 
         <p className="text-center text-xs text-gomin-neutral-300 pb-4">
-          Stamply © 2026
+          Stamplo © 2026
         </p>
       </div>
     </div>
