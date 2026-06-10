@@ -23,15 +23,12 @@ type Props = {
 
 export default function MissionClient({ eventId }: Props) {
   const [filter, setFilter] = useState("all");
-  const [isReordering, setIsReordering] = useState(false);
 
   const {
     data: missions,
     isError,
     refetch,
-    isFetching,
   } = useQuery(adminMissionQueryOptions.list(eventId));
-  const isDisabled = isReordering || isFetching;
 
   const { data: event } = useAdminEventQuery(eventId);
 
@@ -57,7 +54,7 @@ export default function MissionClient({ eventId }: Props) {
     <div className="p-8">
       <div className="bg-white border rounded-xl border-gomin-neutral-100">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gomin-neutral-100">
-          <MissionFilter toggleValue={handleToggle} disabled={isDisabled} />
+          <MissionFilter toggleValue={handleToggle} />
           <div className="flex items-center gap-2">
             <MissionAddButton disabled={isMissionCountOver || isAfter} />
             <QRDownloadButton missions={filteredMissions} disabled={isAfter} />
@@ -85,12 +82,7 @@ export default function MissionClient({ eventId }: Props) {
             </Button>
           </div>
         ) : (
-          <MissionList
-            missions={filteredMissions ?? []}
-            isFetching={isDisabled}
-            isAfter={isAfter}
-            onReorderingChange={setIsReordering}
-          />
+          <MissionList missions={filteredMissions ?? []} disabled={isAfter} />
         )}
       </div>
     </div>

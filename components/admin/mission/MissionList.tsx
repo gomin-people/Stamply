@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import type { AdminMissionDetail } from "@/types/models";
 import MissionItem from "@/components/admin/mission/MissionItem";
@@ -14,9 +14,7 @@ import {
   useReorderAdminMissionsMutation,
   useUpdateAdminMissionMutation,
 } from "@/features/admin/missions/adminMissionMutations";
-import { adminMissionQueryOptions } from "@/features/admin/missions/adminMissionQueries";
 import { useParams } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   DndContext,
   DragEndEvent,
@@ -32,27 +30,15 @@ import {
 
 type Props = {
   missions: AdminMissionDetail[];
-  isFetching?: boolean;
-  isAfter?: boolean;
-  onReorderingChange?: (isReordering: boolean) => void;
+  disabled?: boolean;
 };
 
-export default function MissionList({
-  missions,
-  isFetching,
-  isAfter = false,
-  onReorderingChange,
-}: Props) {
-  const [prevMissions, setPrevMissions] = useState(missions);
-  const [items, setItems] = useState<AdminMissionDetail[]>(() =>
-    [...missions].sort((a, b) => a.sortOrder - b.sortOrder)
+export default function MissionList({ missions, disabled = false }: Props) {
+  const sortedMissions = useMemo(
+    () => [...missions].sort((a, b) => a.sortOrder - b.sortOrder),
+    [missions]
   );
 
-  // missions prop이 바뀌면 렌더 중 동기 업데이트 (useEffect 대신 권장 패턴)
-  if (prevMissions !== missions) {
-    setPrevMissions(missions);
-    setItems([...missions].sort((a, b) => a.sortOrder - b.sortOrder));
-  }
   const [editingMission, setEditingMission] =
     useState<AdminMissionDetail | null>(null);
   const [deletingMission, setDeletingMission] = useState<Mission | null>(null);
@@ -67,10 +53,9 @@ export default function MissionList({
     useDeleteAdminMissionMutation();
   const { mutateAsync: updateAdminMissionAsync } =
     useUpdateAdminMissionMutation();
-  const { mutateAsync: reorderAdminMissionsAsync, isPending: isReordering } =
+  const { mutateAsync: reorderAdminMissionsAsync } =
     useReorderAdminMissionsMutation();
   const eventId = Number(useParams().eventId);
-  const queryClient = useQueryClient();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -79,34 +64,20 @@ export default function MissionList({
     })
   );
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
-
-    const oldIndex = items.findIndex((m) => m.id === active.id);
-    const newIndex = items.findIndex((m) => m.id === over.id);
-    const reordered = arrayMove(items, oldIndex, newIndex);
-
-    setItems(reordered); // 낙관적 업데이트
-    onReorderingChange?.(true);
-    try {
-      await reorderAdminMissionsAsync({
-        eventId,
-        missionIds: reordered.map((m) => m.id),
-      });
-      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
-    } catch (e) {
-      console.error(e);
-      setItems(items); // 실패 시 롤백
-    } finally {
-      onReorderingChange?.(false);
-    }
+    const oldIndex = sortedMissions.findIndex((m) => m.id === active.id);
+    const newIndex = sortedMissions.findIndex((m) => m.id === over.id);
+    const reordered = arrayMove(sortedMissions, oldIndex, newIndex);
+    reorderAdminMissionsAsync({
+      eventId,
+      missionIds: reordered.map((m) => m.id),
+    });
   };
 
   const handleDelete = async (missionId: number) => {
     try {
       await deleteAdminMissionAsync({ eventId, missionId });
-      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
     } finally {
@@ -114,17 +85,12 @@ export default function MissionList({
     }
   };
 
-  const handleToggleActive = async (missionId: number, checked: boolean) => {
-    try {
-      await updateAdminMissionAsync({
-        eventId,
-        missionId,
-        payload: { isActive: checked },
-      });
-      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
-    } catch (e) {
-      console.error(e);
-    }
+  const handleToggleActive = (missionId: number, checked: boolean) => {
+    updateAdminMissionAsync({
+      eventId,
+      missionId,
+      payload: { isActive: checked },
+    });
   };
 
   const handleSave = async (mission: Mission) => {
@@ -135,7 +101,6 @@ export default function MissionList({
         missionId: mission.id,
         payload: { title: mission.title, description: mission.description },
       });
-      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
     } catch (e) {
       console.error(e);
     } finally {
@@ -143,7 +108,7 @@ export default function MissionList({
     }
   };
 
-  if (items.length === 0) {
+  if (sortedMissions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-gomin-neutral-400">
         <p className="text-sm">미션을 추가해주세요.</p>
@@ -155,15 +120,15 @@ export default function MissionList({
     <>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={items.map((m) => m.id)}
+          items={sortedMissions.map((m) => m.id)}
           strategy={verticalListSortingStrategy}
         >
-          {items.map((mission, index) => (
+          {sortedMissions.map((mission, index) => (
             <MissionItem
               key={mission.id}
               mission={mission}
               index={index}
-              disabled={isReordering || isFetching || isAfter}
+              disabled={disabled}
               onToggleActive={handleToggleActive}
               onViewQR={setViewingQR}
               onEdit={setEditingMission}
