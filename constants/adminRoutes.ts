@@ -45,6 +45,10 @@ export const adminRoutes: AdminRouteConfig[] = [
     },
   },
   {
+    pattern: ADMIN_EVENT_REGISTER_PATH,
+    title: "",
+  },
+  {
     pattern: ADMIN_EVENT_DETAIL_PATH,
     title: "행사 상세",
     description: [
@@ -72,16 +76,6 @@ export const adminRoutes: AdminRouteConfig[] = [
     sidebar: {
       icon: Target,
     },
-  },
-  {
-    pattern: ADMIN_EVENT_REGISTER_PATH,
-    title: "행사 등록",
-    description: [
-      {
-        type: "text",
-        text: "새로운 팝업 스탬프 투어를 등록합니다. 모든 정보는 저장 후에도 수정 가능합니다.",
-      },
-    ],
   },
 ];
 

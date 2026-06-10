@@ -20,15 +20,15 @@ type Props = {
   currentStep: number;
 };
 
-export default function EventFormStepper({ currentStep }: Props) {
-  const items: React.ReactNode[] = [];
+const EventFormStepper = ({ currentStep }: Props) => {
+  const stepItems: React.ReactNode[] = [];
 
   STEPS.forEach((step, index) => {
     const isActive = step.number === currentStep;
     const isCompleted = step.number < currentStep;
 
     if (index > 0) {
-      items.push(
+      stepItems.push(
         <div
           key={`divider-${index}`}
           className="h-px flex-1 bg-gomin-neutral-200 mt-2.5"
@@ -36,7 +36,7 @@ export default function EventFormStepper({ currentStep }: Props) {
       );
     }
 
-    items.push(
+    stepItems.push(
       <div
         key={step.number}
         className="flex shrink-0 items-center gap-3 rounded-full px-2 py-1.5"
@@ -47,8 +47,8 @@ export default function EventFormStepper({ currentStep }: Props) {
             isCompleted
               ? "border-gomin-primary-100 bg-gomin-primary-100 text-gomin-primary-700"
               : isActive
-                ? 'border-gomin-primary-700 bg-gomin-primary-700 text-white shadow-[0px_6px_14px_-4px_rgba(84,53,235,0.45)]'
-                : 'border-gomin-neutral-200 bg-white text-gomin-neutral-400'
+                ? "border-gomin-primary-700 bg-gomin-primary-700 text-white shadow-[0px_6px_14px_-4px_rgba(84,53,235,0.45)]"
+                : "border-gomin-neutral-200 bg-white text-gomin-neutral-400"
           )}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -58,7 +58,7 @@ export default function EventFormStepper({ currentStep }: Props) {
                 initial={{ scale: 0, rotate: -20 }}
                 animate={{ scale: 1, rotate: 0 }}
                 exit={{ scale: 0 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
                 <Check className="size-3.5" />
               </motion.span>
@@ -82,8 +82,8 @@ export default function EventFormStepper({ currentStep }: Props) {
             className={cn(
               "text-xs font-semibold uppercase tracking-widest",
               isActive || isCompleted
-                ? 'text-gomin-primary-700'
-                : 'text-gomin-neutral-400 opacity-70'
+                ? "text-gomin-primary-700"
+                : "text-gomin-neutral-400 opacity-70"
             )}
           >
             {step.label}
@@ -92,8 +92,8 @@ export default function EventFormStepper({ currentStep }: Props) {
             className={cn(
               "text-sm font-semibold",
               isActive || isCompleted
-                ? 'text-gomin-black'
-                : 'text-gomin-neutral-400'
+                ? "text-gomin-black"
+                : "text-gomin-neutral-400"
             )}
           >
             {step.sublabel}
@@ -103,9 +103,7 @@ export default function EventFormStepper({ currentStep }: Props) {
     );
   });
 
-  return (
-    <div className="flex h-24 w-full items-center border-b border-gomin-neutral-100 px-8">
-      {items}
-    </div>
-  );
-}
+  return <div className="flex h-24 w-full items-center px-8">{stepItems}</div>;
+};
+
+export default EventFormStepper;

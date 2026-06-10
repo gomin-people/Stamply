@@ -32,7 +32,7 @@ const PREVIEW_MISSIONS = [
 /**
  * 실시간 모바일 참가자 화면 미리보기 패널 컴포넌트
  */
-export default function ThemePreviewPanel({ stampImage, palette }: Props) {
+const ThemePreviewPanel = ({ stampImage, palette }: Props) => {
   // preview용 props 객체들의 참조 고정 (React.memo 최적화 매칭)
   const previewEvent = useMemo(
     () => ({
@@ -92,4 +92,6 @@ export default function ThemePreviewPanel({ stampImage, palette }: Props) {
       </p>
     </div>
   );
-}
+};
+
+export default ThemePreviewPanel;
