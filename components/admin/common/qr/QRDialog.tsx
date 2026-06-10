@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { Download, Printer, QrCode } from "lucide-react";
+import { Download, Printer } from "lucide-react";
 import { svgToPng } from "@/utils/qr";
 import QRCode from "react-qr-code";
 import {
@@ -78,18 +78,12 @@ export default function QRDialog({ title, url, filename, description }: Props) {
     <DialogContent className="sm:max-w-sm">
       <DialogHeader>
         <div className="flex items-start gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gomin-primary-600 text-white">
-            <QrCode className="size-6" />
-          </div>
           <div>
-            <p className="mb-1 text-xs font-medium text-gomin-primary-600">
-              QR 코드
-            </p>
             <DialogTitle className="text-xl font-bold text-gomin-black">
               {title}
             </DialogTitle>
             {description && (
-              <DialogDescription className="mt-1">
+              <DialogDescription className="mt-1 break-keep">
                 {description}
               </DialogDescription>
             )}

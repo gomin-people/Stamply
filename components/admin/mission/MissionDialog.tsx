@@ -58,17 +58,9 @@ const MissionDialog = ({ mission, onSave }: Props) => {
     <DialogContent className="sm:max-w-lg" showCloseButton={false}>
       <DialogHeader>
         <div className="flex items-start gap-4">
-          {mission.id !== undefined && (
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gomin-primary-600 text-white text-lg font-bold">
-              {mission.id}
-            </div>
-          )}
           <div>
-            <p className="mb-1 text-xs font-medium text-gomin-primary-600">
-              {mission.id !== undefined ? "미션 수정" : "미션 추가"}
-            </p>
             <DialogTitle className="text-xl font-bold text-gomin-black">
-              {mission.id !== undefined ? mission.title : "새 미션"}
+              {mission.id !== undefined ? "미션 수정" : "미션 추가"}
             </DialogTitle>
             <DialogDescription className="mt-1">
               {mission.id !== undefined
