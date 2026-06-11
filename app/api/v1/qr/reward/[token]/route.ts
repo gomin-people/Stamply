@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
-import { badRequest, conflict, notFound, ok, serverError } from "@/utils/api";
+import {
+  badRequest,
+  conflict,
+  forbidden,
+  notFound,
+  ok,
+  readJsonObject,
+  serverError,
+  toInteger,
+} from "@/utils/api";
 import { supabase } from "@/utils/supabase/server";
 import { createSessionClient } from "@/utils/supabase/session-server";
 
@@ -18,7 +27,6 @@ type QrRewardRouteContext = {
  * @returns 처리 결과 JSON
  */
 export async function POST(request: Request, { params }: QrRewardRouteContext) {
-  void request;
   const { token: eventUserId } = await params;
 
   if (!eventUserId) {
@@ -26,6 +34,18 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
       { message: "올바른 토큰이 필요합니다." },
       { status: 400 }
     );
+  }
+
+  const parsedBody = await readJsonObject(request);
+
+  if ("response" in parsedBody) {
+    return parsedBody.response;
+  }
+
+  const requestedEventId = toInteger(parsedBody.body.event_id);
+
+  if (requestedEventId === null || requestedEventId <= 0) {
+    return badRequest("올바른 행사 ID가 필요합니다.");
   }
 
   // 1. 요청자 세션 검증 (스태프/어드민 세션 확보)
@@ -70,6 +90,10 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
 
   if (!participant) {
     return notFound("참여자를 찾을 수 없습니다.");
+  }
+
+  if (participant.events_id !== requestedEventId) {
+    return forbidden("현재 선택한 행사와 다른 리워드 QR입니다.");
   }
 
   // 3. 해당 행사의 소유자가 현재 로그인한 관리자인지 검증

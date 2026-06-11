@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   getAdminRouteConfig,
@@ -10,8 +10,9 @@ import EventSelector, { compareEventsByDisplayPriority } from "./EventSelector";
 import SidebarNav from "./SidebarNav";
 import AdminUserInfo from "@/components/admin/common/AdminUserInfo";
 import StamploLogo from "@/components/admin/common/StamploLogo";
+import RewardQrScannerClient from "@/components/admin/reward/RewardQrScannerClient";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { ScanLine, X } from "lucide-react";
 import { useAdminEventsQuery } from "@/features/admin/events/adminEventQueries";
 import {
   useSelectedEventId,
@@ -30,6 +31,7 @@ const Sidebar = () => {
   const setSelectedEventId = useSetSelectedEventId();
   const isEditMode = useIsEditMode();
   const setPendingHref = useSetPendingHref();
+  const [isRewardQrOpen, setIsRewardQrOpen] = useState(false);
   const { data: events = [] } = useAdminEventsQuery({ enabled: !eventId });
   const firstEvent = useMemo(
     () => [...events].sort(compareEventsByDisplayPriority)[0],
@@ -62,6 +64,9 @@ const Sidebar = () => {
       router.push(href);
     }
   };
+  const openRewardQr = () => {
+    setIsRewardQrOpen(true);
+  };
 
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-gomin-neutral-100 bg-gomin-white px-4 py-5">
@@ -87,8 +92,26 @@ const Sidebar = () => {
       ) : null}
 
       <div className="mt-auto">
+        {eventId && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={openRewardQr}
+            className="mb-4 h-14 w-full cursor-pointer gap-3 rounded-xl border-gomin-primary-700 px-3 pr-7 font-semibold text-md text-gomin-primary-700 shadow-none hover:bg-gomin-primary-100 hover:text-gomin-primary-700"
+          >
+            <ScanLine className="size-5 text-gomin-primary-700" />
+            리워드 QR 확인
+          </Button>
+        )}
         <AdminUserInfo />
       </div>
+      {eventId && isRewardQrOpen && (
+        <RewardQrScannerClient
+          eventId={Number(eventId)}
+          open={isRewardQrOpen}
+          onOpenChange={setIsRewardQrOpen}
+        />
+      )}
     </aside>
   );
 };

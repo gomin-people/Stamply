@@ -34,6 +34,14 @@ type GetQrScanTargetOptions = {
   currentEventId?: string;
 };
 
+type ExtractRewardQrEventUserIdResult =
+  | {
+      eventUserId: string;
+    }
+  | {
+      error: "invalidQr" | "eventMismatch";
+    };
+
 /**
  * 미션 검증을 위한 QR 코드 URL을 생성합니다.
  * @param token QR 토큰 값
@@ -85,6 +93,24 @@ const toQrUrl = (value: string) => {
 const getCurrentOrigin = () =>
   typeof window === "undefined" ? "http://localhost" : window.location.origin;
 
+const decodeUrlSegment = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+const getEventUserIdCandidate = (value: string | null) => {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = decodeUrlSegment(value).trim();
+
+  return trimmed || null;
+};
+
 /**
  * 미션 체크 API URL에서 앱 내부 이동 경로를 만듭니다.
  *
@@ -119,6 +145,48 @@ const getEventPath = (url: URL, currentEventId?: string) => {
   return eventPath;
 };
 
+const getEventIdFromPathname = (pathname: string) => {
+  const match = pathname.match(/^\/event\/(\d+)(?:\/|$)/);
+
+  if (!match) {
+    return null;
+  }
+
+  const eventId = Number(match[1]);
+
+  return Number.isInteger(eventId) && eventId > 0 ? eventId : null;
+};
+
+const getEventUserIdFromSearchParams = (searchParams: URLSearchParams) => {
+  return (
+    getEventUserIdCandidate(searchParams.get("eventUserId")) ??
+    getEventUserIdCandidate(searchParams.get("event_user_id"))
+  );
+};
+
+const getEventUserIdFromRewardPath = (pathname: string) => {
+  const segments = pathname
+    .split("/")
+    .filter(Boolean)
+    .map((segment) => decodeUrlSegment(segment));
+  const hasRewardContext =
+    segments.includes("reward") || segments.includes("reward-qr");
+
+  if (!hasRewardContext) {
+    return null;
+  }
+
+  for (const segment of [...segments].reverse()) {
+    const eventUserId = getEventUserIdCandidate(segment);
+
+    if (eventUserId) {
+      return eventUserId;
+    }
+  }
+
+  return null;
+};
+
 /**
  * QR 원본 문자열에서 실제로 처리 가능한 앱 내부 이동 대상을 찾습니다.
  *
@@ -150,4 +218,40 @@ export const getQrScanTarget = (
   }
 
   return null;
+};
+
+export const extractRewardQrEventUserId = (
+  qrValue: string,
+  currentEventId: number
+): ExtractRewardQrEventUserIdResult => {
+  const trimmedValue = qrValue.trim();
+  const url = toQrUrl(trimmedValue);
+
+  if (!trimmedValue) {
+    return { error: "invalidQr" };
+  }
+
+  if (!url) {
+    return { eventUserId: trimmedValue };
+  }
+
+  const scannedEventId = getEventIdFromPathname(url.pathname);
+
+  if (scannedEventId !== null && scannedEventId !== currentEventId) {
+    return { error: "eventMismatch" };
+  }
+
+  const searchEventUserId = getEventUserIdFromSearchParams(url.searchParams);
+
+  if (searchEventUserId) {
+    return { eventUserId: searchEventUserId };
+  }
+
+  const pathEventUserId = getEventUserIdFromRewardPath(url.pathname);
+
+  if (pathEventUserId) {
+    return { eventUserId: pathEventUserId };
+  }
+
+  return { error: "invalidQr" };
 };
