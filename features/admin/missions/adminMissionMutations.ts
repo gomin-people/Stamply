@@ -1,7 +1,9 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJsonRequest, requestJson } from "@/features/shared/api/http";
+import { adminMissionQueryOptions } from "./adminMissionQueries";
+import type { AdminMissionDetail } from "@/types/models";
 import {
   type MissionModel,
   type MissionCreatePayloadModel,
@@ -101,42 +103,107 @@ export function useCreateAdminMissionMutation() {
   });
 }
 
-/**
- * 어드민 미션 수정 mutation입니다.
- *
- * @returns React Query 미션 수정 mutation
- */
 export function useUpdateAdminMissionMutation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ eventId, missionId, payload }: UpdateMissionVariables) =>
       updateAdminEventMission(eventId, missionId, payload),
+    onMutate: async ({ eventId, missionId, payload }) => {
+      await queryClient.cancelQueries(adminMissionQueryOptions.list(eventId));
+
+      const previous = queryClient.getQueryData<AdminMissionDetail[]>(
+        adminMissionQueryOptions.list(eventId).queryKey
+      );
+      queryClient.setQueryData<AdminMissionDetail[]>(
+        adminMissionQueryOptions.list(eventId).queryKey,
+        (old) =>
+          old?.map((m) => (m.id === missionId ? { ...m, ...payload } : m))
+      );
+      return { previous };
+    },
+    onError: (_, { eventId }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(
+          adminMissionQueryOptions.list(eventId).queryKey,
+          context.previous
+        );
+      }
+    },
+    onSettled: (_, __, { eventId }) => {
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
+    },
   });
 }
 
-/**
- * 어드민 미션 삭제 mutation입니다.
- *
- * @returns React Query 미션 삭제 mutation
- */
 export function useDeleteAdminMissionMutation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ eventId, missionId }: DeleteMissionVariables) =>
       deleteAdminEventMission(eventId, missionId),
+    onMutate: async ({ eventId, missionId }) => {
+      await queryClient.cancelQueries(adminMissionQueryOptions.list(eventId));
+
+      const previous = queryClient.getQueryData<AdminMissionDetail[]>(
+        adminMissionQueryOptions.list(eventId).queryKey
+      );
+      queryClient.setQueryData<AdminMissionDetail[]>(
+        adminMissionQueryOptions.list(eventId).queryKey,
+        (old) => old?.filter((m) => m.id !== missionId)
+      );
+      return { previous };
+    },
+    onError: (_, { eventId }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(
+          adminMissionQueryOptions.list(eventId).queryKey,
+          context.previous
+        );
+      }
+    },
+    onSettled: (_, __, { eventId }) => {
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
+    },
   });
 }
 
-/**
- * 어드민 미션 순서 변경 mutation입니다.
- * missionIds 배열의 순서가 새로운 sort_order가 됩니다.
- *
- * @returns React Query 미션 순서 변경 mutation
- */
 export function useReorderAdminMissionsMutation() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ eventId, missionIds }: ReorderMissionsVariables) =>
       requestJson<{ missionIds: number[] }>(
         `/api/v1/admin/events/${eventId}/missions/reorder`,
         createJsonRequest("PUT", { missionIds })
       ),
+    onMutate: async ({ eventId, missionIds }) => {
+      await queryClient.cancelQueries(adminMissionQueryOptions.list(eventId));
+
+      const previous = queryClient.getQueryData<AdminMissionDetail[]>(
+        adminMissionQueryOptions.list(eventId).queryKey
+      );
+      queryClient.setQueryData<AdminMissionDetail[]>(
+        adminMissionQueryOptions.list(eventId).queryKey,
+        (old) => {
+          if (!old) return old;
+          return missionIds
+            .map((id, index) => {
+              const mission = old.find((m) => m.id === id);
+              return mission ? { ...mission, sortOrder: index + 1 } : null;
+            })
+            .filter(Boolean) as AdminMissionDetail[];
+        }
+      );
+      return { previous };
+    },
+    onError: (_, { eventId }, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(
+          adminMissionQueryOptions.list(eventId).queryKey,
+          context.previous
+        );
+      }
+    },
+    onSettled: (_, __, { eventId }) => {
+      queryClient.invalidateQueries(adminMissionQueryOptions.list(eventId));
+    },
   });
 }
