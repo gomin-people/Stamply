@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Mission } from "@/types";
 import { stripInvisibleChars } from "@/utils";
+import useCharCount from "@/hooks/useCharCount";
 import {
   MissionFormValues,
   MissionFormSchema,
@@ -39,6 +40,7 @@ const MissionDialog = ({ mission, onSave }: Props) => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<MissionFormValues>({
     resolver: standardSchemaResolver(MissionFormSchema),
@@ -47,6 +49,9 @@ const MissionDialog = ({ mission, onSave }: Props) => {
       description: mission.description ?? "",
     },
   });
+
+  const titleCount = useCharCount(control, "title", 20);
+  const descriptionCount = useCharCount(control, "description", 500);
 
   const onSubmit = (values: MissionFormValues) => {
     startTransition(async () => {
@@ -77,24 +82,35 @@ const MissionDialog = ({ mission, onSave }: Props) => {
             <FieldTitle>
               미션명 <span className="text-red-500">*</span>
             </FieldTitle>
-            <Input
-              maxLength={20}
-              placeholder="미션명을 입력해주세요. (최대 20자)"
-              aria-invalid={!!errors.title}
-              {...register("title", { setValueAs: stripInvisibleChars })}
-            />
+            <div className="relative">
+              <Input
+                aria-invalid={!!errors.title}
+                className="pr-14"
+                maxLength={20}
+                {...register("title", { setValueAs: stripInvisibleChars })}
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                {titleCount}
+              </span>
+            </div>
             <FieldError>{errors.title?.message}</FieldError>
           </Field>
 
           <Field>
             <FieldTitle>설명</FieldTitle>
-            <Textarea
-              rows={4}
-              className="resize-none h-20"
-              placeholder="미션 설명을 입력해주세요. (최대 500자)"
-              maxLength={500}
-              {...register("description", { setValueAs: stripInvisibleChars })}
-            />
+            <div className="relative">
+              <Textarea
+                rows={4}
+                className="resize-none h-20 pr-20"
+                maxLength={500}
+                {...register("description", {
+                  setValueAs: stripInvisibleChars,
+                })}
+              />
+              <span className="absolute right-3 bottom-3 text-xs text-muted-foreground pointer-events-none">
+                {descriptionCount}
+              </span>
+            </div>
           </Field>
         </FieldGroup>
 
