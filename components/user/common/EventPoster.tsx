@@ -31,7 +31,8 @@ const EventPoster = ({
         alt={alt}
         fill
         sizes={`${width}px`}
-        preload
+        fetchPriority="high"
+        loading="eager"
         className="object-cover"
       />
     </div>
