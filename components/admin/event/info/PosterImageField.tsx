@@ -14,7 +14,6 @@ import {
 
 const POSTER_ALLOWED_MIME_TYPES = ["image/jpeg", "image/png"];
 const POSTER_ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"];
-const POSTER_MAX_SIZE_BYTES = 5 * 1024 * 1024;
 
 type Props = {
   value: string;
@@ -47,7 +46,6 @@ const PosterImageField = memo(function PosterImageField({
     initialPath: value,
     allowedMimeTypes: POSTER_ALLOWED_MIME_TYPES,
     allowedExtensions: POSTER_ALLOWED_EXTENSIONS,
-    maxSizeBytes: POSTER_MAX_SIZE_BYTES,
     onUrlChange: (url) => {
       if (url) onChange(url);
     },
