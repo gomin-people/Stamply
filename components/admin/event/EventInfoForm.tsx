@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { z } from "zod";
 import { useForm, useController } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { MapPin, Link2, Mail } from "lucide-react";
+import { MapPin, Mail } from "lucide-react";
 import { type StepFormHandle } from "@/types";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import EventContactPhoneField from "@/components/admin/event/info/EventContactPh
 import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import { toast } from "sonner";
+import useCharCount from "@/hooks/useCharCount";
 
 type FormState = z.infer<typeof EventInfoSchema>;
 
@@ -68,6 +69,9 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
     resolver: standardSchemaResolver(EventInfoSchema),
     mode: "onChange",
   });
+
+  const titleCount = useCharCount(control, "title", 20);
+  const locationCount = useCharCount(control, "location", 100);
 
   const { fieldState: posterImageState, field: posterImageField } =
     useController({ control, name: "posterImageUrl" });
@@ -128,14 +132,19 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               <FieldLabel htmlFor="title">
                 행사 명 <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input
-                id="title"
-                {...register("title", { setValueAs: handleSetValueAs })}
-                placeholder="행사명을 입력해주세요. (최대 20자)"
-                maxLength={20}
-                aria-invalid={!!errors.title}
-                disabled={isDisabled("title")}
-              />
+              <div className="relative">
+                <Input
+                  id="title"
+                  {...register("title", { setValueAs: handleSetValueAs })}
+                  placeholder="행사명을 입력해주세요."
+                  maxLength={20}
+                  aria-invalid={!!errors.title}
+                  disabled={isDisabled("title")}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                  {titleCount}
+                </span>
+              </div>
               <div className="h-3">
                 <FieldError>{errors.title?.message}</FieldError>
               </div>
@@ -183,38 +192,22 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                 <Input
                   id="location"
                   {...register("location", { setValueAs: handleSetValueAs })}
-                  placeholder="행사 주소를 입력해주세요. (최대 100자)"
-                  className="pl-8"
+                  placeholder="행사 주소를 입력해주세요."
+                  className="pl-8 pr-16"
                   maxLength={100}
                   aria-invalid={!!errors.location}
                   disabled={isDisabled("location")}
                 />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                  {locationCount}
+                </span>
               </div>
               <div className="h-3">
                 <FieldError>{errors.location?.message}</FieldError>
               </div>
             </Field>
 
-            <Field data-invalid={!!errors.locationUrl}>
-              <FieldLabel htmlFor="locationUrl">주소 지도 링크</FieldLabel>
-              <div className="relative">
-                <Link2 className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="locationUrl"
-                  {...register("locationUrl", { setValueAs: handleSetValueAs })}
-                  placeholder="행사 지도 링크를 입력해주세요. (최대 100자)"
-                  className="pl-8"
-                  maxLength={100}
-                  aria-invalid={!!errors.locationUrl}
-                  disabled={isDisabled("locationUrl")}
-                />
-              </div>
-              <div className="h-3">
-                <FieldError>{errors.locationUrl?.message}</FieldError>
-              </div>
-            </Field>
-
-            <div className="grid grid-cols-2 gap-4">
+<div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="production">문의처 명</FieldLabel>
                 <Input
