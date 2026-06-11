@@ -9,12 +9,12 @@ import { type StepFormHandle } from "@/types";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import CharCount from "@/components/admin/common/CharCount";
 import PosterImageField from "@/components/admin/event/info/PosterImageField";
 import EventContactPhoneField from "@/components/admin/event/info/EventContactPhoneField";
-import { cn, formatPhoneNumber, stripInvisibleChars } from "@/utils";
+import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import { toast } from "sonner";
-import useCharCount from "@/hooks/useCharCount";
 
 type FormState = z.infer<typeof EventInfoSchema>;
 
@@ -69,10 +69,6 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
     resolver: standardSchemaResolver(EventInfoSchema),
     mode: "onChange",
   });
-
-  const titleCount = useCharCount(control, "title", 20);
-  const productionCount = useCharCount(control, "production", 100);
-  const operatingRemarksCount = useCharCount(control, "operatingRemarks", 1000);
 
   const { fieldState: posterImageState, field: posterImageField } =
     useController({ control, name: "posterImageUrl" });
@@ -142,16 +138,13 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   aria-invalid={!!errors.title}
                   disabled={isDisabled("title")}
                 />
-                <span
-                  className={cn(
-                    "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
-                    isDisabled("title")
-                      ? "text-muted-foreground/60"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {titleCount}
-                </span>
+                <CharCount
+                  control={control}
+                  name="title"
+                  maxLength={20}
+                  disabled={isDisabled("title")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                />
               </div>
               <div className="h-3">
                 <FieldError>{errors.title?.message}</FieldError>
@@ -226,16 +219,13 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                     maxLength={100}
                     disabled={isDisabled("production")}
                   />
-                  <span
-                    className={cn(
-                      "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
-                      isDisabled("production")
-                        ? "text-muted-foreground/60"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {productionCount}
-                  </span>
+                  <CharCount
+                    control={control}
+                    name="production"
+                    maxLength={100}
+                    disabled={isDisabled("production")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                  />
                 </div>
               </Field>
               <EventContactPhoneField
@@ -307,16 +297,13 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   className="resize-none pr-20"
                   disabled={isDisabled("operatingRemarks")}
                 />
-                <span
-                  className={cn(
-                    "absolute right-3 bottom-3 text-xs pointer-events-none",
-                    isDisabled("operatingRemarks")
-                      ? "text-muted-foreground/60"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {operatingRemarksCount}
-                </span>
+                <CharCount
+                  control={control}
+                  name="operatingRemarks"
+                  maxLength={1000}
+                  disabled={isDisabled("operatingRemarks")}
+                  className="absolute right-3 bottom-3"
+                />
               </div>
             </Field>
           </div>
