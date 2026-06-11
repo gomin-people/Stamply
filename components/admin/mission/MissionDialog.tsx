@@ -74,7 +74,7 @@ const MissionDialog = ({ mission, onSave }: Props) => {
       </DialogHeader>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FieldGroup className="py-2 min-h-[220px]">
+        <FieldGroup className="py-2 min-h-55">
           <Field>
             <FieldTitle>
               미션명 <span className="text-red-500">*</span>

@@ -43,10 +43,12 @@ export default function MissionAddButton({ disabled }: Props) {
       </Button>
 
       <Dialog open={isAdding} onOpenChange={setIsAdding}>
-        <MissionDialog
-          mission={{ title: "", description: "", isActive: false }}
-          onSave={handleSave}
-        />
+        {isAdding && (
+          <MissionDialog
+            mission={{ title: "", description: "", isActive: false }}
+            onSave={handleSave}
+          />
+        )}
       </Dialog>
     </>
   );
