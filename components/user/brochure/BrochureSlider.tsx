@@ -32,7 +32,7 @@ const BrochureSlider = ({
             fill
             sizes="312px"
             className="object-cover"
-            priority={index === 0}
+            fetchPriority={index === 0 ? "high" : "low"}
             loading={index === 0 ? "eager" : "lazy"}
           />
         </div>
