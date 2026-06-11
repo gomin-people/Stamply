@@ -43,7 +43,7 @@ const SignUpForm = () => {
         error instanceof ApiError
           ? error.message
           : "회원가입에 실패했습니다. 다시 시도해주세요.";
-      toast.error(message);
+      toast.error(message, { id: "signup-error" });
     }
   };
 

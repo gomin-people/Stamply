@@ -49,10 +49,14 @@ export default function CreateEventPage() {
 
     try {
       const event = await createEvent(payload);
-      toast.success("행사 생성이 완료되었습니다!");
+      toast.success("행사 생성이 완료되었습니다!", {
+        id: "event-create-success",
+      });
       router.push(`/admin/events/${event.id}`);
     } catch {
-      toast.error("행사 생성에 실패했습니다. 다시 시도해주세요.");
+      toast.error("행사 생성에 실패했습니다. 다시 시도해주세요.", {
+        id: "event-create-error",
+      });
     }
   };
 

@@ -87,13 +87,15 @@ export default function EventEditClient() {
   const handleDeleteConfirm = async () => {
     try {
       await deleteEvent(eventIdNum);
-      toast.success("행사가 삭제되었습니다.");
+      toast.success("행사가 삭제되었습니다.", { id: "event-delete-success" });
       const nextEvent = events.find((e) => e.id !== eventIdNum);
       router.replace(
         nextEvent ? `/admin/events/${nextEvent.id}` : "/admin/events/register"
       );
     } catch {
-      toast.error("삭제에 실패했습니다. 다시 시도해주세요.");
+      toast.error("삭제에 실패했습니다. 다시 시도해주세요.", {
+        id: "event-delete-error",
+      });
     } finally {
       setDeleteDialogOpen(false);
     }
@@ -115,7 +117,7 @@ export default function EventEditClient() {
     const isValid = stepRefs.every((r) => r.current?.validate());
     if (!isValid) {
       setCurrentStep(1);
-      toast.warning("필수 항목을 확인해주세요.");
+      toast.warning("필수 항목을 확인해주세요.", { id: "validation-warning" });
       return;
     }
 
@@ -130,10 +132,12 @@ export default function EventEditClient() {
 
     try {
       await updateEvent({ eventId: eventIdNum, payload });
-      toast.success("변경사항이 저장되었습니다.");
+      toast.success("변경사항이 저장되었습니다.", { id: "event-save-success" });
       setMode("view");
     } catch {
-      toast.error("저장에 실패했습니다. 다시 시도해주세요.");
+      toast.error("저장에 실패했습니다. 다시 시도해주세요.", {
+        id: "event-save-error",
+      });
     }
   };
 
