@@ -114,7 +114,6 @@ export type MissionUpdatePayloadModel = Partial<MissionCreatePayloadModel>;
 export type SurveyPayloadModel = {
   gender?: Gender | null;
   ageRange?: string | null;
-  isRewardClaimed?: boolean;
 };
 
 export interface AdminMissionDetail extends MissionModel {
