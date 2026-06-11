@@ -1,5 +1,5 @@
 import { GripVertical } from "lucide-react";
-import { MAX_PAGES } from "@/hooks/usePageUpload";
+import { MAX_PAGES } from "@/constants";
 
 type StatusProps = {
   count: number;

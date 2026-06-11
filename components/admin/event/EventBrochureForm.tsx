@@ -5,7 +5,8 @@ import BrochureDropzone from "./brochure/BrochureDropzone";
 import BrochurePageStatus from "./brochure/BrochurePageStatus";
 import BrochurePageList from "./brochure/BrochurePageList";
 import BrochureAddButton from "./brochure/BrochureAddButton";
-import usePageUpload, { MAX_PAGES } from "@/hooks/usePageUpload";
+import usePageUpload from "@/hooks/usePageUpload";
+import { MAX_PAGES } from "@/constants";
 import { type StepFormHandle } from "@/types";
 import { toast } from "sonner";
 

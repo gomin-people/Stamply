@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { z } from "zod";
 import { useForm, useController } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
@@ -13,6 +13,7 @@ import PosterImageField from "@/components/admin/event/info/PosterImageField";
 import EventContactPhoneField from "@/components/admin/event/info/EventContactPhoneField";
 import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
+import { toast } from "sonner";
 
 type FormState = z.infer<typeof EventInfoSchema>;
 
@@ -54,6 +55,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   const isDisabled = (field: DisabledField) =>
     disabledFields === "all" ||
     (Array.isArray(disabledFields) && disabledFields.includes(field));
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     control,
@@ -72,8 +74,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   const { field: contactPhoneField, fieldState: contactPhoneState } =
     useController({ control, name: "contactPhone" });
 
-  const handlePosterUploadSuccess = (url: string) =>
-    posterImageField.onChange(url);
+  const handlePosterChange = (url: string) => posterImageField.onChange(url);
 
   const handlePosterRemove = () => posterImageField.onChange("");
 
@@ -82,22 +83,25 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
       formatPhoneNumber(stripInvisibleChars(e.target.value).trim())
     );
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      // safeParse로 동기 반환값 확보, void trigger()로 formState.errors 비동기 업데이트
-      validate: () => {
-        const result = EventInfoSchema.safeParse(getValues());
-        if (!result.success) {
-          void trigger();
-          return false;
-        }
-        return true;
-      },
-      getData: () => getValues(),
-    }),
-    [getValues, trigger]
-  );
+  useImperativeHandle(ref, () => ({
+    // safeParse로 동기 반환값 확보, void trigger()로 formState.errors 비동기 업데이트
+    validate: () => {
+      if (isUploading) {
+        toast.warning(
+          "행사 대표 이미지가 스토리지에 업로드 중입니다. 잠시만 기다려주세요.",
+          { id: "uploading" }
+        );
+        return false;
+      }
+      const result = EventInfoSchema.safeParse(getValues());
+      if (!result.success) {
+        void trigger();
+        return false;
+      }
+      return true;
+    },
+    getData: () => getValues(),
+  }));
 
   const operatingHoursError =
     errors.startTime?.message || errors.endTime?.message;
@@ -109,7 +113,8 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
           <PosterImageField
             value={posterImageField.value}
             error={posterImageState.error?.message}
-            onUploadSuccess={handlePosterUploadSuccess}
+            onUploadingChange={setIsUploading}
+            onChange={handlePosterChange}
             onRemove={handlePosterRemove}
             disabled={isDisabled("posterImageUrl")}
           />

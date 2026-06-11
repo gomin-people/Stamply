@@ -6,6 +6,7 @@ import { GripVertical, RefreshCw, Trash2 } from "lucide-react";
 import BrochureThumbnail from "./BrochureThumbnail";
 import type { UploadPage } from "@/hooks/usePageUpload";
 import { cn } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 type ItemProps = {
   page: UploadPage;
@@ -81,22 +82,22 @@ const BrochurePageItem = ({
 
       {!disabled && (
         <div className="flex items-center gap-1.5">
-          <button
+          <Button
             type="button"
             onClick={onReplace}
             className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
             aria-label="교체"
           >
             <RefreshCw className="size-3.5 text-gomin-neutral-400" />
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onDelete}
             className="flex size-8 items-center justify-center rounded-lg border border-gomin-neutral-100 bg-white hover:bg-gomin-neutral-100"
             aria-label="삭제"
           >
             <Trash2 className="size-3.5 text-gomin-neutral-400" />
-          </button>
+          </Button>
         </div>
       )}
     </div>
