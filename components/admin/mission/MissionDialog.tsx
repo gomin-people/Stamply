@@ -86,12 +86,6 @@ const MissionDialog = ({ mission, onSave }: Props) => {
                 maxLength={20}
                 {...register("title", { setValueAs: stripInvisibleChars })}
               />
-              <CharCount
-                control={control}
-                name="title"
-                maxLength={20}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-              />
             </div>
             <FieldError>{errors.title?.message}</FieldError>
           </Field>

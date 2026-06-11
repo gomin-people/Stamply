@@ -138,13 +138,6 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   aria-invalid={!!errors.title}
                   disabled={isDisabled("title")}
                 />
-                <CharCount
-                  control={control}
-                  name="title"
-                  maxLength={20}
-                  disabled={isDisabled("title")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                />
               </div>
               <div className="h-3">
                 <FieldError>{errors.title?.message}</FieldError>
@@ -218,13 +211,6 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                     className="pr-16"
                     maxLength={100}
                     disabled={isDisabled("production")}
-                  />
-                  <CharCount
-                    control={control}
-                    name="production"
-                    maxLength={100}
-                    disabled={isDisabled("production")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
                   />
                 </div>
               </Field>
