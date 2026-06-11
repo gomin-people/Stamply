@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import PosterImageField from "@/components/admin/event/info/PosterImageField";
 import EventContactPhoneField from "@/components/admin/event/info/EventContactPhoneField";
-import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
+import { cn, formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import { toast } from "sonner";
 import useCharCount from "@/hooks/useCharCount";
@@ -141,7 +141,14 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   aria-invalid={!!errors.title}
                   disabled={isDisabled("title")}
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                <span
+                  className={cn(
+                    "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
+                    isDisabled("title")
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
+                  )}
+                >
                   {titleCount}
                 </span>
               </div>
@@ -198,7 +205,14 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   aria-invalid={!!errors.location}
                   disabled={isDisabled("location")}
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                <span
+                  className={cn(
+                    "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
+                    isDisabled("location")
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
+                  )}
+                >
                   {locationCount}
                 </span>
               </div>
@@ -207,16 +221,31 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               </div>
             </Field>
 
-<div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="production">문의처 명</FieldLabel>
-                <Input
-                  id="production"
-                  {...register("production", { setValueAs: handleSetValueAs })}
-                  placeholder="문의처 명을 입력해주세요. (최대 100자)"
-                  maxLength={100}
-                  disabled={isDisabled("production")}
-                />
+                <div className="relative">
+                  <Input
+                    id="production"
+                    {...register("production", {
+                      setValueAs: handleSetValueAs,
+                    })}
+                    placeholder="문의처 명을 입력해주세요."
+                    className="pr-16"
+                    maxLength={100}
+                    disabled={isDisabled("production")}
+                  />
+                  <span
+                    className={cn(
+                      "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
+                      isDisabled("production")
+                        ? "text-muted-foreground/60"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {productionCount}
+                  </span>
+                </div>
               </Field>
               <EventContactPhoneField
                 value={contactPhoneField.value}
@@ -237,12 +266,22 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                     {...register("contactEmail", {
                       setValueAs: handleSetValueAs,
                     })}
-                    placeholder="문의처 이메일을 입력해주세요. (최대 254자)"
-                    className="pl-8"
+                    placeholder="문의처 이메일을 입력해주세요."
+                    className="pl-8 pr-16"
                     maxLength={254}
                     aria-invalid={!!errors.contactEmail}
                     disabled={isDisabled("contactEmail")}
                   />
+                  <span
+                    className={cn(
+                      "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
+                      isDisabled("contactEmail")
+                        ? "text-muted-foreground/60"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {contactEmailCount}
+                  </span>
                 </div>
                 <div className="h-3">
                   <FieldError>{errors.contactEmail?.message}</FieldError>
@@ -275,17 +314,29 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
 
             <Field>
               <FieldLabel htmlFor="operatingRemarks">비고</FieldLabel>
-              <Textarea
-                id="operatingRemarks"
-                {...register("operatingRemarks", {
-                  setValueAs: handleSetValueAs,
-                })}
-                placeholder="운영상의 특이사항을 입력해주세요. (최대 1000자)"
-                rows={3}
-                maxLength={1000}
-                className="resize-none"
-                disabled={isDisabled("operatingRemarks")}
-              />
+              <div className="relative">
+                <Textarea
+                  id="operatingRemarks"
+                  {...register("operatingRemarks", {
+                    setValueAs: handleSetValueAs,
+                  })}
+                  placeholder="운영상의 특이사항을 입력해주세요."
+                  rows={3}
+                  maxLength={1000}
+                  className="resize-none pr-20"
+                  disabled={isDisabled("operatingRemarks")}
+                />
+                <span
+                  className={cn(
+                    "absolute right-3 bottom-3 text-xs pointer-events-none",
+                    isDisabled("operatingRemarks")
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {operatingRemarksCount}
+                </span>
+              </div>
             </Field>
           </div>
         </div>
