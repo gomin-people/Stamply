@@ -114,6 +114,11 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
     return badRequest("모든 필수 미션을 완료하지 않았습니다.");
   }
 
+  // 4-2. 설문 조사 완료 여부 검증 (gender와 age_range가 모두 입력되었는지 확인)
+  if (!participant.gender || !participant.age_range) {
+    return badRequest("설문 조사를 완료하지 않았습니다.");
+  }
+
   // 5. 리워드 수령 완료 처리 (service_role 클라이언트 사용)
   const { error: updateError } = await supabase
     .from("participant_users")

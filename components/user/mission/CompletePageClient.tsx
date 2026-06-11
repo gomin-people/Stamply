@@ -12,6 +12,7 @@ import RewardQrModal from "./RewardQrModal";
 import MissionCompleteModal from "./MissionCompleteModal";
 import { toast } from "sonner";
 import { ApiError } from "@/features/shared/api/http";
+import { getRewardQrUrl } from "@/utils/qr";
 
 const CompletePageClient = () => {
   const router = useRouter();
@@ -54,9 +55,8 @@ const CompletePageClient = () => {
     createRewardQr(undefined, {
       onSuccess: (data: RewardQrData) => {
         // QR value: 어드민 스캔 시 즉시 호출 가능한 API URL 설정
-        const currentOrigin = window.location.origin;
         setQrValue(data.eventUserId);
-        setQrUrl(`${currentOrigin}/api/v1/qr/reward/${data.eventUserId}`);
+        setQrUrl(getRewardQrUrl(data.eventUserId));
         setIsQrModalOpen(true);
       },
       onError: (err: Error) => {

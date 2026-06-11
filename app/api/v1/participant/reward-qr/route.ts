@@ -80,6 +80,11 @@ export async function POST(request: NextRequest) {
     return badRequest("모든 필수 미션을 완료하지 않았습니다.");
   }
 
+  // 5. 설문 조사 완료 여부 검증 (gender와 age_range가 모두 입력되었는지 확인)
+  if (!participant.gender || !participant.age_range) {
+    return badRequest("설문 조사를 완료하지 않았습니다.");
+  }
+
   // QR value로 사용할 event_user_id를 반환한다.
   // 어드민 스캔 시 이 값으로 participant_users 테이블에서 참여자를 특정한다.
   return ok({

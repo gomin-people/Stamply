@@ -48,6 +48,15 @@ export function getEntryQrUrl(token: string): string {
 }
 
 /**
+ * 리워드 수령을 위한 QR 코드 URL을 생성합니다.
+ * @param token QR 토큰 값 (eventUserId)
+ * @returns 도메인이 포함된 전체 URL
+ */
+export function getRewardQrUrl(token: string): string {
+  return `${getCurrentOrigin()}/api/v1/qr/reward/${token}`;
+}
+
+/**
  * 스캔된 문자열을 QR 처리 대상 URL로 변환합니다.
  *
  * 일반 문자열이 브라우저 기준 상대 경로로 변환되는 것을 막기 위해
