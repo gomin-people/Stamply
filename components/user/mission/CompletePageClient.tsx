@@ -9,7 +9,6 @@ import {
 } from "@/features/participant/reward/participantRewardMutations";
 import { createBrowserSupabaseClient } from "@/utils/supabase/browser";
 import RewardQrModal from "./RewardQrModal";
-import MissionCompleteModal from "./MissionCompleteModal";
 import { toast } from "sonner";
 import { ApiError } from "@/features/shared/api/http";
 import { getRewardQrUrl } from "@/utils/qr";
@@ -18,7 +17,7 @@ const CompletePageClient = () => {
   const router = useRouter();
   const { eventId } = useParams<{ eventId: string }>();
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
-  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isClaimSuccess, setIsClaimSuccess] = useState(false);
   const [qrValue, setQrValue] = useState<string | null>(null);
   const [qrUrl, setQrUrl] = useState<string>("");
   const { mutate: createRewardQr, isPending } = useCreateRewardQrMutation();
@@ -35,8 +34,7 @@ const CompletePageClient = () => {
 
     channel
       .on("broadcast", { event: "claim_success" }, () => {
-        setIsQrModalOpen(false);
-        setIsCompleteModalOpen(true);
+        setIsClaimSuccess(true);
       })
       .subscribe((status: string) => {
         if (status === "SUBSCRIBED") {
@@ -72,10 +70,11 @@ const CompletePageClient = () => {
 
   const handleQrModalClose = () => {
     setIsQrModalOpen(false);
+    setTimeout(() => setIsClaimSuccess(false), 200);
   };
 
-  const handleConfirmClose = () => {
-    setIsCompleteModalOpen(false);
+  const handleSuccessConfirm = () => {
+    setIsQrModalOpen(false);
     router.push(`/event/${eventId}`);
   };
 
@@ -117,12 +116,8 @@ const CompletePageClient = () => {
         onClose={handleQrModalClose}
         qrUrl={qrUrl}
         eventId={eventId}
-      />
-
-      {/* 미션완료 팝업 모달 */}
-      <MissionCompleteModal
-        isOpen={isCompleteModalOpen}
-        onClose={handleConfirmClose}
+        isSuccess={isClaimSuccess}
+        onSuccessConfirm={handleSuccessConfirm}
       />
     </>
   );
