@@ -57,26 +57,28 @@ export async function POST(request: NextRequest) {
     return conflict("이미 리워드를 수령한 참여자입니다.");
   }
 
-  // 2. 자바스크립트 레벨에서 활성 미션 개수 필터링
+  // 2. 자바스크립트 레벨에서 활성 미션 필터링
   const rawEvents = participant.events;
   const eventData = Array.isArray(rawEvents) ? rawEvents[0] : rawEvents;
   const missions = eventData?.missions ?? [];
   const activeMissions = Array.isArray(missions)
     ? missions.filter((m: { id: number; is_active: boolean }) => m.is_active)
     : [];
-  const activeMissionsCount = activeMissions.length;
 
-  // 3. 자바스크립트 레벨에서 완료 미션 기록 개수 계산
+  // 3. 완료된 미션 ID Set 생성
   const completions = participant.mission_completions ?? [];
-  const completedMissionsCount = Array.isArray(completions)
-    ? completions.length
-    : 0;
+  const completedMissionIds = new Set(
+    Array.isArray(completions)
+      ? completions.map((c: { missions_id: number }) => c.missions_id)
+      : []
+  );
 
-  // 4. 미션 완료 여부 검증 (활성화된 미션이 최소 1개 이상 존재하고, 모두 완료했는지 확인)
-  if (
-    activeMissionsCount === 0 ||
-    completedMissionsCount < activeMissionsCount
-  ) {
+  // 4. 미션 완료 여부 검증 (활성 미션이 최소 1개 이상 존재하고, 모든 활성 미션이 완료되었는지 확인)
+  const hasIncomplete = activeMissions.some(
+    (m: { id: number }) => !completedMissionIds.has(m.id)
+  );
+
+  if (activeMissions.length === 0 || hasIncomplete) {
     return badRequest("모든 필수 미션을 완료하지 않았습니다.");
   }
 

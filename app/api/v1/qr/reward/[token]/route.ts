@@ -95,22 +95,24 @@ export async function POST(request: Request, { params }: QrRewardRouteContext) {
     return conflict("이미 리워드를 수령한 참여자입니다.");
   }
 
-  // 4-1. 미션 완료 여부 검증 (활성화된 미션이 최소 1개 이상 존재하고, 모두 완료했는지 확인)
+  // 4-1. 미션 완료 여부 검증 (활성 미션이 최소 1개 이상 존재하고, 모든 활성 미션이 완료되었는지 확인)
   const missions = eventData.missions ?? [];
   const activeMissions = Array.isArray(missions)
     ? missions.filter((m: { id: number; is_active: boolean }) => m.is_active)
     : [];
-  const activeMissionsCount = activeMissions.length;
 
   const completions = participant.mission_completions ?? [];
-  const completedMissionsCount = Array.isArray(completions)
-    ? completions.length
-    : 0;
+  const completedMissionIds = new Set(
+    Array.isArray(completions)
+      ? completions.map((c: { missions_id: number }) => c.missions_id)
+      : []
+  );
 
-  if (
-    activeMissionsCount === 0 ||
-    completedMissionsCount < activeMissionsCount
-  ) {
+  const hasIncomplete = activeMissions.some(
+    (m: { id: number }) => !completedMissionIds.has(m.id)
+  );
+
+  if (activeMissions.length === 0 || hasIncomplete) {
     return badRequest("모든 필수 미션을 완료하지 않았습니다.");
   }
 
