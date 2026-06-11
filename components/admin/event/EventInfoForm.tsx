@@ -71,7 +71,9 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   });
 
   const titleCount = useCharCount(control, "title", 20);
-  const locationCount = useCharCount(control, "location", 100);
+  const productionCount = useCharCount(control, "production", 100);
+  const contactEmailCount = useCharCount(control, "contactEmail", 254);
+  const operatingRemarksCount = useCharCount(control, "operatingRemarks", 1000);
 
   const { fieldState: posterImageState, field: posterImageField } =
     useController({ control, name: "posterImageUrl" });
@@ -200,21 +202,11 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   id="location"
                   {...register("location", { setValueAs: handleSetValueAs })}
                   placeholder="행사 주소를 입력해주세요."
-                  className="pl-8 pr-16"
+                  className="pl-8"
                   maxLength={100}
                   aria-invalid={!!errors.location}
                   disabled={isDisabled("location")}
                 />
-                <span
-                  className={cn(
-                    "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
-                    isDisabled("location")
-                      ? "text-muted-foreground/60"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {locationCount}
-                </span>
               </div>
               <div className="h-3">
                 <FieldError>{errors.location?.message}</FieldError>
