@@ -32,9 +32,14 @@ import {
 type Props = {
   missions: AdminMissionDetail[];
   disabled?: boolean;
+  filter?: string;
 };
 
-export default function MissionList({ missions, disabled = false }: Props) {
+export default function MissionList({
+  missions,
+  disabled = false,
+  filter = "all",
+}: Props) {
   const sortedMissions = useMemo(
     () => [...missions].sort((a, b) => a.sortOrder - b.sortOrder),
     [missions]
@@ -66,7 +71,7 @@ export default function MissionList({ missions, disabled = false }: Props) {
   );
 
   const handleDragEnd = async ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) return;
+    if (filter !== "all" || !over || active.id === over.id) return;
     const oldIndex = sortedMissions.findIndex((m) => m.id === active.id);
     const newIndex = sortedMissions.findIndex((m) => m.id === over.id);
     const reordered = arrayMove(sortedMissions, oldIndex, newIndex);
@@ -142,6 +147,7 @@ export default function MissionList({ missions, disabled = false }: Props) {
               mission={mission}
               index={index}
               disabled={disabled}
+              sortable={filter === "all"}
               onToggleActive={handleToggleActive}
               onViewQR={setViewingQR}
               onEdit={setEditingMission}

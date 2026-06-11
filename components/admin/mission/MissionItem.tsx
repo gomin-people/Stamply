@@ -12,6 +12,7 @@ type Props = {
   mission: AdminMissionDetail;
   index: number;
   disabled?: boolean;
+  sortable?: boolean;
   onToggleActive: (missionId: number, checked: boolean) => void;
   onViewQR: (info: {
     title: string;
@@ -27,6 +28,7 @@ export default function MissionItem({
   mission,
   index,
   disabled = false,
+  sortable = true,
   onToggleActive,
   onViewQR,
   onEdit,
@@ -39,7 +41,7 @@ export default function MissionItem({
     setActivatorNodeRef,
     transform,
     transition,
-  } = useSortable({ id: mission.id, disabled });
+  } = useSortable({ id: mission.id, disabled: disabled || !sortable });
 
   return (
     <div
@@ -53,15 +55,19 @@ export default function MissionItem({
       }}
       className={`grid items-center px-6 py-5 border-b border-gomin-neutral-100 last:border-b-0 hover:bg-gomin-neutral-100/30 transition-opacity ${disabled ? "opacity-40 pointer-events-none" : ""}`}
     >
-      <div
-        ref={setActivatorNodeRef}
-        {...listeners}
-        className="cursor-grab text-gomin-neutral-300 select-none"
-      >
-        <GripVertical className="w-4 h-4" />
-      </div>
-      <div className="text-sm text-gomin-neutral-600">{index + 1}</div>
+      {sortable ? (
+        <div
+          ref={setActivatorNodeRef}
+          {...listeners}
+          className={`select-none text-gomin-neutral-300 cursor-grab`}
+        >
+          <GripVertical className="w-4 h-4" />
+        </div>
+      ) : (
+        <div></div>
+      )}
 
+      <div className="text-sm text-gomin-neutral-600">{index + 1}</div>
       <div className="text-sm font-medium text-gomin-black truncate">
         {mission.title}
       </div>
