@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { getEntryEvent } from "@/features/qr/entry/api/entry";
 import BrochureClient from "@/components/user/brochure/BrochureClient";
 import { redirect } from "next/navigation";
@@ -17,7 +18,12 @@ const BrochurePage = async ({ params, searchParams }: Props) => {
     redirect(`/event/${eventId}/${from === "mission" ? "detail" : "mission"}`);
   }
 
-  return <BrochureClient images={event.brochureImageUrl} />;
+  const cookieStore = await cookies();
+  const showGuide = !cookieStore.has(`brochure-guide-seen-${eventId}`);
+
+  return (
+    <BrochureClient images={event.brochureImageUrl} showGuide={showGuide} />
+  );
 };
 
 export default BrochurePage;
