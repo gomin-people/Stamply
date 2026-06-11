@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import MissionPageClient from "@/components/user/mission/MissionPageClient";
 import { getEntryEventAndParticipant } from "@/features/qr/entry/api/entry";
 import { getParticipantMissionsServer } from "@/features/participant/missions/participantMissionsServer";
+import { toCamelKeys } from "@/utils/case";
+import { type ParticipantModel } from "@/types/models";
 
 type PageProps = {
   params: Promise<{ eventId: string }>;
@@ -13,6 +15,10 @@ export default async function MissionPage({ params }: PageProps) {
   // 1. 세션 검증 및 이벤트 정보, 참여자 정보를 단일 쿼리로 획득
   const { event, participant } =
     await getEntryEventAndParticipant(eventIdParam);
+
+  const initialParticipant = toCamelKeys(
+    participant
+  ) as unknown as ParticipantModel;
 
   // 2. 미션 데이터 직접 DB 조회 (참여자 정보 재사용)
   let initialMissions = [];
@@ -34,6 +40,7 @@ export default async function MissionPage({ params }: PageProps) {
       event={event}
       eventId={eventIdParam}
       initialMissions={initialMissions}
+      initialParticipant={initialParticipant}
     />
   );
 }

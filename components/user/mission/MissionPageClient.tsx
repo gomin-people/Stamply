@@ -15,6 +15,7 @@ import {
 } from "@/features/participant/missions/participantMissionQueries";
 import { cn } from "@/utils";
 import { buildInitialData } from "@/utils/participant-mission";
+import { type ParticipantModel } from "@/types/models";
 
 // Supabase의 event 테이블 타입 인터페이스 정의
 type EventData = {
@@ -36,6 +37,7 @@ type MissionPageClientProps = {
   event: EventData;
   eventId: string;
   initialMissions: InitialMission[];
+  initialParticipant?: ParticipantModel;
   isPreview?: boolean;
 };
 
@@ -52,6 +54,7 @@ const MissionPageClient = ({
   event,
   eventId,
   initialMissions,
+  initialParticipant,
   isPreview = false,
 }: MissionPageClientProps) => {
   const router = useRouter();
@@ -60,7 +63,7 @@ const MissionPageClient = ({
 
   const initialData: ParticipantMissions | undefined =
     !isPreview && initialMissions.length > 0
-      ? buildInitialData(initialMissions)
+      ? buildInitialData(initialMissions, initialParticipant)
       : undefined;
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
