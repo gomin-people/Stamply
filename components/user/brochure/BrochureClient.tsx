@@ -34,7 +34,7 @@ const BrochureClient = ({ images, showGuide }: Props) => {
   const isLastPage = images.length > 0 && currentIndex === images.length - 1;
 
   return (
-    <div className="bg-gomin-white flex flex-col items-center pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
+    <div className="bg-gomin-white flex flex-col items-center pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))] overflow-y-auto h-full">
       <div className="mb-4">
         <BrochureIndicator total={images.length} currentIndex={currentIndex} />
       </div>
