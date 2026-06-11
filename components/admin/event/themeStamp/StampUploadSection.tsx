@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { Plus, X, Loader2 } from "lucide-react";
 import InfoBanner from "@/components/admin/event/themeStamp/InfoBanner";
 import useImageUpload from "@/hooks/useImageUpload";
+import Image from "next/image";
 
 type Props = {
   value: string;
@@ -70,8 +71,11 @@ const StampUploadSection = ({
       ) : value ? (
         <div className="relative w-[150px] h-[150px] rounded-2xl border border-gomin-neutral-200 flex items-center justify-center p-4 group transition-all hover:shadow-sm">
           <div className="absolute inset-0 bg-checkerboard rounded-2xl overflow-hidden z-0" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
+            width={122}
+            height={122}
+            fetchPriority={"high"}
+            loading="eager"
             src={value}
             alt="스탬프 모양 미리보기"
             className="w-full h-full object-contain relative z-10"
