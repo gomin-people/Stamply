@@ -89,7 +89,7 @@ const CompletePageClient = () => {
 
           {/* 2. 안내 문구 */}
           <p className="text-xl font-nanum font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line">
-            리워드 수령처에서 이 화면을{"\n"}스태프에게 보여주세요!
+            리워드 수령처에서 아래 버튼을 눌러{"\n"}QR코드를 스캔하세요!
           </p>
 
           {/* 3. 하단 직원 확인 버튼 */}
