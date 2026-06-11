@@ -15,6 +15,7 @@ import {
   useUpdateAdminMissionMutation,
 } from "@/features/admin/missions/adminMissionMutations";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 import {
   DndContext,
   DragEndEvent,
@@ -64,15 +65,20 @@ export default function MissionList({ missions, disabled = false }: Props) {
     })
   );
 
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+  const handleDragEnd = async ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
     const oldIndex = sortedMissions.findIndex((m) => m.id === active.id);
     const newIndex = sortedMissions.findIndex((m) => m.id === over.id);
     const reordered = arrayMove(sortedMissions, oldIndex, newIndex);
-    reorderAdminMissionsAsync({
-      eventId,
-      missionIds: reordered.map((m) => m.id),
-    });
+    try {
+      await reorderAdminMissionsAsync({
+        eventId,
+        missionIds: reordered.map((m) => m.id),
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("미션 순서 변경에 실패했습니다.");
+    }
   };
 
   const handleDelete = async (missionId: number) => {
@@ -80,17 +86,23 @@ export default function MissionList({ missions, disabled = false }: Props) {
       await deleteAdminMissionAsync({ eventId, missionId });
     } catch (e) {
       console.error(e);
+      toast.error("미션 삭제에 실패했습니다.");
     } finally {
       setDeletingMission(null);
     }
   };
 
-  const handleToggleActive = (missionId: number, checked: boolean) => {
-    updateAdminMissionAsync({
-      eventId,
-      missionId,
-      payload: { isActive: checked },
-    });
+  const handleToggleActive = async (missionId: number, checked: boolean) => {
+    try {
+      await updateAdminMissionAsync({
+        eventId,
+        missionId,
+        payload: { isActive: checked },
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("미션 상태 변경에 실패했습니다.");
+    }
   };
 
   const handleSave = async (mission: Mission) => {
@@ -103,6 +115,7 @@ export default function MissionList({ missions, disabled = false }: Props) {
       });
     } catch (e) {
       console.error(e);
+      toast.error("미션 수정에 실패했습니다.");
     } finally {
       setEditingMission(null);
     }
