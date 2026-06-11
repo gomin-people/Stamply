@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Mission } from "@/types";
 import { stripInvisibleChars } from "@/utils";
-import useCharCount from "@/hooks/useCharCount";
+import CharCount from "@/components/admin/common/CharCount";
 import {
   MissionFormValues,
   MissionFormSchema,
@@ -49,9 +49,6 @@ const MissionDialog = ({ mission, onSave }: Props) => {
       description: mission.description ?? "",
     },
   });
-
-  const titleCount = useCharCount(control, "title", 20);
-  const descriptionCount = useCharCount(control, "description", 500);
 
   const onSubmit = (values: MissionFormValues) => {
     startTransition(async () => {
@@ -89,9 +86,12 @@ const MissionDialog = ({ mission, onSave }: Props) => {
                 maxLength={20}
                 {...register("title", { setValueAs: stripInvisibleChars })}
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                {titleCount}
-              </span>
+              <CharCount
+                control={control}
+                name="title"
+                maxLength={20}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              />
             </div>
             <FieldError>{errors.title?.message}</FieldError>
           </Field>
@@ -107,9 +107,12 @@ const MissionDialog = ({ mission, onSave }: Props) => {
                   setValueAs: stripInvisibleChars,
                 })}
               />
-              <span className="absolute right-3 bottom-3 text-xs text-muted-foreground pointer-events-none">
-                {descriptionCount}
-              </span>
+              <CharCount
+                control={control}
+                name="description"
+                maxLength={500}
+                className="absolute right-3 bottom-3"
+              />
             </div>
           </Field>
         </FieldGroup>
