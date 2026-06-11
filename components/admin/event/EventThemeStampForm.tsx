@@ -46,25 +46,29 @@ const EventThemeStampForm = forwardRef<StepFormHandle, Props>(
       }
     }, [keyColor]);
 
-    const handeStampRemove = () => setStampFileUrl("");
+    const handleStampRemove = () => setStampFileUrl("");
 
     // 부모 컴포넌트에 넘길 validate 및 getData 정의
-    useImperativeHandle(ref, () => ({
-      validate: () => {
-        if (isUploading) {
-          toast.warning(
-            "스탬프 모양 이미지가 스토리지에 업로드 중입니다. 잠시만 기다려주세요.",
-            { id: "uploading" }
-          );
-          return false;
-        }
-        return true;
-      },
-      getData: () => ({
-        stampImageUrl: stampFileUrl,
-        primaryColor: keyColor,
+    useImperativeHandle(
+      ref,
+      () => ({
+        validate: () => {
+          if (isUploading) {
+            toast.warning(
+              "스탬프 모양 이미지가 스토리지에 업로드 중입니다. 잠시만 기다려주세요.",
+              { id: "uploading" }
+            );
+            return false;
+          }
+          return true;
+        },
+        getData: () => ({
+          stampImageUrl: stampFileUrl,
+          primaryColor: keyColor,
+        }),
       }),
-    }));
+      [stampFileUrl, isUploading, keyColor]
+    );
 
     return (
       <div className="flex flex-row gap-10 text-gomin-black h-166">
@@ -74,7 +78,7 @@ const EventThemeStampForm = forwardRef<StepFormHandle, Props>(
             value={stampFileUrl}
             onUploadingChange={setIsUploading}
             onChange={setStampFileUrl}
-            onRemove={handeStampRemove}
+            onRemove={handleStampRemove}
             disabled={disabled}
           />
           <hr className="border-gomin-neutral-100" />

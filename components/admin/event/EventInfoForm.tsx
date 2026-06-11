@@ -83,25 +83,29 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
       formatPhoneNumber(stripInvisibleChars(e.target.value).trim())
     );
 
-  useImperativeHandle(ref, () => ({
-    // safeParse로 동기 반환값 확보, void trigger()로 formState.errors 비동기 업데이트
-    validate: () => {
-      if (isUploading) {
-        toast.warning(
-          "행사 대표 이미지가 스토리지에 업로드 중입니다. 잠시만 기다려주세요.",
-          { id: "uploading" }
-        );
-        return false;
-      }
-      const result = EventInfoSchema.safeParse(getValues());
-      if (!result.success) {
-        void trigger();
-        return false;
-      }
-      return true;
-    },
-    getData: () => getValues(),
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      // safeParse로 동기 반환값 확보, void trigger()로 formState.errors 비동기 업데이트
+      validate: () => {
+        if (isUploading) {
+          toast.warning(
+            "행사 대표 이미지가 스토리지에 업로드 중입니다. 잠시만 기다려주세요.",
+            { id: "uploading" }
+          );
+          return false;
+        }
+        const result = EventInfoSchema.safeParse(getValues());
+        if (!result.success) {
+          void trigger();
+          return false;
+        }
+        return true;
+      },
+      getData: () => getValues(),
+    }),
+    [isUploading, getValues, trigger]
+  );
 
   const operatingHoursError =
     errors.startTime?.message || errors.endTime?.message;
