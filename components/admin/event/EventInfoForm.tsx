@@ -67,7 +67,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   } = useForm<FormState>({
     defaultValues: buildDefaultValues(initialData),
     resolver: standardSchemaResolver(EventInfoSchema),
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   const { fieldState: posterImageState, field: posterImageField } =
