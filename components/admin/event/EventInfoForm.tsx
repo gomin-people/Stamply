@@ -132,7 +132,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                 <Input
                   id="title"
                   {...register("title", { setValueAs: handleSetValueAs })}
-                  placeholder="행사명을 입력해주세요."
+                  placeholder="행사명을 입력해주세요. (최대 20자)"
                   maxLength={20}
                   aria-invalid={!!errors.title}
                   disabled={isDisabled("title")}
@@ -185,7 +185,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                 <Input
                   id="location"
                   {...register("location", { setValueAs: handleSetValueAs })}
-                  placeholder="행사 주소를 입력해주세요."
+                  placeholder="행사 주소를 입력해주세요. (최대 100자)"
                   className="pl-8"
                   maxLength={100}
                   aria-invalid={!!errors.location}
@@ -206,7 +206,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                     {...register("production", {
                       setValueAs: handleSetValueAs,
                     })}
-                    placeholder="문의처 명을 입력해주세요."
+                    placeholder="문의처 명을 입력해주세요. (최대 100자)"
                     className="pr-16"
                     maxLength={100}
                     disabled={isDisabled("production")}
@@ -232,7 +232,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                     {...register("contactEmail", {
                       setValueAs: handleSetValueAs,
                     })}
-                    placeholder="문의처 이메일을 입력해주세요."
+                    placeholder="문의처 이메일을 입력해주세요. (최대 254자)"
                     className="pl-8 pr-16"
                     maxLength={254}
                     aria-invalid={!!errors.contactEmail}
@@ -276,7 +276,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                   {...register("operatingRemarks", {
                     setValueAs: handleSetValueAs,
                   })}
-                  placeholder="운영상의 특이사항을 입력해주세요."
+                  placeholder="운영상의 특이사항을 입력해주세요. (최대 1000자)"
                   rows={3}
                   maxLength={1000}
                   className="resize-none pr-20"

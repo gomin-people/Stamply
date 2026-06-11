@@ -84,6 +84,7 @@ const MissionDialog = ({ mission, onSave }: Props) => {
                 aria-invalid={!!errors.title}
                 className="pr-14"
                 maxLength={20}
+                placeholder="미션명을 입력해주세요. (최대 20자)"
                 {...register("title", { setValueAs: stripInvisibleChars })}
               />
             </div>
@@ -97,6 +98,7 @@ const MissionDialog = ({ mission, onSave }: Props) => {
                 rows={4}
                 className="resize-none h-20 pr-20"
                 maxLength={500}
+                placeholder="미션 설명을 입력해주세요. (최대 500자)"
                 {...register("description", {
                   setValueAs: stripInvisibleChars,
                 })}
