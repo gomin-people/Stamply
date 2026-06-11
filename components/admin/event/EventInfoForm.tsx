@@ -72,7 +72,6 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
 
   const titleCount = useCharCount(control, "title", 20);
   const productionCount = useCharCount(control, "production", 100);
-  const contactEmailCount = useCharCount(control, "contactEmail", 254);
   const operatingRemarksCount = useCharCount(control, "operatingRemarks", 1000);
 
   const { fieldState: posterImageState, field: posterImageField } =
@@ -264,16 +263,6 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                     aria-invalid={!!errors.contactEmail}
                     disabled={isDisabled("contactEmail")}
                   />
-                  <span
-                    className={cn(
-                      "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
-                      isDisabled("contactEmail")
-                        ? "text-muted-foreground/60"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {contactEmailCount}
-                  </span>
                 </div>
                 <div className="h-3">
                   <FieldError>{errors.contactEmail?.message}</FieldError>
