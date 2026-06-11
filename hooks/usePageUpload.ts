@@ -6,8 +6,7 @@ import {
   uploadAdminImage,
   useDeleteAdminImageMutation,
 } from "@/features/admin/upload/adminUploadMutations";
-
-const MAX_PAGES = 10;
+import { MAX_PAGES } from "@/constants";
 
 export type UploadPage = {
   id: string;
@@ -142,5 +141,4 @@ const usePageUpload = (initialUrls?: string[]) => {
   };
 };
 
-export { MAX_PAGES };
 export default usePageUpload;
