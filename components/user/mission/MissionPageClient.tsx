@@ -67,7 +67,7 @@ const MissionPageClient = ({
       : undefined;
 
   // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
-  const { data, isError } = useParticipantMissionsQuery({
+  const { data, isError, isFetching } = useParticipantMissionsQuery({
     enabled: !isPreview,
     initialData,
   });
@@ -225,6 +225,7 @@ const MissionPageClient = ({
           onClick={handleAction}
           isPreview={isPreview}
           isRewardClaimed={isRewardClaimed}
+          isLoading={isFetching && !isPreview}
         />
       )}
 
