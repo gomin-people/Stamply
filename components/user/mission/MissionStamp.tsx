@@ -15,12 +15,14 @@ type Mission = {
 type MissionStampProps = {
   mission: Mission;
   stampImageUrl?: string | null;
+  isNewlyStamped?: boolean;
 };
 
-export default function MissionStamp({
+const MissionStamp = ({
   mission,
   stampImageUrl,
-}: MissionStampProps) {
+  isNewlyStamped = false,
+}: MissionStampProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -28,18 +30,21 @@ export default function MissionStamp({
       <div
         onClick={() => setIsOpen(true)}
         className={cn(
-          "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden transition-colors",
+          "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden",
           mission.isStamped
-            ? "bg-gomin-primary-100 border border-gomin-primary-200/50 animate-stamp-color animate-stamp-card-pop"
+            ? cn(
+                "bg-gomin-primary-100 border border-gomin-primary-200/50",
+                isNewlyStamped && "animate-stamp-card-pop"
+              )
             : "bg-gomin-neutral-100 border border-transparent"
         )}
       >
         <div className="flex flex-col items-center justify-center text-center z-10 w-full px-1">
           <span
             className={cn(
-              "w-full text-2xl font-sans font-black break-keep line-clamp-none transition-colors",
+              "w-full text-2xl font-sans font-black break-keep line-clamp-none",
               mission.isStamped
-                ? "text-gomin-neutral-800/80 animate-stamp-color"
+                ? "text-gomin-neutral-800/80"
                 : "text-gomin-neutral-600"
             )}
           >
@@ -48,7 +53,12 @@ export default function MissionStamp({
         </div>
 
         {mission.isStamped && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700 animate-stamp-press">
+          <div
+            className={cn(
+              "absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700",
+              isNewlyStamped && "animate-stamp-press"
+            )}
+          >
             {stampImageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -70,4 +80,6 @@ export default function MissionStamp({
       />
     </>
   );
-}
+};
+
+export default MissionStamp;

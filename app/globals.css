@@ -317,8 +317,4 @@ input:-webkit-autofill {
   .animate-stamp-card-pop {
     animation: stamp-card-pop 0.3s ease-out 0.35s both;
   }
-  .animate-stamp-color {
-    transition-duration: 150ms;
-    transition-delay: 350ms;
-  }
 }
