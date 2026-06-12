@@ -144,7 +144,9 @@ const MissionPageClient = ({
             {eventName}
           </h1>
           {/* 우측 별도 컴포넌트로 보여지는 브로슈어 버튼 */}
-          {showBrochureButton && <BrochureButton eventId={eventId} />}
+          {showBrochureButton && (
+            <BrochureButton eventId={eventId} className="animate-bounce-once" />
+          )}
         </div>
 
         {/* 3. 진행 상황 안내 문구 */}
@@ -220,6 +222,7 @@ const MissionPageClient = ({
           onClick={handleAction}
           isPreview={isPreview}
           isRewardClaimed={isRewardClaimed}
+          className={isPreview ? "" : "animate-fade-up"}
         />
       )}
 

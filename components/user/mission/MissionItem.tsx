@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import IconStamplo from "@/components/icons/IconStamplo";
+import IconDashedCircle from "@/components/icons/IconDashedCircle";
 import MissionDetailModal from "@/components/user/mission/MissionDetailModal";
 import { cn } from "@/utils";
 
@@ -32,25 +33,17 @@ const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
       >
         {/* 스탬프 도장 이미지 영역 (왼쪽) */}
         <div className="w-26 h-26 shrink-0 relative flex items-center justify-center select-none">
-          {stampImageUrl ? (
+          {!mission.isStamped ? (
+            <IconDashedCircle className="w-full h-full text-gomin-neutral-300" />
+          ) : stampImageUrl ? (
             <Image
               src={stampImageUrl}
               alt="Stamp"
               fill
-              className={cn(
-                "object-contain",
-                mission.isStamped ? "opacity-100" : "opacity-30 grayscale"
-              )}
+              className="object-contain"
             />
           ) : (
-            <IconStamplo
-              className={cn(
-                "w-full h-full",
-                mission.isStamped
-                  ? "text-gomin-primary-700 opacity-100"
-                  : "text-gomin-neutral-400 opacity-30"
-              )}
-            />
+            <IconStamplo className="w-full h-full text-gomin-primary-700" />
           )}
         </div>
 
