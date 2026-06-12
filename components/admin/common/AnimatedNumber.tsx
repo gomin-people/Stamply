@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, motion } from "framer-motion";
+import { animate, motion } from "motion/react";
 import { formatNumber } from "@/utils";
 
 const INITIAL_COUNT_UPDATE_INTERVAL_MS = 80; // 초기 count-up 중 화면 숫자를 갱신하는 최소 간격
