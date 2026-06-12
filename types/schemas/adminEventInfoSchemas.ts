@@ -63,7 +63,7 @@ export const EventInfoSchema = z
     operatingRemarks: z
       .string()
       .trim()
-      .max(100, "비고는 최대 100자까지 입력 가능합니다."),
+      .max(1000, "비고는 최대 1000자까지 입력 가능합니다."),
   })
   .refine(
     (data) =>

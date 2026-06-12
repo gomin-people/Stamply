@@ -4,11 +4,12 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { z } from "zod";
 import { useForm, useController } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { MapPin, Link2, Mail } from "lucide-react";
+import { MapPin, Mail } from "lucide-react";
 import { type StepFormHandle } from "@/types";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import CharCount from "@/components/admin/common/CharCount";
 import PosterImageField from "@/components/admin/event/info/PosterImageField";
 import EventContactPhoneField from "@/components/admin/event/info/EventContactPhoneField";
 import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
@@ -66,7 +67,6 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   } = useForm<FormState>({
     defaultValues: buildDefaultValues(initialData),
     resolver: standardSchemaResolver(EventInfoSchema),
-    mode: "onChange",
   });
 
   const { fieldState: posterImageState, field: posterImageField } =
@@ -128,14 +128,16 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               <FieldLabel htmlFor="title">
                 행사 명 <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input
-                id="title"
-                {...register("title", { setValueAs: handleSetValueAs })}
-                placeholder="행사명을 입력해주세요. (최대 20자)"
-                maxLength={20}
-                aria-invalid={!!errors.title}
-                disabled={isDisabled("title")}
-              />
+              <div className="relative">
+                <Input
+                  id="title"
+                  {...register("title", { setValueAs: handleSetValueAs })}
+                  placeholder="행사명을 입력해주세요. (최대 20자)"
+                  maxLength={20}
+                  aria-invalid={!!errors.title}
+                  disabled={isDisabled("title")}
+                />
+              </div>
               <div className="h-3">
                 <FieldError>{errors.title?.message}</FieldError>
               </div>
@@ -195,35 +197,21 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
               </div>
             </Field>
 
-            <Field data-invalid={!!errors.locationUrl}>
-              <FieldLabel htmlFor="locationUrl">주소 지도 링크</FieldLabel>
-              <div className="relative">
-                <Link2 className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="locationUrl"
-                  {...register("locationUrl", { setValueAs: handleSetValueAs })}
-                  placeholder="행사 지도 링크를 입력해주세요. (최대 100자)"
-                  className="pl-8"
-                  maxLength={100}
-                  aria-invalid={!!errors.locationUrl}
-                  disabled={isDisabled("locationUrl")}
-                />
-              </div>
-              <div className="h-3">
-                <FieldError>{errors.locationUrl?.message}</FieldError>
-              </div>
-            </Field>
-
             <div className="grid grid-cols-2 gap-4">
               <Field>
                 <FieldLabel htmlFor="production">문의처 명</FieldLabel>
-                <Input
-                  id="production"
-                  {...register("production", { setValueAs: handleSetValueAs })}
-                  placeholder="문의처 명을 입력해주세요. (최대 100자)"
-                  maxLength={100}
-                  disabled={isDisabled("production")}
-                />
+                <div className="relative">
+                  <Input
+                    id="production"
+                    {...register("production", {
+                      setValueAs: handleSetValueAs,
+                    })}
+                    placeholder="문의처 명을 입력해주세요. (최대 100자)"
+                    className="pr-16"
+                    maxLength={100}
+                    disabled={isDisabled("production")}
+                  />
+                </div>
               </Field>
               <EventContactPhoneField
                 value={contactPhoneField.value}
@@ -245,7 +233,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                       setValueAs: handleSetValueAs,
                     })}
                     placeholder="문의처 이메일을 입력해주세요. (최대 254자)"
-                    className="pl-8"
+                    className="pl-8 pr-16"
                     maxLength={254}
                     aria-invalid={!!errors.contactEmail}
                     disabled={isDisabled("contactEmail")}
@@ -282,17 +270,26 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
 
             <Field>
               <FieldLabel htmlFor="operatingRemarks">비고</FieldLabel>
-              <Textarea
-                id="operatingRemarks"
-                {...register("operatingRemarks", {
-                  setValueAs: handleSetValueAs,
-                })}
-                placeholder="운영상의 특이사항을 입력해주세요. (최대 1000자)"
-                rows={3}
-                maxLength={1000}
-                className="resize-none"
-                disabled={isDisabled("operatingRemarks")}
-              />
+              <div className="relative">
+                <Textarea
+                  id="operatingRemarks"
+                  {...register("operatingRemarks", {
+                    setValueAs: handleSetValueAs,
+                  })}
+                  placeholder="운영상의 특이사항을 입력해주세요. (최대 1000자)"
+                  rows={3}
+                  maxLength={1000}
+                  className="resize-none pr-20"
+                  disabled={isDisabled("operatingRemarks")}
+                />
+                <CharCount
+                  control={control}
+                  name="operatingRemarks"
+                  maxLength={1000}
+                  disabled={isDisabled("operatingRemarks")}
+                  className="absolute right-3 bottom-3"
+                />
+              </div>
             </Field>
           </div>
         </div>
