@@ -60,7 +60,7 @@ const ScanStatusPill = ({
     : result
       ? result.isSuccess
         ? "bg-green-600/85 text-gomin-white"
-        : "bg-destructive/85 text-gomin-white"
+        : "bg-destructive/75 text-gomin-white"
       : "bg-gomin-black/85 text-gomin-white";
   const shouldAnimateResult = !isChecking && result !== null;
 

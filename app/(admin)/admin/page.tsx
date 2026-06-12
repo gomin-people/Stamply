@@ -18,7 +18,7 @@ const AdminHomePage = async () => {
 
   return (
     <main className="min-h-screen bg-gomin-neutral-100 flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-125 bg-white rounded-2xl shadow-sm px-12 py-12 flex flex-col items-center gap-8">
+      <div className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:zoom-in-98 flex w-full max-w-125 flex-col items-center gap-8 rounded-2xl bg-white px-12 py-12 shadow-sm motion-safe:duration-300 motion-safe:ease-out">
         <div className="flex flex-col items-center gap-2">
           <StamploLogo />
           <p className="text-base text-[#6D6D6D]">행사 운영 관리자 로그인</p>

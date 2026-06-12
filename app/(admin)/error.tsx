@@ -9,7 +9,9 @@ export default function AdminError({
   return (
     <div>
       <p>문제가 발생했습니다.</p>
-      <button onClick={reset}>다시 시도</button>
+      <button className="cursor-pointer" onClick={reset}>
+        다시 시도
+      </button>
     </div>
   );
 }

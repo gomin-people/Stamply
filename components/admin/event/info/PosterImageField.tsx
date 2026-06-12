@@ -107,7 +107,7 @@ const PosterImageField = memo(function PosterImageField({
             onClick={triggerFileInput}
             disabled={isUploading || disabled}
             className={cn(
-              "flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50 disabled:opacity-50",
+              "flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/30 text-muted-foreground transition-colors hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-50",
               error ? "border-destructive" : "border-input"
             )}
           >
