@@ -2,7 +2,7 @@
 
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { z } from "zod";
-import { useForm, useController } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { MapPin, Mail } from "lucide-react";
 import { type StepFormHandle } from "@/types";
@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import CharCount from "@/components/admin/common/CharCount";
 import PosterImageField from "@/components/admin/event/info/PosterImageField";
 import EventContactPhoneField from "@/components/admin/event/info/EventContactPhoneField";
-import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
+import { stripInvisibleChars } from "@/utils";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import { toast } from "sonner";
 
@@ -56,6 +56,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   const isDisabled = (field: DisabledField) =>
     disabledFields === "all" ||
     (Array.isArray(disabledFields) && disabledFields.includes(field));
+
   const [isUploading, setIsUploading] = useState(false);
 
   const {
@@ -67,21 +68,8 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
   } = useForm<FormState>({
     defaultValues: buildDefaultValues(initialData),
     resolver: standardSchemaResolver(EventInfoSchema),
+    mode: "onChange",
   });
-
-  const { fieldState: posterImageState, field: posterImageField } =
-    useController({ control, name: "posterImageUrl" });
-  const { field: contactPhoneField, fieldState: contactPhoneState } =
-    useController({ control, name: "contactPhone" });
-
-  const handlePosterChange = (url: string) => posterImageField.onChange(url);
-
-  const handlePosterRemove = () => posterImageField.onChange("");
-
-  const handleContactPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    contactPhoneField.onChange(
-      formatPhoneNumber(stripInvisibleChars(e.target.value).trim())
-    );
 
   useImperativeHandle(
     ref,
@@ -115,11 +103,8 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
       <form>
         <div className="flex min-h-166 gap-8">
           <PosterImageField
-            value={posterImageField.value}
-            error={posterImageState.error?.message}
+            control={control}
             onUploadingChange={setIsUploading}
-            onChange={handlePosterChange}
-            onRemove={handlePosterRemove}
             disabled={isDisabled("posterImageUrl")}
           />
 
@@ -214,9 +199,7 @@ const EventInfoForm = forwardRef<StepFormHandle, Props>(function EventInfoForm(
                 </div>
               </Field>
               <EventContactPhoneField
-                value={contactPhoneField.value}
-                error={contactPhoneState.error?.message}
-                onChange={handleContactPhoneChange}
+                control={control}
                 disabled={isDisabled("contactPhone")}
               />
             </div>

@@ -2,6 +2,9 @@
 
 import { memo, useRef, useEffect } from "react";
 import { ImageIcon, X, Loader2 } from "lucide-react";
+import { useController, type Control } from "react-hook-form";
+import { z } from "zod";
+import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import useImageUpload from "@/hooks/useImageUpload";
 import { cn } from "@/utils/index";
 import { Button } from "@/components/ui/button";
@@ -13,27 +16,28 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 
+type FormState = z.infer<typeof EventInfoSchema>;
+
 const POSTER_ALLOWED_MIME_TYPES = ["image/jpeg", "image/png"];
 const POSTER_ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"];
 
 type Props = {
-  value: string;
-  error?: string;
+  control: Control<FormState>;
   disabled?: boolean;
   onUploadingChange: (isUploading: boolean) => void;
-  onChange: (url: string) => void;
-  onRemove: () => void;
 };
 
 const PosterImageField = memo(function PosterImageField({
-  value,
-  error,
+  control,
   disabled,
-
   onUploadingChange,
-  onChange,
-  onRemove,
 }: Props) {
+  const { field, fieldState } = useController({
+    control,
+    name: "posterImageUrl",
+  });
+  const value = field.value;
+  const error = fieldState.error?.message;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -48,7 +52,7 @@ const PosterImageField = memo(function PosterImageField({
     allowedMimeTypes: POSTER_ALLOWED_MIME_TYPES,
     allowedExtensions: POSTER_ALLOWED_EXTENSIONS,
     onUrlChange: (url) => {
-      if (url) onChange(url);
+      if (url) field.onChange(url);
     },
   });
 
@@ -59,7 +63,7 @@ const PosterImageField = memo(function PosterImageField({
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
     handleImageRemove();
-    onRemove();
+    field.onChange("");
   };
 
   return (
@@ -102,7 +106,7 @@ const PosterImageField = memo(function PosterImageField({
             )}
           </div>
         ) : (
-          <button
+          <Button
             type="button"
             onClick={triggerFileInput}
             disabled={isUploading || disabled}
@@ -113,7 +117,7 @@ const PosterImageField = memo(function PosterImageField({
           >
             <ImageIcon className="size-8 text-primary/40" />
             <span className="text-xs">클릭해서 업로드해주세요.</span>
-          </button>
+          </Button>
         )}
       </div>
       <input
