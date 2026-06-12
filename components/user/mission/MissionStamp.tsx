@@ -18,7 +18,10 @@ type MissionStampProps = {
   stampImageUrl?: string | null;
 };
 
-const MissionStamp = ({ mission, stampImageUrl }: MissionStampProps) => {
+export default function MissionStamp({
+  mission,
+  stampImageUrl,
+}: MissionStampProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -28,16 +31,16 @@ const MissionStamp = ({ mission, stampImageUrl }: MissionStampProps) => {
         className={cn(
           "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden transition-colors",
           mission.isStamped
-            ? "bg-gomin-primary-100 border border-gomin-primary-200/50 animate-stamp-card-pop"
+            ? "bg-gomin-primary-100 border border-gomin-primary-200/50 animate-stamp-color animate-stamp-card-pop"
             : "bg-gomin-neutral-100 border border-transparent"
         )}
       >
         <div className="flex flex-col items-center justify-center text-center z-10 w-full px-1">
           <span
             className={cn(
-              "w-full text-2xl font-sans font-black break-keep line-clamp-none",
+              "w-full text-2xl font-sans font-black break-keep line-clamp-none transition-colors",
               mission.isStamped
-                ? "text-gomin-neutral-800/80"
+                ? "text-gomin-neutral-800/80 animate-stamp-color"
                 : "text-gomin-neutral-600"
             )}
           >
@@ -73,6 +76,4 @@ const MissionStamp = ({ mission, stampImageUrl }: MissionStampProps) => {
       />
     </>
   );
-};
-
-export default MissionStamp;
+}
