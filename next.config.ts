@@ -3,7 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactCompiler: true,
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: [
+      "lucide-react",
+      "recharts",
+      "@dnd-kit/core",
+      "@dnd-kit/sortable",
+      "motion",
+    ],
   },
   images: {
     formats: ["image/avif", "image/webp"],

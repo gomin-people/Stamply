@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { cn } from "@/utils";
 
 type DropzoneProps = {
