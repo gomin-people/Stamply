@@ -1,8 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import { Check, Gift, Users, Zap } from "lucide-react";
-import DashboardKpiCard from "@/components/admin/dashboard/DashboardKpiCard";
+import {
+  CheckIcon,
+  PartyPopperIcon,
+  StampIcon,
+  UsersIcon,
+} from "lucide-animated";
+import DashboardKpiCard, {
+  type KpiIconComponent,
+} from "@/components/admin/dashboard/DashboardKpiCard";
 import MissionCompletionStatus from "@/components/admin/dashboard/MissionCompletionStatus";
 import dynamic from "next/dynamic";
 
@@ -42,7 +49,7 @@ const dashboardCardMeta: {
   key: AdminDashboardKpiKey;
   title: string;
   info: string;
-  icon: React.ReactNode;
+  icon: KpiIconComponent;
   colorClassNames: {
     icon: string;
     value: string;
@@ -52,7 +59,7 @@ const dashboardCardMeta: {
     key: "participants",
     title: "참여자 수",
     info: "오늘 입장한 참여자 수 / 행사 전체 참여자 수",
-    icon: <Users className="size-6" aria-hidden="true" />,
+    icon: UsersIcon,
     colorClassNames: {
       icon: "bg-[#EEF4FF] text-[#4D7CFE]",
       value: "text-[#4D7CFE]",
@@ -62,7 +69,7 @@ const dashboardCardMeta: {
     key: "missionInProgress",
     title: "미션 진행 중",
     info: "오늘 미션 진행 중 참여자 수 / 오늘 참여자 수 (미션 전체 완료자 제외)",
-    icon: <Zap className="size-6" aria-hidden="true" />,
+    icon: StampIcon,
     colorClassNames: {
       icon: "bg-[#FFF1D6] text-[#F59E0B]",
       value: "text-[#F59E0B]",
@@ -72,7 +79,7 @@ const dashboardCardMeta: {
     key: "missionCompleted",
     title: "미션 전체 완료",
     info: "오늘 미션 전체 완료자 수 / 오늘 미션 진행 중 참여자 수",
-    icon: <Check className="size-6" aria-hidden="true" />,
+    icon: CheckIcon,
     colorClassNames: {
       icon: "bg-[#DDF7ED] text-[#20B486]",
       value: "text-[#20B486]",
@@ -82,7 +89,7 @@ const dashboardCardMeta: {
     key: "rewardClaimed",
     title: "굿즈 수령 완료",
     info: "굿즈 수령 완료자 수 / 행사 전체 미션 전체 완료자 수",
-    icon: <Gift className="size-6" aria-hidden="true" />,
+    icon: PartyPopperIcon,
     colorClassNames: {
       icon: "bg-[#F3F1FE] text-[#5435EB]",
       value: "text-[#5435EB]",
