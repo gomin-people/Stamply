@@ -98,10 +98,10 @@ const CompletePageClient = () => {
               type="button"
               onClick={handleStaffConfirm}
               disabled={isPending}
-              className="w-full py-4.5 rounded-[22px] font-nanum font-extrabold text-[18px] bg-white text-gomin-primary-700 hover:bg-gomin-primary-100 disabled:bg-gomin-primary-200 disabled:text-gomin-primary-400 disabled:cursor-not-allowed transition-all shadow-lg active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-4.5 rounded-[22px] font-nanum font-extrabold text-[18px] bg-white text-gomin-primary-700 disabled:bg-gomin-primary-200 disabled:text-gomin-primary-400 disabled:cursor-not-allowed transition-transform shadow-lg active:scale-97 cursor-pointer flex items-center justify-center gap-2"
             >
               {isPending ? (
-                <span className="size-5 border-2 border-gomin-primary-700 border-t-transparent rounded-full animate-spin" />
+                <span className="size-4.5 border-2 border-gomin-primary-700 border-t-transparent rounded-full animate-spin" />
               ) : (
                 "리워드 QR 생성"
               )}
