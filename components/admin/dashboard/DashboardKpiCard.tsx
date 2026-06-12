@@ -1,4 +1,7 @@
+"use client";
+
 import { Info } from "lucide-react";
+import AnimatedNumber from "@/components/admin/common/AnimatedNumber";
 import { cn, formatNumber } from "@/utils";
 
 type Props = {
@@ -13,6 +16,7 @@ type Props = {
     value: string;
   };
   info: string;
+  ready?: boolean;
 };
 
 const DashboardKpiCard = ({
@@ -21,6 +25,7 @@ const DashboardKpiCard = ({
   countData,
   colorClassNames,
   info,
+  ready = true,
 }: Props) => {
   const todayCount = formatNumber(countData.today);
   const totalCount = formatNumber(countData.total);
@@ -85,7 +90,7 @@ const DashboardKpiCard = ({
               )}
               title={`${todayCount}명`}
             >
-              {todayCount}
+              <AnimatedNumber value={countData.today} ready={ready} />
             </div>
             {!shouldStackTotalCount && (
               <div

@@ -135,6 +135,7 @@ const DashboardClient = ({ eventId }: Props) => {
     onInvalidate: refetchKpis,
   });
   useAlignedMinuteRefetch(refetchAllDashboardData, isEventIdValid);
+  const kpisReady = kpisQuery.isSuccess && !!kpisData;
 
   const kpis = kpisData ?? emptyKpis;
 
@@ -143,12 +144,13 @@ const DashboardClient = ({ eventId }: Props) => {
       <div className="mt-8 grid grid-cols-4 gap-4">
         {dashboardCardMeta.map((card) => (
           <DashboardKpiCard
-            key={card.key}
+            key={`${eventId}-${card.key}`}
             title={card.title}
             countData={kpis[card.key]}
             icon={card.icon}
             colorClassNames={card.colorClassNames}
             info={card.info}
+            ready={kpisReady}
           />
         ))}
       </div>
