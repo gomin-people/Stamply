@@ -1,4 +1,7 @@
-import { House, LayoutGrid, Target, type LucideIcon } from "lucide-react"; // todo: 아이콘 라이브러리 변경 고려
+export type AdminSidebarIconName =
+  | "layout-grid"
+  | "calendar-check-2"
+  | "clipboard-check";
 
 export type AdminRouteConfig = {
   pattern: string;
@@ -6,7 +9,7 @@ export type AdminRouteConfig = {
   description?: AdminRouteDescriptionSegment[];
   sidebar?: {
     title?: string;
-    icon: LucideIcon;
+    icon: AdminSidebarIconName;
   };
 };
 
@@ -41,7 +44,7 @@ export const adminRoutes: AdminRouteConfig[] = [
       { type: "text", text: "의 실시간 현황입니다." },
     ],
     sidebar: {
-      icon: LayoutGrid,
+      icon: "layout-grid",
     },
   },
   {
@@ -60,7 +63,7 @@ export const adminRoutes: AdminRouteConfig[] = [
     ],
     sidebar: {
       title: "행사 관리",
-      icon: House,
+      icon: "calendar-check-2",
     },
   },
   {
@@ -74,7 +77,7 @@ export const adminRoutes: AdminRouteConfig[] = [
       },
     ],
     sidebar: {
-      icon: Target,
+      icon: "clipboard-check",
     },
   },
 ];
