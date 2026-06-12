@@ -5,6 +5,7 @@ import { ImageIcon, X, Loader2 } from "lucide-react";
 import useImageUpload from "@/hooks/useImageUpload";
 import { cn } from "@/utils/index";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Field,
   FieldDescription,
@@ -78,9 +79,12 @@ const PosterImageField = memo(function PosterImageField({
           </div>
         ) : value ? (
           <div className="relative h-full w-full">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
+              width={400}
+              height={600}
               src={value}
+              fetchPriority={"high"}
+              loading="eager"
               alt="포스터 미리보기"
               className="h-full w-full rounded-lg object-cover"
             />

@@ -43,7 +43,8 @@ const EventDetailPage = () => {
               src={event.posterImageUrl}
               alt="행사 포스터"
               fill
-              priority
+              fetchPriority={"high"}
+              loading="eager"
               className="object-cover"
               sizes="(max-width: 448px) 100vw, 400px"
             />
