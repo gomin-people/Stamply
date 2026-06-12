@@ -1,22 +1,35 @@
 "use client";
 import { memo } from "react";
 import { Phone } from "lucide-react";
+import { useController, useFormContext } from "react-hook-form";
+import { z } from "zod";
+import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
+import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
+type FormState = z.infer<typeof EventInfoSchema>;
+
 type Props = {
-  value: string;
-  error?: string;
   disabled?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const EventContactPhoneField = memo(function EventContactPhoneField({
-  value,
-  error,
   disabled,
-  onChange,
 }: Props) {
+  const { control } = useFormContext<FormState>();
+  const { field, fieldState } = useController({
+    control,
+    name: "contactPhone",
+  });
+  const value = field.value;
+  const error = fieldState.error?.message;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    field.onChange(
+      formatPhoneNumber(stripInvisibleChars(e.target.value).trim())
+    );
+
   return (
     <Field data-invalid={!!error}>
       <FieldLabel htmlFor="contactPhone">문의처 전화번호</FieldLabel>
@@ -26,7 +39,7 @@ const EventContactPhoneField = memo(function EventContactPhoneField({
           id="contactPhone"
           name="contactPhone"
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           placeholder="000-0000-0000"
           className="pl-8"
           maxLength={13}
