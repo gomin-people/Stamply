@@ -48,7 +48,8 @@ export const completeMissionFromQr = async (
     if (response.status === 201) {
       return {
         type: "completed",
-        missionId: body?.data?.mission?.id as number,
+        missionId: (body as { data?: { mission?: { id?: number } } })?.data
+          ?.mission?.id as number,
       };
     }
 
