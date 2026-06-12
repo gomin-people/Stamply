@@ -18,7 +18,6 @@ type HandleQrScanResultParams = {
   hasScanned: boolean;
   currentEventId: string;
   markScanned: () => void;
-  navigateToMissionPage: () => void;
   navigateToEvent: (path: string) => void;
   releaseScanLockAfterMessage: () => void;
   setMissionChecking: (isChecking: boolean) => void;
@@ -48,7 +47,6 @@ const handleQrScanResult = async ({
   hasScanned,
   currentEventId,
   markScanned,
-  navigateToMissionPage,
   navigateToEvent,
   releaseScanLockAfterMessage,
   setMissionChecking,
@@ -71,7 +69,9 @@ const handleQrScanResult = async ({
     const missionCheckResult = await completeMissionFromQr(scanTarget.path);
 
     if (missionCheckResult.type === "completed") {
-      navigateToMissionPage();
+      window.location.assign(
+        `/event/${currentEventId}/mission?newMission=${missionCheckResult.missionId}`
+      );
       return;
     }
 
@@ -210,9 +210,6 @@ const QrCheckClient = ({ eventId }: QrCheckClientProps) => {
         currentEventId: eventId,
         markScanned: () => {
           hasScannedRef.current = true;
-        },
-        navigateToMissionPage: () => {
-          window.location.assign(`/event/${eventId}/mission`);
         },
         navigateToEvent: (eventPath) => {
           router.push(eventPath);

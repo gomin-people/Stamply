@@ -10,6 +10,7 @@ export const MISSION_CHECK_FAILED_MESSAGE = "미션 확인에 실패했습니다
 type CompleteMissionFromQrResult =
   | {
       type: "completed"; // 미션 완료
+      missionId: number;
     }
   | {
       type: "alreadyCompleted"; // 이미 완료한 미션
@@ -45,7 +46,10 @@ export const completeMissionFromQr = async (
     const responseMessage = getResponseMessage(body);
 
     if (response.status === 201) {
-      return { type: "completed" };
+      return {
+        type: "completed",
+        missionId: body?.data?.mission?.id as number,
+      };
     }
 
     if (response.status === 409) {

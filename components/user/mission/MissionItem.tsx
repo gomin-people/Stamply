@@ -17,9 +17,14 @@ type Mission = {
 type MissionItemProps = {
   mission: Mission;
   stampImageUrl?: string | null;
+  isNewStamped?: boolean;
 };
 
-const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
+const MissionItem = ({
+  mission,
+  stampImageUrl,
+  isNewStamped = false,
+}: MissionItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -28,9 +33,8 @@ const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
         onClick={() => setIsOpen(true)}
         className={cn(
           "flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent transition-colors",
-          mission.isStamped
-            ? "bg-gomin-primary-100 animate-stamp-color animate-stamp-card-pop"
-            : "bg-gomin-neutral-100 "
+          mission.isStamped ? "bg-gomin-primary-100" : "bg-gomin-neutral-100",
+          mission.isStamped && isNewStamped && "animate-stamp-card-pop"
         )}
       >
         <div className="w-26 h-26 shrink-0 relative flex items-center justify-center select-none">
@@ -44,10 +48,18 @@ const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
               sizes="104px"
               fetchPriority="high"
               loading="eager"
-              className="object-contain animate-stamp-press"
+              className={cn(
+                "object-contain",
+                isNewStamped && "animate-stamp-press"
+              )}
             />
           ) : (
-            <IconStamplo className="w-full h-full text-gomin-primary-700 animate-stamp-press" />
+            <IconStamplo
+              className={cn(
+                "w-full h-full text-gomin-primary-700",
+                isNewStamped && "animate-stamp-press"
+              )}
+            />
           )}
         </div>
 

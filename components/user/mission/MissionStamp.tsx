@@ -16,11 +16,13 @@ type Mission = {
 type MissionStampProps = {
   mission: Mission;
   stampImageUrl?: string | null;
+  isNewStamped?: boolean;
 };
 
 export default function MissionStamp({
   mission,
   stampImageUrl,
+  isNewStamped = false,
 }: MissionStampProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,7 +33,7 @@ export default function MissionStamp({
         className={cn(
           "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden transition-colors",
           mission.isStamped
-            ? "bg-gomin-primary-100 border border-gomin-primary-200/50 animate-stamp-color animate-stamp-card-pop"
+            ? `bg-gomin-primary-100 border border-gomin-primary-200/50${isNewStamped ? " animate-stamp-card-pop" : ""}`
             : "bg-gomin-neutral-100 border border-transparent"
         )}
       >
@@ -49,7 +51,12 @@ export default function MissionStamp({
         </div>
 
         {mission.isStamped && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700 animate-stamp-press">
+          <div
+            className={cn(
+              "absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700",
+              isNewStamped && "animate-stamp-press"
+            )}
+          >
             {stampImageUrl ? (
               <div className="relative w-[81%] h-[85%]">
                 <Image
