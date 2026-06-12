@@ -11,13 +11,13 @@ type Props<T extends FieldValues> = {
   className?: string;
 };
 
-function CharCount<T extends FieldValues>({
+const CharCount = <T extends FieldValues>({
   control,
   name,
   maxLength,
   disabled,
   className,
-}: Props<T>) {
+}: Props<T>) => {
   const value = useWatch({ control, name }) ?? "";
   const current = String(value).length;
 
@@ -32,6 +32,6 @@ function CharCount<T extends FieldValues>({
       {current}/{maxLength}
     </span>
   );
-}
+};
 
 export default CharCount;
