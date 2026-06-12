@@ -17,13 +17,14 @@ type MissionStampProps = {
   mission: Mission;
   stampImageUrl?: string | null;
   isNewStamped?: boolean;
+  onStampReady?: () => void;
 };
-
-export default function MissionStamp({
+const MissionStamp = ({
   mission,
   stampImageUrl,
   isNewStamped = false,
-}: MissionStampProps) {
+  onStampReady,
+}: MissionStampProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [stampReady, setStampReady] = useState(!isNewStamped || !stampImageUrl);
 
@@ -74,7 +75,10 @@ export default function MissionStamp({
                     "object-contain opacity-95",
                     isNewStamped && !stampReady && "invisible"
                   )}
-                  onLoad={() => setStampReady(true)}
+                  onLoad={() => {
+                    setStampReady(true);
+                    onStampReady?.();
+                  }}
                 />
               </div>
             ) : (
@@ -91,4 +95,6 @@ export default function MissionStamp({
       />
     </>
   );
-}
+};
+
+export default MissionStamp;
