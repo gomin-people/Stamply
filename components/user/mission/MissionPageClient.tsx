@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, memo } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BrochureButton from "@/components/user/mission/BrochureButton";
 import ViewToggle from "@/components/user/mission/ViewToggle";
@@ -16,7 +16,6 @@ import {
 import { cn } from "@/utils";
 import { buildInitialData } from "@/utils/participant-mission";
 
-// Supabase의 event 테이블 타입 인터페이스 정의
 type EventData = {
   id: number;
   title?: string;
@@ -57,22 +56,17 @@ const MissionPageClient = ({
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
-  const prevStampedIds = useRef<Set<number>>(new Set());
-  const newlyStampedIds = useRef<Set<number>>(new Set());
 
   const initialData: ParticipantMissions | undefined =
     !isPreview && initialMissions.length > 0
       ? buildInitialData(initialMissions)
       : undefined;
 
-  // React Query를 통해 DB에서 참여자의 실시간 완료 스탬프 현황 데이터를 가져옴
   const { data, isError } = useParticipantMissionsQuery({
     enabled: !isPreview,
     initialData,
   });
 
-  // 1순위: 로그인/참여 완료 세션 정보가 반영된 React Query 실시간 데이터
-  // 2순위: 서버 컴포넌트에서 pre-fetch해 준 원본 미션 목록 데이터 (서버 완료 상태 반영)
   const missions: ClientMission[] =
     data && !isPreview
       ? (data.missions as ParticipantMission[]).map((m) => ({
@@ -88,27 +82,14 @@ const MissionPageClient = ({
           isStamped: !!m.isCompleted,
         }));
 
-  // 이번 세션에 새로 찍힌 미션 ID 추적
-  missions.forEach((m) => {
-    if (m.isStamped && !prevStampedIds.current.has(m.id)) {
-      if (prevStampedIds.current.size > 0) {
-        newlyStampedIds.current.add(m.id);
-      }
-      prevStampedIds.current.add(m.id);
-    }
-  });
-
-  // 미완료된 미션 수 계산
   const incompleteCount = missions.filter((m) => !m.isStamped).length;
   const isAllCompleted = incompleteCount === 0;
 
-  // 설문조사 완료 여부 (성별/연령대 입력 여부)
   const isSurveyCompleted =
     data && !isPreview
       ? !!data.participant.gender && !!data.participant.ageRange
       : false;
 
-  // 리워드 수령 완료 여부
   const isRewardClaimed =
     data && !isPreview ? data.participant.isRewardClaimed : false;
 
@@ -118,7 +99,6 @@ const MissionPageClient = ({
   const showBrochureButton = isPreview || !hasError;
   const showMissionUI = isPreview || (showBrochureButton && !isMissionsEmpty);
 
-  // QR 체크 안내 또는 완료 페이지 이동
   const handleAction = () => {
     if (isAllCompleted) {
       if (isSurveyCompleted) {
@@ -135,7 +115,6 @@ const MissionPageClient = ({
     router.push(`/event/${eventId}/complete`);
   };
 
-  // DB에서 불러온 title (또는 name)을 1순위로 사용하며 예외 처리 제공
   const eventName = event?.title || event?.name || `이벤트 #${eventId}`;
 
   return (
@@ -150,18 +129,15 @@ const MissionPageClient = ({
       )}
     >
       <main className="flex-1 max-w-md w-full mx-auto px-6 pt-4 pb-1.5 overflow-x-hidden">
-        {/* 2. 타이틀 & 브로슈어 안내장 버튼 레이아웃 */}
         <div className="flex items-center justify-between gap-4 mb-5">
           <h1 className="text-4xl font-nanum font-extrabold leading-11.25 text-gomin-primary-700 tracking-tight select-none">
             {eventName}
           </h1>
-          {/* 우측 별도 컴포넌트로 보여지는 브로슈어 버튼 */}
           {showBrochureButton && (
             <BrochureButton eventId={eventId} className="animate-bounce-once" />
           )}
         </div>
 
-        {/* 3. 진행 상황 안내 문구 */}
         {showMissionUI && (
           <div className="mb-4 min-h-14 flex items-center">
             {!isAllCompleted ? (
@@ -183,14 +159,12 @@ const MissionPageClient = ({
           </div>
         )}
 
-        {/* 4. UI 선택 토글 버튼 (리스트형 vs 격자형) */}
         {showMissionUI && (
           <div className="flex justify-end mb-5">
             <ViewToggle viewMode={viewMode} onChange={setViewMode} />
           </div>
         )}
 
-        {/* 5. 미션 뷰 렌더링 영역 */}
         <div className="transition-all duration-300">
           {isShowEmpty ? (
             <div className="flex flex-col items-center justify-center pb-20 pt-40 text-center select-none">
@@ -202,26 +176,22 @@ const MissionPageClient = ({
               </p>
             </div>
           ) : viewMode === "grid" ? (
-            /* 스탬프 뷰: 격자형 정사각형 카드 */
             <div className="grid grid-cols-2 gap-4">
               {missions.map((mission) => (
                 <MissionStamp
                   key={mission.id}
                   mission={mission}
                   stampImageUrl={event.stampImageUrl}
-                  isNewlyStamped={newlyStampedIds.current.has(mission.id)}
                 />
               ))}
             </div>
           ) : (
-            /* 리스트 뷰: 가로형 카드 */
             <div className="flex flex-col gap-4">
               {missions.map((mission) => (
                 <MissionItem
                   key={mission.id}
                   mission={mission}
                   stampImageUrl={event.stampImageUrl}
-                  isNewlyStamped={newlyStampedIds.current.has(mission.id)}
                 />
               ))}
             </div>
@@ -229,7 +199,6 @@ const MissionPageClient = ({
         </div>
       </main>
 
-      {/* 6. 하단 고정 플로팅 액션 버튼 */}
       {showMissionUI && (
         <FloatingActionButton
           isAllCompleted={isAllCompleted}
@@ -240,7 +209,6 @@ const MissionPageClient = ({
         />
       )}
 
-      {/* 설문조사 모달 */}
       <SurveyModal
         isOpen={isSurveyOpen && !isSurveyCompleted}
         onClose={() => setIsSurveyOpen(false)}
@@ -250,4 +218,4 @@ const MissionPageClient = ({
   );
 };
 
-export default memo(MissionPageClient);
+export default MissionPageClient;

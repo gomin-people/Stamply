@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import IconStamplo from "@/components/icons/IconStamplo";
 import MissionDetailModal from "@/components/user/mission/MissionDetailModal";
 import { cn } from "@/utils";
@@ -15,14 +16,9 @@ type Mission = {
 type MissionStampProps = {
   mission: Mission;
   stampImageUrl?: string | null;
-  isNewlyStamped?: boolean;
 };
 
-const MissionStamp = ({
-  mission,
-  stampImageUrl,
-  isNewlyStamped = false,
-}: MissionStampProps) => {
+const MissionStamp = ({ mission, stampImageUrl }: MissionStampProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -30,12 +26,9 @@ const MissionStamp = ({
       <div
         onClick={() => setIsOpen(true)}
         className={cn(
-          "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden",
+          "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden transition-colors",
           mission.isStamped
-            ? cn(
-                "bg-gomin-primary-100 border border-gomin-primary-200/50",
-                isNewlyStamped && "animate-stamp-card-pop"
-              )
+            ? "bg-gomin-primary-100 border border-gomin-primary-200/50 animate-stamp-card-pop"
             : "bg-gomin-neutral-100 border border-transparent"
         )}
       >
@@ -53,19 +46,19 @@ const MissionStamp = ({
         </div>
 
         {mission.isStamped && (
-          <div
-            className={cn(
-              "absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700",
-              isNewlyStamped && "animate-stamp-press"
-            )}
-          >
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700 animate-stamp-press">
             {stampImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={stampImageUrl}
-                alt="Stamp"
-                className="w-[81%] h-[85%] object-contain opacity-95"
-              />
+              <div className="relative w-[81%] h-[85%]">
+                <Image
+                  src={stampImageUrl}
+                  alt="Stamp"
+                  fill
+                  sizes="160px"
+                  fetchPriority="high"
+                  loading="eager"
+                  className="object-contain opacity-95"
+                />
+              </div>
             ) : (
               <IconStamplo className="w-[81%] h-[85%] aspect-162/171 opacity-95" />
             )}

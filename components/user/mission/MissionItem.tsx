@@ -17,14 +17,9 @@ type Mission = {
 type MissionItemProps = {
   mission: Mission;
   stampImageUrl?: string | null;
-  isNewlyStamped?: boolean;
 };
 
-const MissionItem = ({
-  mission,
-  stampImageUrl,
-  isNewlyStamped = false,
-}: MissionItemProps) => {
+const MissionItem = ({ mission, stampImageUrl }: MissionItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -32,12 +27,9 @@ const MissionItem = ({
       <div
         onClick={() => setIsOpen(true)}
         className={cn(
-          "flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent",
+          "flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent transition-colors",
           mission.isStamped
-            ? cn(
-                "bg-gomin-primary-100",
-                isNewlyStamped && "animate-stamp-card-pop"
-              )
+            ? "bg-gomin-primary-100 animate-stamp-card-pop"
             : "bg-gomin-neutral-100"
         )}
       >
@@ -49,25 +41,20 @@ const MissionItem = ({
               src={stampImageUrl}
               alt="Stamp"
               fill
-              className={cn(
-                "object-contain",
-                isNewlyStamped && "animate-stamp-press"
-              )}
+              sizes="104px"
+              fetchPriority="high"
+              loading="eager"
+              className="object-contain animate-stamp-press"
             />
           ) : (
-            <IconStamplo
-              className={cn(
-                "w-full h-full text-gomin-primary-700",
-                isNewlyStamped && "animate-stamp-press"
-              )}
-            />
+            <IconStamplo className="w-full h-full text-gomin-primary-700 animate-stamp-press" />
           )}
         </div>
 
         <div className="flex flex-col text-left space-y-2 flex-1 min-w-0">
           <span
             className={cn(
-              "text-[24px] font-sans font-black tracking-tight leading-tight break-keep line-clamp-2",
+              "text-[24px] font-sans font-black tracking-tight leading-tight break-keep line-clamp-2 transition-colors",
               mission.isStamped
                 ? "text-gomin-primary-700"
                 : "text-gomin-neutral-600"
@@ -77,7 +64,7 @@ const MissionItem = ({
           </span>
           <div
             className={cn(
-              "text-[16px] font-sans font-bold leading-tight tracking-tight break-keep line-clamp-2",
+              "text-[16px] font-sans font-bold leading-tight tracking-tight break-keep line-clamp-2 transition-colors",
               mission.isStamped
                 ? "text-gomin-neutral-600"
                 : "text-gomin-neutral-500"
