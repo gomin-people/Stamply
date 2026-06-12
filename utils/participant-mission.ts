@@ -1,4 +1,5 @@
 import type { ParticipantMissions } from "@/features/participant/missions/participantMissionQueries";
+import type { ParticipantModel } from "@/types/models";
 
 type InitialMission = {
   id: number;
@@ -8,10 +9,12 @@ type InitialMission = {
 };
 
 export function buildInitialData(
-  initialMissions: InitialMission[]
+  initialMissions: InitialMission[],
+  initialParticipant?: ParticipantModel
 ): ParticipantMissions {
   return {
-    participant: {} as ParticipantMissions["participant"],
+    participant:
+      initialParticipant ?? ({} as ParticipantMissions["participant"]),
     missions: initialMissions.map((m) => ({
       id: m.id,
       eventsId: 0,

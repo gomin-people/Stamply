@@ -9,6 +9,7 @@ type FloatingActionButtonProps = {
   label?: string;
   isPreview?: boolean;
   isRewardClaimed?: boolean;
+  isLoading?: boolean;
 };
 
 export default function FloatingActionButton({
@@ -17,6 +18,7 @@ export default function FloatingActionButton({
   label,
   isPreview = false,
   isRewardClaimed = false,
+  isLoading = false,
 }: FloatingActionButtonProps) {
   return (
     <div
@@ -24,10 +26,15 @@ export default function FloatingActionButton({
     >
       <ThemedButton
         onClick={onClick}
-        disabled={isRewardClaimed}
+        disabled={isRewardClaimed || isLoading}
         className={`w-full max-w-none disabled:bg-gomin-neutral-200 disabled:text-gomin-neutral-400 disabled:cursor-not-allowed disabled:pointer-events-none disabled:shadow-none`}
       >
-        {label ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <span className="size-5 border-2 border-gomin-neutral-400 border-t-transparent rounded-full animate-spin" />
+            <span>로딩 중...</span>
+          </div>
+        ) : label ? (
           <span>{label}</span>
         ) : isRewardClaimed ? (
           <span>리워드 수령 완료</span>
