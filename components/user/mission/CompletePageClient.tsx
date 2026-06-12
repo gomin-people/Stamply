@@ -83,17 +83,17 @@ const CompletePageClient = () => {
       <div className="h-full overflow-hidden bg-gomin-primary-700 flex flex-col items-center justify-center p-6 text-center select-none">
         <div className="max-w-md w-full flex flex-col items-center justify-center space-y-10">
           {/* 1. 중앙 Stamplo 대형 원형 도장 그래픽 */}
-          <div className="w-64 h-64 shrink-0 flex items-center justify-center relative select-none">
+          <div className="w-64 h-64 shrink-0 flex items-center justify-center relative select-none animate-fade-up">
             <AnimatedIconStamplo className="w-full h-full text-white opacity-95 animate-fade-in scale-110" />
           </div>
 
           {/* 2. 안내 문구 */}
-          <p className="text-xl font-nanum font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line">
+          <p className="text-xl font-nanum font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line animate-fade-up-delay-1">
             리워드 수령처에서 아래 버튼을 눌러{"\n"}QR코드를 스캔하세요!
           </p>
 
           {/* 3. 하단 직원 확인 버튼 */}
-          <div className="w-full max-w-xs pt-4">
+          <div className="w-full max-w-xs pt-4 animate-fade-up-delay-2">
             <button
               type="button"
               onClick={handleStaffConfirm}
