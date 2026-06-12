@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Check } from "lucide-react";
 import {
@@ -37,18 +37,18 @@ type Props = {
 const MissionDialog = ({ mission, onSave }: Props) => {
   const [isPending, startTransition] = useTransition();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<MissionFormValues>({
+  const methods = useForm<MissionFormValues>({
     resolver: standardSchemaResolver(MissionFormSchema),
     defaultValues: {
       title: mission.title,
       description: mission.description ?? "",
     },
   });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
 
   const onSubmit = (values: MissionFormValues) => {
     startTransition(async () => {
@@ -73,61 +73,62 @@ const MissionDialog = ({ mission, onSave }: Props) => {
         </div>
       </DialogHeader>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FieldGroup className="py-2 min-h-55">
-          <Field>
-            <FieldTitle>
-              미션명 <span className="text-red-500">*</span>
-            </FieldTitle>
-            <div className="relative">
-              <Input
-                aria-invalid={!!errors.title}
-                className="pr-14"
-                maxLength={20}
-                placeholder="미션명을 입력해주세요. (최대 20자)"
-                {...register("title", { setValueAs: stripInvisibleChars })}
-              />
-            </div>
-            <FieldError>{errors.title?.message}</FieldError>
-          </Field>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FieldGroup className="py-2 min-h-55">
+            <Field>
+              <FieldTitle>
+                미션명 <span className="text-red-500">*</span>
+              </FieldTitle>
+              <div className="relative">
+                <Input
+                  aria-invalid={!!errors.title}
+                  className="pr-14"
+                  maxLength={20}
+                  placeholder="미션명을 입력해주세요. (최대 20자)"
+                  {...register("title", { setValueAs: stripInvisibleChars })}
+                />
+              </div>
+              <FieldError>{errors.title?.message}</FieldError>
+            </Field>
 
-          <Field>
-            <FieldTitle>설명</FieldTitle>
-            <div className="relative">
-              <Textarea
-                rows={4}
-                className="resize-none h-20 pr-20"
-                maxLength={500}
-                placeholder="미션 설명을 입력해주세요. (최대 500자)"
-                {...register("description", {
-                  setValueAs: stripInvisibleChars,
-                })}
-              />
-              <CharCount
-                control={control}
-                name="description"
-                maxLength={500}
-                className="absolute right-3 bottom-3"
-              />
-            </div>
-          </Field>
-        </FieldGroup>
+            <Field>
+              <FieldTitle>설명</FieldTitle>
+              <div className="relative">
+                <Textarea
+                  rows={4}
+                  className="resize-none h-20 pr-20"
+                  maxLength={500}
+                  placeholder="미션 설명을 입력해주세요. (최대 500자)"
+                  {...register("description", {
+                    setValueAs: stripInvisibleChars,
+                  })}
+                />
+                <CharCount
+                  name="description"
+                  maxLength={500}
+                  className="absolute right-3 bottom-3"
+                />
+              </div>
+            </Field>
+          </FieldGroup>
 
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">취소</Button>
-          </DialogClose>
-          <Button
-            type="submit"
-            variant="default"
-            className="bg-gomin-primary-700"
-            disabled={isPending}
-          >
-            <Check />
-            저장
-          </Button>
-        </DialogFooter>
-      </form>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">취소</Button>
+            </DialogClose>
+            <Button
+              type="submit"
+              variant="default"
+              className="bg-gomin-primary-700"
+              disabled={isPending}
+            >
+              <Check />
+              저장
+            </Button>
+          </DialogFooter>
+        </form>
+      </FormProvider>
     </DialogContent>
   );
 };

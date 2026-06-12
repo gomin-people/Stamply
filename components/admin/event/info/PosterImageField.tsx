@@ -2,7 +2,7 @@
 
 import { memo, useRef, useEffect } from "react";
 import { ImageIcon, X, Loader2 } from "lucide-react";
-import { useController, type Control } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import useImageUpload from "@/hooks/useImageUpload";
@@ -22,16 +22,15 @@ const POSTER_ALLOWED_MIME_TYPES = ["image/jpeg", "image/png"];
 const POSTER_ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"];
 
 type Props = {
-  control: Control<FormState>;
   disabled?: boolean;
   onUploadingChange: (isUploading: boolean) => void;
 };
 
 const PosterImageField = memo(function PosterImageField({
-  control,
   disabled,
   onUploadingChange,
 }: Props) {
+  const { control } = useFormContext<FormState>();
   const { field, fieldState } = useController({
     control,
     name: "posterImageUrl",

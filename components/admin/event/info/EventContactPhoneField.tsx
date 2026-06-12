@@ -1,7 +1,7 @@
 "use client";
 import { memo } from "react";
 import { Phone } from "lucide-react";
-import { useController, type Control } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { EventInfoSchema } from "@/types/schemas/adminEventInfoSchemas";
 import { formatPhoneNumber, stripInvisibleChars } from "@/utils";
@@ -11,14 +11,13 @@ import { Input } from "@/components/ui/input";
 type FormState = z.infer<typeof EventInfoSchema>;
 
 type Props = {
-  control: Control<FormState>;
   disabled?: boolean;
 };
 
 const EventContactPhoneField = memo(function EventContactPhoneField({
-  control,
   disabled,
 }: Props) {
+  const { control } = useFormContext<FormState>();
   const { field, fieldState } = useController({
     control,
     name: "contactPhone",

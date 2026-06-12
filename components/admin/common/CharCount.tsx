@@ -1,23 +1,17 @@
 "use client";
 
-import { useWatch, Control, FieldValues, Path } from "react-hook-form";
+import { useWatch, useFormContext } from "react-hook-form";
 import { cn } from "@/utils";
 
-type Props<T extends FieldValues> = {
-  control: Control<T>;
-  name: Path<T>;
+type Props = {
+  name: string;
   maxLength: number;
   disabled?: boolean;
   className?: string;
 };
 
-const CharCount = <T extends FieldValues>({
-  control,
-  name,
-  maxLength,
-  disabled,
-  className,
-}: Props<T>) => {
+const CharCount = ({ name, maxLength, disabled, className }: Props) => {
+  const { control } = useFormContext();
   const value = useWatch({ control, name }) ?? "";
   const current = String(value).length;
 
