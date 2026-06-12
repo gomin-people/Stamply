@@ -25,6 +25,7 @@ export default function MissionStamp({
   isNewStamped = false,
 }: MissionStampProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [stampReady, setStampReady] = useState(!isNewStamped || !stampImageUrl);
 
   return (
     <>
@@ -33,7 +34,10 @@ export default function MissionStamp({
         className={cn(
           "relative aspect-square flex flex-col items-center justify-center p-5 rounded-3xl cursor-pointer shadow-md select-none hover:shadow-lg active:scale-[0.97] overflow-hidden transition-colors",
           mission.isStamped
-            ? `bg-gomin-primary-100 border border-gomin-primary-200/50${isNewStamped ? " animate-stamp-card-pop" : ""}`
+            ? cn(
+                "bg-gomin-primary-100 border border-gomin-primary-200/50",
+                isNewStamped && stampReady && "animate-stamp-card-pop"
+              )
             : "bg-gomin-neutral-100 border border-transparent"
         )}
       >
@@ -54,7 +58,7 @@ export default function MissionStamp({
           <div
             className={cn(
               "absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none -rotate-12 scale-[0.95] text-gomin-primary-700",
-              isNewStamped && "animate-stamp-press"
+              isNewStamped && stampReady && "animate-stamp-press"
             )}
           >
             {stampImageUrl ? (
@@ -66,7 +70,11 @@ export default function MissionStamp({
                   sizes="160px"
                   fetchPriority="high"
                   loading="eager"
-                  className="object-contain opacity-95"
+                  className={cn(
+                    "object-contain opacity-95",
+                    isNewStamped && !stampReady && "invisible"
+                  )}
+                  onLoad={() => setStampReady(true)}
                 />
               </div>
             ) : (

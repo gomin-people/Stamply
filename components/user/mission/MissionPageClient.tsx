@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo } from "react";
+import { useState, memo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import BrochureButton from "@/components/user/mission/BrochureButton";
 import ViewToggle from "@/components/user/mission/ViewToggle";
@@ -102,6 +102,29 @@ const MissionPageClient = ({
   const isRewardClaimed =
     data && !isPreview ? data.participant.isRewardClaimed : false;
 
+  const hasConfettiFired = useRef(false);
+
+  useEffect(() => {
+    if (!isAllCompleted || hasConfettiFired.current) return;
+    hasConfettiFired.current = true;
+    import("canvas-confetti").then(({ default: confetti }) => {
+      confetti({
+        particleCount: 60,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: ["#4CAF50", "#FF9800", "#2196F3", "#E91E63", "#9C27B0"],
+      });
+      confetti({
+        particleCount: 60,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: ["#4CAF50", "#FF9800", "#2196F3", "#E91E63", "#9C27B0"],
+      });
+    });
+  }, [isAllCompleted]);
+
   const hasError = isError && !isPreview;
   const isMissionsEmpty = missions.length === 0 && !isPreview;
   const isShowEmpty = hasError || isMissionsEmpty;
@@ -164,7 +187,7 @@ const MissionPageClient = ({
                 리워드를 받으세요
               </h2>
             ) : (
-              <h2 className="text-2xl font-nanum font-extrabold text-gomin-black leading-tight tracking-tight flex items-center gap-1.5 select-none">
+              <h2 className="text-2xl font-nanum font-extrabold text-gomin-black leading-tight tracking-tight select-none animate-bounce-in">
                 🎉 축하합니다!
                 <br />
                 모든 스탬프를 수집했어요!

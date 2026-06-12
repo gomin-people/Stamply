@@ -290,6 +290,21 @@ input:-webkit-autofill {
   }
 }
 
+@keyframes bounce-in {
+  0% {
+    transform: translateY(-10px);
+  }
+  65% {
+    transform: translateY(3px);
+  }
+  85% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 @layer utilities {
   .animate-fade-up {
     animation: fade-up 0.5s ease-out both;
@@ -316,5 +331,11 @@ input:-webkit-autofill {
   }
   .animate-stamp-card-pop {
     animation: stamp-card-pop 0.3s ease-out 0.35s both;
+  }
+  .animate-bounce-in {
+    animation: bounce-in 0.4s ease-out 0.4s both;
+  }
+  .animate-bounce-in-delay {
+    animation: bounce-in 0.4s ease-out 80ms both;
   }
 }
