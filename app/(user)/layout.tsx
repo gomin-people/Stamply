@@ -9,7 +9,7 @@ export default function UserLayout({
   return (
     <div className="flex flex-col h-svh overflow-hidden">
       <LayoutHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 overflow-y-auto">{children}</main>
       <Toaster />
     </div>
   );
