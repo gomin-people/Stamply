@@ -10,7 +10,11 @@ const EventEntryPage = async ({ params }: EventEntryPageProps) => {
   const event = await getEntryEvent(eventId);
 
   return (
-    <EntryClient eventId={eventId} posterImageUrl={event.posterImageUrl} />
+    <EntryClient
+      eventId={eventId}
+      posterImageUrl={event.posterImageUrl}
+      hasBrochure={!!event.brochureImageUrl?.length}
+    />
   );
 };
 

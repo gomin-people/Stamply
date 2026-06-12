@@ -10,25 +10,24 @@ import ThemedButton from "@/components/user/common/ThemedButton";
 type EntryClientProps = {
   eventId: string;
   posterImageUrl: string;
+  hasBrochure: boolean;
 };
 
-const EntryClient = ({ eventId, posterImageUrl }: EntryClientProps) => {
+const EntryClient = ({
+  eventId,
+  posterImageUrl,
+  hasBrochure,
+}: EntryClientProps) => {
   const router = useRouter();
   const [exiting, setExiting] = useState(false);
 
+  const destination = `/event/${eventId}/${hasBrochure ? "brochure" : "mission"}`;
   const handleStart = () => !exiting && setExiting(true);
 
   return (
     <main className="h-full overflow-hidden bg-white flex justify-center">
-      <Link
-        href={`/event/${eventId}/brochure`}
-        className="hidden"
-        aria-hidden
-        tabIndex={-1}
-      />
-      <AnimatePresence
-        onExitComplete={() => router.push(`/event/${eventId}/brochure`)}
-      >
+      <Link href={destination} className="hidden" aria-hidden tabIndex={-1} />
+      <AnimatePresence onExitComplete={() => router.push(destination)}>
         {!exiting && (
           <motion.div
             key="entry-content"
