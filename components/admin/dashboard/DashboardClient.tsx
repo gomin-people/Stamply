@@ -4,8 +4,14 @@ import { useCallback, useEffect, useRef } from "react";
 import { Check, Gift, Users, Zap } from "lucide-react";
 import DashboardKpiCard from "@/components/admin/dashboard/DashboardKpiCard";
 import MissionCompletionStatus from "@/components/admin/dashboard/MissionCompletionStatus";
-import ParticipantAnalysisChart from "@/components/admin/dashboard/ParticipantAnalysisChart";
-import ParticipantDemographicsChart from "@/components/admin/dashboard/ParticipantDemographicsChart";
+import dynamic from "next/dynamic";
+
+const ParticipantAnalysisChart = dynamic(
+  () => import("@/components/admin/dashboard/ParticipantAnalysisChart")
+);
+const ParticipantDemographicsChart = dynamic(
+  () => import("@/components/admin/dashboard/ParticipantDemographicsChart")
+);
 import {
   useAdminDashboardAchieverStatisticsQuery,
   useAdminDashboardKpisQuery,
