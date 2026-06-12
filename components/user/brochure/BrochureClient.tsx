@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { cn } from "@/utils";
 import BrochureSlider from "@/components/user/brochure/BrochureSlider";
 import BrochureIndicator from "@/components/user/brochure/BrochureIndicator";
 import BrochureEventButton from "@/components/user/brochure/BrochureEventButton";
@@ -39,7 +40,10 @@ const BrochureClient = ({ images, showGuide }: Props) => {
       {!exiting && (
         <motion.div
           key="brochure-content"
-          className={`bg-gomin-white flex flex-col items-center pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))] ${!showGuide ? "animate-fade-in" : ""}`}
+          className={cn(
+            "bg-gomin-white flex flex-col items-center pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom))]",
+            !showGuide && "animate-fade-in"
+          )}
           exit={{ opacity: 0, transition: { duration: 0.35, ease: "easeIn" } }}
         >
           <div className="mb-4">
@@ -67,7 +71,7 @@ const BrochureClient = ({ images, showGuide }: Props) => {
           )}
           {fromMission && (
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50 flex justify-center">
-              <BrochureEventButton className="mt-4" />
+              <BrochureEventButton className="mt-4 animate-fade-in" />
             </div>
           )}
         </motion.div>
