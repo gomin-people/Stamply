@@ -234,3 +234,108 @@ input:-webkit-autofill {
     8px -8px,
     -8px 0px;
 }
+
+@keyframes stamp-press {
+  0% {
+    transform: scale(3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes stamp-card-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+    animation-timing-function: ease-in;
+  }
+  50% {
+    transform: translateY(-20%);
+    animation-timing-function: ease-in;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shake-in {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fade-up 0.5s ease-out both;
+  }
+  .animate-fade-up-delay-1 {
+    animation: fade-up 0.5s ease-out both;
+    animation-delay: 150ms;
+  }
+  .animate-fade-up-delay-2 {
+    animation: fade-up 0.5s ease-out both;
+    animation-delay: 300ms;
+  }
+  .animate-fade-in {
+    animation: fade-in 0.15s ease-out both;
+  }
+  .animate-fade-in-slow {
+    animation: fade-in 0.5s ease-out both;
+  }
+  .animate-bounce-once {
+    animation: bounce-soft 1.33s ease-in-out 3 forwards;
+  }
+  .animate-stamp-press {
+    animation: stamp-press 0.4s cubic-bezier(0.2, 0, 0.4, 1) forwards;
+  }
+  .animate-stamp-card-pop {
+    animation: stamp-card-pop 0.3s ease-out 0.35s both;
+  }
+  .animate-shake-in {
+    animation: shake-in 0.5s ease-out both;
+  }
+}
