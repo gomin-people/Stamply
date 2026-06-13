@@ -26,6 +26,7 @@ const MissionItem = ({
   isNewStamped = false,
 }: MissionItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [stampReady, setStampReady] = useState(!isNewStamped || !stampImageUrl);
 
   return (
     <>
@@ -34,7 +35,10 @@ const MissionItem = ({
         className={cn(
           "flex items-center gap-6 p-4 rounded-[20px] cursor-pointer w-full select-none hover:shadow-md active:scale-[0.99] shadow-sm border border-transparent transition-colors",
           mission.isStamped ? "bg-gomin-primary-100" : "bg-gomin-neutral-100",
-          mission.isStamped && isNewStamped && "animate-stamp-card-pop"
+          mission.isStamped &&
+            isNewStamped &&
+            stampReady &&
+            "animate-stamp-card-pop"
         )}
       >
         <div className="w-26 h-26 shrink-0 relative flex items-center justify-center select-none">
@@ -50,8 +54,10 @@ const MissionItem = ({
               loading="eager"
               className={cn(
                 "object-contain",
-                isNewStamped && "animate-stamp-press"
+                isNewStamped && !stampReady && "invisible",
+                isNewStamped && stampReady && "animate-stamp-press"
               )}
+              onLoad={() => setStampReady(true)}
             />
           ) : (
             <IconStamplo
