@@ -209,7 +209,9 @@ const MissionPageClient = ({
                   stampImageUrl={event.stampImageUrl}
                   isNewStamped={mission.id === newlyStampedId}
                   onStampReady={
-                    mission.id === newlyStampedId ? handleStampReady : undefined
+                    mission.id === newlyStampedId && isAllCompleted
+                      ? handleStampReady
+                      : undefined
                   }
                 />
               ))}
