@@ -31,12 +31,11 @@ const BrochureClient = ({ images, showGuide }: Props) => {
 
   const isLastPage = images.length > 0 && currentIndex === images.length - 1;
 
-  const handleGoMission = () => !exiting && setExiting(true);
+  const handleGoMission = () =>
+    !exiting && (setExiting(true), router.push(`/event/${eventId}/mission`));
 
   return (
-    <AnimatePresence
-      onExitComplete={() => router.push(`/event/${eventId}/mission`)}
-    >
+    <AnimatePresence>
       {!exiting && (
         <motion.div
           key="brochure-content"

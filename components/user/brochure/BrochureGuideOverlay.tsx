@@ -31,7 +31,7 @@ const BrochureGuideOverlay = ({ eventId }: { eventId: string }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[rgba(17,17,17,0.5)] animate-fade-in"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[rgba(17,17,17,0.5)]"
       onClick={handleDismiss}
     >
       <div className="-translate-y-15 flex flex-col items-center">
