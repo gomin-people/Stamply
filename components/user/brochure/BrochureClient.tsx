@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/utils";
@@ -30,6 +30,12 @@ const BrochureClient = ({ images, showGuide }: Props) => {
     currentIndex < images.length - 1 && setCurrentIndex((prev) => prev + 1);
 
   const isLastPage = images.length > 0 && currentIndex === images.length - 1;
+
+  useEffect(() => {
+    if (isLastPage) {
+      router.prefetch(`/event/${eventId}/mission`);
+    }
+  }, [isLastPage, eventId, router]);
 
   const handleGoMission = () =>
     !exiting && (setExiting(true), router.push(`/event/${eventId}/mission`));
