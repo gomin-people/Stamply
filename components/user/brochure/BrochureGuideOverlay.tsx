@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import OverlayCircleIcon from "@/components/icons/OverlayCircleIcon";
 
 const BrochureGuideOverlay = ({ eventId }: { eventId: string }) => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(
+    () =>
+      typeof window === "undefined" ||
+      !document.cookie
+        .split("; ")
+        .some((c) => c.startsWith(`brochure-guide-seen-${eventId}=`))
+  );
 
   useEffect(() => {
     const prevent = (e: TouchEvent) => e.preventDefault();

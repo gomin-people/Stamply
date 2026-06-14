@@ -25,7 +25,7 @@ export default function FloatingActionButton({
       <ThemedButton
         onClick={onClick}
         disabled={isRewardClaimed}
-        className={`w-full max-w-none disabled:bg-gomin-neutral-200 disabled:text-gomin-neutral-400 disabled:cursor-not-allowed disabled:pointer-events-none disabled:shadow-none`}
+        className="w-full max-w-none disabled:bg-gomin-neutral-200 disabled:text-gomin-neutral-400 disabled:cursor-not-allowed disabled:pointer-events-none disabled:shadow-none active:scale-97 transition-transform"
       >
         {label ? (
           <span>{label}</span>
